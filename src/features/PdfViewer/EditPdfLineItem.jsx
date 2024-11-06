@@ -45,7 +45,7 @@ export default function EditPdfLineItem({
           label="Price *"
           id="price"
           name="price"
-          placeholder="Total cost of current item"
+          placeholder="Total cost of current item in USD"
           value={formData?.price.value || ""}
           handleChange={(ev) => handleLineItemChange(ev, index)}
           errorMsg={formData.price["errorMsg"]}
@@ -58,7 +58,7 @@ export default function EditPdfLineItem({
           label="Payment *"
           id="payment"
           name="payment"
-          placeholder="Amount paid"
+          placeholder="Amount paid in USD."
           value={formData?.payment.value || ""}
           handleChange={(ev) => handleLineItemChange(ev, index)}
           errorMsg={formData.payment["errorMsg"]}

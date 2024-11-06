@@ -181,7 +181,7 @@ export default function EditPdf({
             label="Invoice Title"
             id="title"
             name="title"
-            placeholder="The title of the invoice"
+            placeholder="The title of the invoice. Eg, Rent for the month of"
             value={formData?.title.value || ""}
             handleChange={handleChange}
             errorMsg={formData.title["errorMsg"]}
@@ -200,7 +200,7 @@ export default function EditPdf({
           label="Additional Notes "
           id="note"
           name="note"
-          placeholder="Additional notes to support the invoice"
+          placeholder="Additional notes for the sender to add"
           value={formData?.note.value || ""}
           handleChange={handleChange}
           errorMsg={formData.note["errorMsg"]}

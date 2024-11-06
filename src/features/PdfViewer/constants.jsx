@@ -149,10 +149,6 @@ export const BLANK_INVOICE_LINE_ITEM_FORM = {
         validate: (value) => !/^\d+(\.\d{1,2})?$/.test(value),
         message: "Payment must be a valid number with up to two decimal places",
       },
-      {
-        validate: (value) => parseFloat(value) <= 0,
-        message: "Payment must be greater than 0",
-      },
     ],
   },
   payment_method: {
