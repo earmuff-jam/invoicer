@@ -44,7 +44,7 @@ export default function EditPdf({
   };
 
   const handleDateTime = (ev, id) => {
-    const value = dayjs(ev).format("DD-MM-YYYY");
+    const value = dayjs(ev).format("MM-DD-YYYY");
     const updatedFormData = { ...formData };
     let errorMsg = "";
     for (const validator of updatedFormData[id].validators) {
@@ -207,7 +207,8 @@ export default function EditPdf({
           multiline={true}
           maxRows={3}
         />
-        {/* Email and Phone Number */}
+
+        {/* Start and end dates */}
         <Stack direction="row" spacing={2}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
@@ -228,6 +229,7 @@ export default function EditPdf({
             />
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
+            {console.log(formData)}
             <DatePicker
               label="End Date *"
               id="end_date"
