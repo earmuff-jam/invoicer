@@ -114,7 +114,7 @@ export default function UserInfoViewer({
           />
         </Stack>
         <Button variant="contained" onClick={onSubmit}>
-          Create
+          Save
         </Button>
       </Stack>
     </Container>

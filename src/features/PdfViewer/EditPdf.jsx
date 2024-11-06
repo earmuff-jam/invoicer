@@ -1,11 +1,17 @@
-import { Container, Stack, Typography, Button } from "@mui/material";
+import {
+  Container,
+  Stack,
+  Typography,
+  Button,
+  IconButton,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import TextFieldWithLabel from "../../common/UserInfo/TextFieldWithLabel";
 import {
   BLANK_INVOICE_DETAILS_FORM,
   BLANK_INVOICE_LINE_ITEM_FORM,
 } from "./constants";
-import { AddRounded } from "@mui/icons-material";
+import { AddRounded, Save, SaveRounded } from "@mui/icons-material";
 import EditPdfLineItemAccordion from "./EditPdfLineItemAccordion";
 import dayjs from "dayjs";
 import { produce } from "immer";
@@ -154,6 +160,14 @@ export default function EditPdf({
     >
       <Stack spacing={2}>
         <Stack>
+          <IconButton
+            onClick={submit}
+            color="primary"
+            size="small"
+            sx={{ alignSelf: "flex-end" }}
+          >
+            <SaveRounded />
+          </IconButton>
           <Typography variant="h5" fontWeight="bold" sx={{ color: "#333" }}>
             {title}
           </Typography>
@@ -270,7 +284,7 @@ export default function EditPdf({
           />
         ))}
         <Button variant="contained" onClick={submit}>
-          Create
+          Save
         </Button>
       </Stack>
     </Container>

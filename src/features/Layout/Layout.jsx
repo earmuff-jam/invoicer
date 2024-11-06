@@ -5,7 +5,6 @@ import {
   CircularProgress,
   CssBaseline,
   IconButton,
-  Skeleton,
   Stack,
   ThemeProvider,
   Toolbar,
@@ -16,13 +15,14 @@ import {
 import { MenuOutlined } from "@mui/icons-material";
 
 import { useTheme } from "@emotion/react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Suspense, useState } from "react";
 import { lightTheme } from "../../common/Theme";
 import Content from "./Content";
 
 export default function Layout() {
   const theme = useTheme();
+  const location = useLocation();
   const onlySmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -30,10 +30,8 @@ export default function Layout() {
   const handleDrawerOpen = () => setOpenDrawer(true);
   const handleDrawerClose = () => setOpenDrawer(false);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/";
-  };
+  const showExportAndPrint = location?.pathname === "/";
+  const printPage = () => window.print();
 
   return (
     <ThemeProvider theme={lightTheme}>
@@ -58,7 +56,11 @@ export default function Layout() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Invoicer
             </Typography>
-            <Button variant="contained"> Print PDF </Button>
+            {showExportAndPrint ? (
+              <Button variant="contained" onClick={printPage}>
+                Print
+              </Button>
+            ) : null}
           </Toolbar>
         </AppBar>
         <Stack direction="row" spacing="1rem" sx={{ mt: "5rem" }}>

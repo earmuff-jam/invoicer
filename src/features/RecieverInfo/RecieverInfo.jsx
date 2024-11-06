@@ -32,11 +32,7 @@ export default function RecieverInfo() {
     ev.preventDefault();
     const draftData = Object.entries(formData).reduce(
       (acc, [key, valueObj]) => {
-        if (["created_on", "updated_on"].includes(key)) {
-          acc[key] = valueObj;
-        } else {
-          acc[key] = valueObj.value;
-        }
+        acc[key] = valueObj.value;
         return acc;
       },
       {}
