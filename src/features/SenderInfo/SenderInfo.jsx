@@ -41,6 +41,24 @@ export default function SenderInfo() {
     localStorage.setItem("senderInfo", JSON.stringify(draftData));
   };
 
+  const isDisabled = () => {
+    const containsErr = Object.values(formData).reduce((acc, el) => {
+      if (el.errorMsg) {
+        return true;
+      }
+      return acc;
+    }, false);
+
+    const requiredFormFields = Object.values(formData).filter(
+      (v) => v.isRequired
+    );
+    const isRequiredFieldsEmpty = requiredFormFields.some(
+      (el) => el.value.trim() === ""
+    );
+
+    return containsErr || isRequiredFieldsEmpty;
+  };
+
   useEffect(() => {
     const localValues = localStorage.getItem("senderInfo");
     const parsedValues = JSON.parse(localValues);
@@ -71,6 +89,7 @@ export default function SenderInfo() {
         formData={formData}
         handleChange={handleChange}
         onSubmit={submit}
+        isDisabled={isDisabled()}
       />
     </Stack>
   );

@@ -7,6 +7,7 @@ export default function UserInfoViewer({
   formData,
   handleChange,
   onSubmit,
+  isDisabled,
 }) {
   return (
     <Container
@@ -113,7 +114,7 @@ export default function UserInfoViewer({
             errorMsg={formData.zipcode["errorMsg"]}
           />
         </Stack>
-        <Button variant="contained" onClick={onSubmit}>
+        <Button variant="contained" onClick={onSubmit} disabled={isDisabled}>
           Save
         </Button>
       </Stack>

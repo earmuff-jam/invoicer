@@ -118,6 +118,41 @@ export default function EditPdf({
     localStorage.setItem("pdfDetails", JSON.stringify(draftData));
   };
 
+  const isLineItemsDisabled = () => {
+    return lineItems.some((lineItem) => {
+      const containerErrInLineItem = Object.values(lineItem).some(
+        (el) => el.errorMsg
+      );
+
+      const requiredFormFieldsInLineItem = Object.values(lineItem).filter(
+        (v) => v.isRequired
+      );
+      const isRequiredFieldsEmptyInLineItem = requiredFormFieldsInLineItem.some(
+        (el) => el.value.trim() === ""
+      );
+
+      return containerErrInLineItem || isRequiredFieldsEmptyInLineItem;
+    });
+  };
+
+  const isDisabled = () => {
+    const containsErr = Object.values(formData).some((el) => el.errorMsg);
+
+    const requiredFormFields = Object.values(formData).filter(
+      (v) => v.isRequired
+    );
+    const isRequiredFieldsEmpty = requiredFormFields.some(
+      (el) => el.value.trim() === ""
+    );
+
+    return (
+      containsErr ||
+      isRequiredFieldsEmpty ||
+      lineItems.length <= 0 ||
+      isLineItemsDisabled()
+    );
+  };
+
   useEffect(() => {
     const localValues = localStorage.getItem("pdfDetails");
     const parsedValues = JSON.parse(localValues);
@@ -165,6 +200,7 @@ export default function EditPdf({
             color="primary"
             size="small"
             sx={{ alignSelf: "flex-end" }}
+            disabled={isDisabled()}
           >
             <SaveRounded />
           </IconButton>
@@ -229,7 +265,6 @@ export default function EditPdf({
             />
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {console.log(formData)}
             <DatePicker
               label="End Date *"
               id="end_date"
@@ -285,7 +320,7 @@ export default function EditPdf({
             handleDelete={handleDelete}
           />
         ))}
-        <Button variant="contained" onClick={submit}>
+        <Button variant="contained" onClick={submit} disabled={isDisabled()}>
           Save
         </Button>
       </Stack>

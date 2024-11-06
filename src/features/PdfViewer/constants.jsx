@@ -17,18 +17,21 @@ export const BLANK_INVOICE_DETAILS_FORM = {
     id: "title",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [],
   },
   caption: {
     id: "caption",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [],
   },
   note: {
     id: "note",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [
       {
         validate: (value) => value.trim().length >= 150,
@@ -41,6 +44,7 @@ export const BLANK_INVOICE_DETAILS_FORM = {
     id: "start_date",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -56,6 +60,7 @@ export const BLANK_INVOICE_DETAILS_FORM = {
     id: "end_date",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -71,6 +76,7 @@ export const BLANK_INVOICE_DETAILS_FORM = {
     id: "tax_rate",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -90,6 +96,7 @@ export const BLANK_INVOICE_DETAILS_FORM = {
     id: "invoice_header",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [],
   },
 };
@@ -102,18 +109,21 @@ export const BLANK_INVOICE_LINE_ITEM_FORM = {
     id: "descpription",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [],
   },
   caption: {
     id: "caption",
     value: "",
     errorMsg: "",
+    isRequired: false,
     validators: [],
   },
   quantity: {
     id: "quantity",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => !/^\d+$/.test(value),
@@ -129,6 +139,7 @@ export const BLANK_INVOICE_LINE_ITEM_FORM = {
     id: "price",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => !/^\d+(\.\d{1,2})?$/.test(value),
@@ -144,6 +155,7 @@ export const BLANK_INVOICE_LINE_ITEM_FORM = {
     id: "payment",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => !/^\d+(\.\d{1,2})?$/.test(value),
@@ -155,6 +167,7 @@ export const BLANK_INVOICE_LINE_ITEM_FORM = {
     id: "payment_method",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,

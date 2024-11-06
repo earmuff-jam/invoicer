@@ -17,6 +17,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "first_name",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 3,
@@ -33,6 +34,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "last_name",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -48,6 +50,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "email_address",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -67,6 +70,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "phone_number",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -82,6 +86,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "street_address",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -97,6 +102,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "city",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -112,6 +118,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "state",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
@@ -119,7 +126,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
       },
       {
         validate: (value) => value.trim().length > 2,
-        message: "State should be less than 2 characters",
+        message: "State is required in the form of XX. Eg, AZ",
       },
     ],
   },
@@ -127,6 +134,7 @@ export const BLANK_INDIVIDUAL_INFORMATION_DETAILS = {
     id: "zipcode",
     value: "",
     errorMsg: "",
+    isRequired: true,
     validators: [
       {
         validate: (value) => value.trim().length <= 0,
