@@ -4,6 +4,8 @@ import {
   Typography,
   Button,
   IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import TextFieldWithLabel from "../../common/UserInfo/TextFieldWithLabel";
@@ -17,12 +19,15 @@ import dayjs from "dayjs";
 import { produce } from "immer";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { useNavigate } from "react-router-dom";
 
 export default function EditPdf({
   title = "Edit Pdf",
   caption = "Edit data to populate invoice",
 }) {
+  const navigate = useNavigate();
   const [lineItems, setLineItems] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(BLANK_INVOICE_DETAILS_FORM);
 
   const handleChange = (ev) => {
@@ -116,6 +121,7 @@ export default function EditPdf({
     draftData["items"] = draftLineItemData;
     draftData["updated_on"] = dayjs().toISOString();
     localStorage.setItem("pdfDetails", JSON.stringify(draftData));
+    setShowSnackbar(true);
   };
 
   const isLineItemsDisabled = () => {
@@ -324,6 +330,27 @@ export default function EditPdf({
           Save
         </Button>
       </Stack>
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setShowSnackbar(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          Changes saved.
+          <Typography
+            component="span"
+            onClick={() => navigate("/")}
+            sx={{ cursor: "pointer" }}
+          >
+            View PDF
+          </Typography>
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
