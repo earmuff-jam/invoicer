@@ -9,7 +9,6 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 
 import { MenuOutlined } from "@mui/icons-material";
@@ -23,14 +22,13 @@ import Content from "./Content";
 export default function Layout() {
   const theme = useTheme();
   const location = useLocation();
-  const onlySmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const handleDrawerOpen = () => setOpenDrawer(true);
   const handleDrawerClose = () => setOpenDrawer(false);
 
-  const showExportAndPrint = location?.pathname === "/";
+  const showExportAndPrint = location?.pathname === "/view";
   const printPage = () => window.print();
 
   return (

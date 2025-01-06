@@ -1,4 +1,4 @@
-import { EditRounded, HomeRounded, Person2Rounded } from "@mui/icons-material";
+import { EditRounded, HomeRounded, Person2Rounded, PictureAsPdfRounded } from "@mui/icons-material";
 
 export const NAVIGATION_LIST = [
   {
@@ -9,18 +9,24 @@ export const NAVIGATION_LIST = [
   },
   {
     id: 2,
-    icon: <EditRounded fontSize="small" />,
-    label: "Edit PDF",
-    to: "/edit",
+    icon: <PictureAsPdfRounded fontSize="small" />,
+    label: "View Invoice",
+    to: "/view",
   },
   {
     id: 3,
+    icon: <EditRounded fontSize="small" />,
+    label: "Edit Invoice",
+    to: "/edit",
+  },
+  {
+    id: 4,
     icon: <Person2Rounded fontSize="small" />,
     label: "Sender",
     to: "/sender",
   },
   {
-    id: 4,
+    id: 5,
     icon: <Person2Rounded fontSize="small" />,
     label: "Reciever",
     to: "/reciever",

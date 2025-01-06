@@ -4,8 +4,12 @@ import { BLANK_INDIVIDUAL_INFORMATION_DETAILS } from "../../common/UserInfo/cons
 import RowHeader from "../../common/RowHeader/RowHeader";
 import { Stack } from "@mui/material";
 import dayjs from "dayjs";
+import CustomSnackbar from "../../common/CustomSnackbar/CustomSnackbar";
+import { useNavigate } from "react-router-dom";
 
 export default function RecieverInfo() {
+  const navigate = useNavigate();
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(
     BLANK_INDIVIDUAL_INFORMATION_DETAILS
   );
@@ -39,6 +43,7 @@ export default function RecieverInfo() {
     );
     draftData["updated_on"] = dayjs();
     localStorage.setItem("recieverInfo", JSON.stringify(draftData));
+    setShowSnackbar(true);
   };
 
   const isDisabled = () => {
@@ -90,6 +95,13 @@ export default function RecieverInfo() {
         handleChange={handleChange}
         onSubmit={submit}
         isDisabled={isDisabled()}
+      />
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Changes saved."
+        caption="View Invoice"
+        onClick={() => navigate("/view")}
       />
     </Stack>
   );

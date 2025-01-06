@@ -4,8 +4,6 @@ import {
   Typography,
   Button,
   IconButton,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import TextFieldWithLabel from "../../common/UserInfo/TextFieldWithLabel";
@@ -13,13 +11,14 @@ import {
   BLANK_INVOICE_DETAILS_FORM,
   BLANK_INVOICE_LINE_ITEM_FORM,
 } from "./constants";
-import { AddRounded, Save, SaveRounded } from "@mui/icons-material";
+import { AddRounded, SaveRounded } from "@mui/icons-material";
 import EditPdfLineItemAccordion from "./EditPdfLineItemAccordion";
 import dayjs from "dayjs";
 import { produce } from "immer";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useNavigate } from "react-router-dom";
+import CustomSnackbar from "../../common/CustomSnackbar/CustomSnackbar";
 
 export default function EditPdf({
   title = "Edit Pdf",
@@ -330,27 +329,13 @@ export default function EditPdf({
           Save
         </Button>
       </Stack>
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setShowSnackbar(false)}
-      >
-        <Alert
-          onClose={() => setShowSnackbar(false)}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          Changes saved.
-          <Typography
-            component="span"
-            onClick={() => navigate("/")}
-            sx={{ cursor: "pointer" }}
-          >
-            View PDF
-          </Typography>
-        </Alert>
-      </Snackbar>
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Changes saved."
+        caption="View Invoice"
+        onClick={() => navigate("/view")}
+      />
     </Container>
   );
 }

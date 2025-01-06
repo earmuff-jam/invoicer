@@ -4,6 +4,7 @@ import SenderInfo from "./features/SenderInfo/SenderInfo";
 import Layout from "./features/Layout/Layout";
 import PdfViewer from "./features/PdfViewer/PdfViewer";
 import EditPdf from "./features/PdfViewer/EditPdf";
+import Overview from "./features/Landing/Overview";
 
 export const router = createBrowserRouter([
   {
@@ -12,6 +13,10 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <Overview />,
+      },
+      {
+        path: "/view",
         element: <PdfViewer />,
       },
       {
