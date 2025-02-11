@@ -20,7 +20,7 @@ export default function Overview() {
         <CloudSvgResource />
         <TextContent
           title="Simple, effortless and intuitive ..."
-          caption="We save your previously used contacts, for easy access"
+          caption="Recently used contacts are automatically populated, for easy access"
         />
       </Stack>
       <Testimonials />
