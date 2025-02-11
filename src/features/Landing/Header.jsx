@@ -1,4 +1,4 @@
-import { FlightTakeoffRounded, StartRounded } from "@mui/icons-material";
+import { FlightTakeoffRounded } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 

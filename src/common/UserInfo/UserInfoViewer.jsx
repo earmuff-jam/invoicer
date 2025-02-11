@@ -1,4 +1,4 @@
-import { Stack, Typography, Box, Button, Container } from "@mui/material";
+import { Stack, Typography, Button, Container } from "@mui/material";
 import TextFieldWithLabel from "./TextFieldWithLabel";
 
 export default function UserInfoViewer({
