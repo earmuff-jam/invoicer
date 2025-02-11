@@ -37,7 +37,7 @@ const reviews = [
 
 function Review() {
   return (
-    <Stack direction="row" spacing={2} useFlexGap flexGrow={1}>
+    <Stack direction={{ md: 'row', xs: 'column'}} spacing={2} useFlexGap flexGrow={1}>
       {reviews.map((v) => (
         <Card key={v.id} sx={{ borderRadius: "1rem" }}>
           <CardMedia
