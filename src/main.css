@@ -1,0 +1,8 @@
+/* This feature is strictly used to not print items in the print view
+when the user is engaged in print mode. This classes are used in the
+component of where the functionality should be executed. */
+@media print {
+  .no-print {
+    visibility: hidden;
+  }
+}

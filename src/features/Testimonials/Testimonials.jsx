@@ -1,5 +1,4 @@
-import { Stack, Typography } from "@mui/material";
-import React from "react";
+import { Stack } from "@mui/material";
 import Review from "./Review";
 import TextContent from "../Landing/TextContent";
 
