@@ -16,16 +16,20 @@ import { useTheme } from "@emotion/react";
 import { NAVIGATION_LIST } from "./constants";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function Content({ openDrawer, handleDrawerClose }) {
+export default function Content({
+  openDrawer,
+  handleDrawerClose,
+  smScreenSizeAndHigher,
+  lgScreenSizeAndHigher,
+}) {
   const theme = useTheme();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const smallerAndHigher = useMediaQuery(theme.breakpoints.up("sm"));
 
   // the timeout allows to close the drawer first before navigation occurs.
   // Without this, the drawer behaves weird.
   const handleMenuItemClick = (to) => {
-    handleDrawerClose();
+    !lgScreenSizeAndHigher && handleDrawerClose();
     setTimeout(() => {
       navigate(to);
     }, 200);
@@ -34,15 +38,20 @@ export default function Content({ openDrawer, handleDrawerClose }) {
   return (
     <Stack display="flex">
       <Drawer
-        variant="temporary"
+        variant="persistent"
         open={openDrawer}
         onClose={handleDrawerClose}
         aria-modal="true"
         PaperProps={
-          smallerAndHigher
+          smScreenSizeAndHigher
             ? {
                 sx: {
                   width: 300,
+                  flexShrink: 0,
+                  [`& .MuiDrawer-paper`]: {
+                    width: 300,
+                    boxSizing: "border-box",
+                  },
                 },
               }
             : {

@@ -9,6 +9,8 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { MenuOutlined } from "@mui/icons-material";
@@ -19,7 +21,11 @@ import { darkTheme, lightTheme } from "../../common/Theme";
 import Content from "./Content";
 
 export default function Layout() {
+  const theme = useTheme();
   const location = useLocation();
+
+  const smScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("sm"));
+  const lgScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("lg"));
 
   const [currentThemeIdx, setCurrentThemeIdx] = useState(
     localStorage.getItem("theme") || 0
@@ -93,6 +99,8 @@ export default function Layout() {
           <Content
             openDrawer={openDrawer}
             handleDrawerClose={handleDrawerClose}
+            smScreenSizeAndHigher={smScreenSizeAndHigher}
+            lgScreenSizeAndHigher={lgScreenSizeAndHigher}
           />
           <Stack sx={{ py: "1rem", flexGrow: 1 }}>
             <Outlet />
