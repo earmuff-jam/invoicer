@@ -9,30 +9,51 @@ import {
   ThemeProvider,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 
 import { MenuOutlined } from "@mui/icons-material";
 
-import { useTheme } from "@emotion/react";
-import { Outlet, useLocation } from "react-router-dom";
 import { Suspense, useState } from "react";
-import { lightTheme } from "../../common/Theme";
+import { Outlet, useLocation } from "react-router-dom";
+import { darkTheme, lightTheme } from "../../common/Theme";
 import Content from "./Content";
 
 export default function Layout() {
   const theme = useTheme();
   const location = useLocation();
 
+  const smScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("sm"));
+  const lgScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("lg"));
+
+  const [currentThemeIdx, setCurrentThemeIdx] = useState(
+    localStorage.getItem("theme") || 0
+  );
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const handleDrawerOpen = () => setOpenDrawer(true);
   const handleDrawerClose = () => setOpenDrawer(false);
 
   const showExportAndPrint = location?.pathname === "/view";
-  const printPage = () => window.print();
+  const printPage = () => {
+    window.print();
+  };
+
+  const changeTheme = (_, currentThemeIdx) => {
+    if (Number(currentThemeIdx) === 0) {
+      localStorage.setItem("theme", 1);
+      setCurrentThemeIdx(1);
+      return;
+    }
+    localStorage.setItem("theme", 0);
+    setCurrentThemeIdx(0);
+  };
 
   return (
-    <ThemeProvider theme={lightTheme}>
+    <ThemeProvider
+      theme={Number(currentThemeIdx) === 0 ? lightTheme : darkTheme}
+    >
       <CssBaseline />
       <Suspense
         fallback={
@@ -54,17 +75,32 @@ export default function Layout() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Invoicer
             </Typography>
-            {showExportAndPrint ? (
-              <Button variant="contained" onClick={printPage}>
-                Print
+            <Stack direction="row" spacing={1}>
+              {showExportAndPrint ? (
+                <Button
+                  variant="contained"
+                  onClick={printPage}
+                  className="no-print"
+                >
+                  Print
+                </Button>
+              ) : null}
+              <Button
+                variant="outlined"
+                onClick={(ev) => changeTheme(ev, currentThemeIdx)}
+                className="no-print"
+              >
+                Change Theme
               </Button>
-            ) : null}
+            </Stack>
           </Toolbar>
         </AppBar>
         <Stack direction="row" spacing="1rem" sx={{ mt: "5rem" }}>
           <Content
             openDrawer={openDrawer}
             handleDrawerClose={handleDrawerClose}
+            smScreenSizeAndHigher={smScreenSizeAndHigher}
+            lgScreenSizeAndHigher={lgScreenSizeAndHigher}
           />
           <Stack sx={{ py: "1rem", flexGrow: 1 }}>
             <Outlet />
