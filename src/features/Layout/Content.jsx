@@ -8,7 +8,6 @@ import {
   Drawer,
   IconButton,
   Divider,
-  useMediaQuery,
   Typography,
 } from "@mui/material";
 
