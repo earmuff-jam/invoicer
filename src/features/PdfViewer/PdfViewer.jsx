@@ -48,7 +48,8 @@ export default function PdfViewer() {
         />
         <Typography
           variant="subtitle2"
-          sx={{ color: "#666", fontStyle: "italic" }}
+          color="text.secondary"
+          sx={{ fontStyle: "italic" }}
         >
           Period {invoice_form.start_date} to {invoice_form.end_date}
         </Typography>

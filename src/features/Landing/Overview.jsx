@@ -1,31 +1,26 @@
-import { Stack } from "@mui/material";
-import Header from "./Header";
-import TextContent from "./TextContent";
-import CloudSvgResource from "./CloudSvgResource";
-import Testimonials from "../Testimonials/Testimonials";
-import Footer from "../Footer/Footer";
+
+import { Box, Fab } from "@mui/material";
+import { KeyboardArrowUp } from "@mui/icons-material";
+
+import HowItWorks from "./HowItWorks";
+import HeroSection from "./HeroSection";
+import Testimonials from "./Testimonials";
+import FeatureSection from "./FeatureSection";
+import ScrollTop from "../../common/ScrollToTop";
 
 export default function Overview() {
   return (
-    <Stack spacing={5}>
-      <Header />
-      <Stack direction="row" justifyContent="space-between" textAlign="center" alignItems="center">
-        <TextContent
-          title="Building out invoices has never been easier..."
-          caption="No matter the situation, we got you covered."
-        />
-        <CloudSvgResource />
-      </Stack>
-      <Stack direction="row" justifyContent="space-between" textAlign="center" alignItems="center">
-        <CloudSvgResource />
-        <TextContent
-          title="Simple, effortless and intuitive ..."
-          caption="Recently used contacts are automatically populated, for easy access"
-        />
-      </Stack>
+    <Box sx={{ flexGrow: 1 }}>
+      <div id="back-to-top-anchor" />
+      <HeroSection />
+      <FeatureSection />
+      <HowItWorks />
       <Testimonials />
-      <Footer />
-
-    </Stack>
+      <ScrollTop>
+        <Fab color="primary" size="small" aria-label="scroll back to top">
+          <KeyboardArrowUp />
+        </Fab>
+      </ScrollTop>
+    </Box>
   );
 }

@@ -1,10 +1,17 @@
+import React, { Suspense, useState } from "react";
+
 import {
   AppBar,
   Box,
   Button,
   CircularProgress,
   CssBaseline,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
+  Slide,
   Stack,
   ThemeProvider,
   Toolbar,
@@ -13,12 +20,17 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { MenuOutlined } from "@mui/icons-material";
-
-import { Suspense, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import { darkTheme, lightTheme } from "../../common/Theme";
 import Content from "./Content";
+import Footer from "../Footer/Footer";
+
+import { MenuOutlined } from "@mui/icons-material";
+import { Outlet, useLocation } from "react-router-dom";
+
+import { darkTheme, lightTheme } from "../../common/Theme";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 export default function Layout() {
   const theme = useTheme();
@@ -27,18 +39,20 @@ export default function Layout() {
   const smScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("sm"));
   const lgScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("lg"));
 
+  const [openDialog, setOpenDialog] = useState(false);
+
   const [currentThemeIdx, setCurrentThemeIdx] = useState(
     localStorage.getItem("theme") || 0
   );
-  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const [openDrawer, setOpenDrawer] = useState(
+    smScreenSizeAndHigher ? true : false
+  );
 
   const handleDrawerOpen = () => setOpenDrawer(true);
   const handleDrawerClose = () => setOpenDrawer(false);
 
   const showExportAndPrint = location?.pathname === "/view";
-  const printPage = () => {
-    window.print();
-  };
 
   const changeTheme = (_, currentThemeIdx) => {
     if (Number(currentThemeIdx) === 0) {
@@ -67,7 +81,7 @@ export default function Layout() {
           </Box>
         }
       >
-        <AppBar elevation={0}>
+        <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }}>
           <Toolbar>
             <IconButton onClick={handleDrawerOpen}>
               <MenuOutlined />
@@ -79,7 +93,10 @@ export default function Layout() {
               {showExportAndPrint ? (
                 <Button
                   variant="contained"
-                  onClick={printPage}
+                  onClick={() => {
+                    setOpenDialog(true);
+                    handleDrawerClose();
+                  }}
                   className="no-print"
                 >
                   Print
@@ -102,10 +119,40 @@ export default function Layout() {
             smScreenSizeAndHigher={smScreenSizeAndHigher}
             lgScreenSizeAndHigher={lgScreenSizeAndHigher}
           />
-          <Stack sx={{ py: "1rem", flexGrow: 1 }}>
+          <Stack sx={{ py: "1rem", minHeight: "90vh", flexGrow: 1 }}>
             <Outlet />
           </Stack>
         </Stack>
+        <Footer />
+        <Dialog
+          className="no-print"
+          open={openDialog}
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={() => setOpenDialog(false)}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>Verify Information</DialogTitle>
+          <DialogContent>
+            <Typography sx={{ textTransform: "initial" }}>
+              Verify all information is correct before proceeding to print.
+              Press print when ready.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setOpenDialog(false);
+                print();
+              }}
+            >
+              Print
+            </Button>
+            <Button variant="contained" onClick={() => setOpenDialog(false)}>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Suspense>
     </ThemeProvider>
   );

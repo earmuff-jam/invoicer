@@ -13,7 +13,7 @@ export default function TextFieldWithLabel({
 }) {
   return (
     <Stack spacing={0.5} width="100%">
-      <Typography variant="body2" fontWeight="medium" sx={{ color: "#555" }}>
+      <Typography variant="body2" fontWeight="medium" >
         {label}
       </Typography>
       <TextField
@@ -27,11 +27,6 @@ export default function TextFieldWithLabel({
         size="small"
         multiline={multiline}
         rows={maxRows}
-        sx={{
-          backgroundColor: "#fff",
-          borderRadius: 2,
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
-        }}
         error={Boolean(errorMsg.length)}
         helperText={errorMsg}
       />
