@@ -1,4 +1,3 @@
-import { ReceiptLong } from "@mui/icons-material";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 
 export default function HeroSection() {
@@ -50,12 +49,7 @@ export default function HeroSection() {
               }}
             >
               <Box sx={{ p: 3, textAlign: "center" }}>
-                <ReceiptLong
-                  sx={{ fontSize: 80, color: "primary.main", mb: 2 }}
-                />
-                <Typography variant="h6" color="text.primary">
-                  Invoicer App.
-                </Typography>
+                <img src="/logo.png" />
               </Box>
             </Box>
           </Grid>
