@@ -192,7 +192,7 @@ export default function EditPdf({
     <Container
       maxWidth="md"
       sx={{
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "background.paper",
         borderRadius: 2,
         padding: 3,
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -209,12 +209,10 @@ export default function EditPdf({
           >
             <SaveRounded />
           </IconButton>
-          <Typography variant="h5" fontWeight="bold" sx={{ color: "#333" }}>
+          <Typography variant="h5" fontWeight="bold">
             {title}
           </Typography>
-          <Typography variant="subtitle2" sx={{ color: "#666" }}>
-            {caption}
-          </Typography>
+          <Typography variant="subtitle2">{caption}</Typography>
         </Stack>
         {/* First and Last Name */}
         <Stack direction="row" spacing={2}>
@@ -228,7 +226,7 @@ export default function EditPdf({
             errorMsg={formData.title["errorMsg"]}
           />
           <TextFieldWithLabel
-            label="Invoice Caption "
+            label="Invoice Caption"
             id="caption"
             name="caption"
             placeholder="The description below the title of invoice"
@@ -311,7 +309,7 @@ export default function EditPdf({
 
         {/* Line items */}
         <Stack alignItems={"flex-end"}>
-          <Button onClick={() => addLineItems()} startIcon={<AddRounded />}>
+          <Button onClick={() => addLineItems()} startIcon={<AddRounded />} variant="outlined">
             Add Item
           </Button>
         </Stack>

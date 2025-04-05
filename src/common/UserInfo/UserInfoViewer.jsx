@@ -13,7 +13,7 @@ export default function UserInfoViewer({
     <Container
       maxWidth="sm"
       sx={{
-        backgroundColor: "#f8f9fa",
+        backgroundColor: "background.paper",
         borderRadius: 2,
         padding: 3,
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -21,12 +21,10 @@ export default function UserInfoViewer({
     >
       <Stack spacing={2}>
         <Stack>
-          <Typography variant="h5" fontWeight="bold" sx={{ color: "#333" }}>
+          <Typography variant="h5" fontWeight="bold">
             {title}
           </Typography>
-          <Typography variant="subtitle2" sx={{ color: "#666" }}>
-            {caption}
-          </Typography>
+          <Typography variant="subtitle2">{caption}</Typography>
         </Stack>
 
         {/* First and Last Name */}

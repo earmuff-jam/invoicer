@@ -10,18 +10,15 @@ export default function RowHeader({
   return (
     <>
       <Stack textAlign="center">
-        <Typography variant="h5" fontWeight="medium" sx={{ color: "#555" }}>
+        <Typography variant="h5" fontWeight="medium">
           {title}
         </Typography>
-        <Typography variant="subtitle2" sx={{ color: "#666" }}>
-          {caption}
-        </Typography>
+        <Typography variant="subtitle2">{caption}</Typography>
       </Stack>
       {showDate && (
         <Typography
           variant="subtitle2"
           fontStyle={"italic"}
-          sx={{ color: "#666" }}
           textAlign={"right"}
         >
           Created on {createdDate}

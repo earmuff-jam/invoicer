@@ -1,212 +1,277 @@
 import { createTheme } from "@mui/material";
 
+const commonTypography = {
+  fontFamily: "Nunito",
+  h1: {
+    fontWeight: 700,
+    fontSize: "2.5rem",
+    lineHeight: 1.2,
+    textTransform: "capitalize",
+  },
+  h2: {
+    fontWeight: 600,
+    fontSize: "2rem",
+    lineHeight: 1.3,
+    textTransform: "capitalize",
+  },
+  h3: {
+    fontWeight: 600,
+    fontSize: "1.75rem",
+    lineHeight: 1.4,
+    textTransform: "capitalize",
+  },
+  h4: {
+    fontWeight: 600,
+    fontSize: "1.5rem",
+    lineHeight: 1.5,
+    textTransform: "capitalize",
+  },
+  h5: {
+    fontWeight: 600,
+    fontSize: "1.25rem",
+    lineHeight: 1.6,
+    textTransform: "capitalize",
+  },
+  h6: {
+    fontWeight: 600,
+    fontSize: "1rem",
+    lineHeight: 2.0,
+    textTransform: "capitalize",
+  },
+  body1: {
+    fontSize: "1rem",
+    lineHeight: 1.6,
+    textTransform: "capitalize",
+  },
+  body2: {
+    fontSize: "0.875rem",
+    lineHeight: 1.6,
+    textTransform: "capitalize",
+  },
+  button: {
+    fontWeight: 500,
+    textTransform: "capitalize",
+  },
+  subtitle1: {
+    fontSize: "1rem",
+    fontWeight: 500,
+    textTransform: "capitalize",
+  },
+  subtitle2: {
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    textTransform: "capitalize",
+  },
+};
+
+const commonComponents = {
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        textTransform: "none",
+        borderRadius: 8,
+        padding: "8px 16px",
+        fontWeight: 500,
+      },
+      containedPrimary: {
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.08)",
+      },
+    },
+  },
+  MuiCard: {
+    styleOverrides: {
+      root: {
+        borderRadius: 12,
+        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.08)",
+      },
+    },
+  },
+  MuiAppBar: {
+    styleOverrides: {
+      root: {
+        boxShadow: "0 1px 4px rgba(0, 0, 0, 0.05)",
+      },
+    },
+  },
+};
+
 export const lightTheme = createTheme({
   palette: {
+    mode: "light",
     primary: {
-      main: "#3F72AF",
-      dark: "#112D4E",
+      main: "#0E7C6B",
+      light: "#37A699",
+      dark: "#0B5D50",
+      contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "#DBE2EF",
-      light: "#F9F7F7",
+      main: "#3D4B72",
+      light: "#5E6D98",
+      dark: "#2E3A58",
+      contrastText: "#FFFFFF",
     },
     background: {
-      paper: "#F8FAFD",
-      default: "#FFFBFB",
+      default: "#F9FAFB",
+      paper: "#FFFFFF",
+    },
+    text: {
+      primary: "#1A202C",
+      secondary: "#4A5568",
+    },
+    divider: "rgba(0, 0, 0, 0.08)",
+    success: {
+      main: "#38A169",
+    },
+    info: {
+      main: "#3182CE",
+    },
+    warning: {
+      main: "#DD6B20",
+    },
+    error: {
+      main: "#E53E3E",
     },
   },
-  typography: {
-    fontFamily: "Nunito, sans-serif",
-    h1: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "2.5rem",
-      lineHeight: 1.2,
-    },
-    h2: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "2rem",
-      lineHeight: 1.3,
-    },
-    h3: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1.75rem",
-      lineHeight: 1.4,
-    },
-    h4: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1.5rem",
-      lineHeight: 1.5,
-    },
-    h5: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1.25rem",
-      lineHeight: 1.6,
-    },
-    h6: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1rem",
-      lineHeight: 1.7,
-    },
-    body1: {
-      fontFamily: "Nunito, sans-serif",
-      fontSize: "1rem",
-      lineHeight: 1.6,
-    },
-    body2: {
-      fontFamily: "Nunito, sans-serif",
-      fontSize: "0.875rem",
-      lineHeight: 1.6,
-    },
-  },
+  typography: commonTypography,
   components: {
-    MuiToolbar: {
+    ...commonComponents,
+    MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#F9F7F7",
-          color: "#B0B0B0",
+          backgroundColor: "#FFFFFF",
+          color: "#1A202C",
         },
       },
     },
-    MuiButton: {
+    MuiToolbar: {
       styleOverrides: {
         root: {
-          textTransform: "capitalize",
+          backgroundColor: "#FFFFFF",
         },
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: "#FFFBFB",
-        },
-      },
-    },
-    MuiAccordion: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#F9F7F7",
-        },
-      },
-    },
-    MuiAccordionDetails: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#F9F7F7",
+          backgroundImage: "none",
         },
       },
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
+  shadows: [
+    "none",
+    "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)",
+    "0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 5px rgba(0, 0, 0, 0.1)",
+    "0 4px 6px rgba(0, 0, 0, 0.06), 0 2px 10px rgba(0, 0, 0, 0.1)",
+    "0 10px 15px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.1)",
+    "0 20px 25px rgba(0, 0, 0, 0.04), 0 10px 10px rgba(0, 0, 0, 0.1)",
+  ],
 });
 
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#3F72AF",
-      dark: "#112D4E",
-      light: "#5A91D7",
+      main: "#ffb300",
+      light: "#ffd54f",
+      dark: "#ff8f00",
+      contrastText: "#121212",
     },
     secondary: {
-      main: "#DBE2EF",
-      light: "#F9F7F7",
-      dark: "#A1B6D3",
+      main: "#8EACBB",
+      light: "#B0C5D1",
+      dark: "#6D8A9C",
+      contrastText: "#121212",
     },
     background: {
-      default: "#2E2E2E",
+      default: "#121212",
       paper: "#1E1E1E",
     },
     text: {
-      primary: "#FFFFFF",
-      secondary: "#B0B0B0",
+      primary: "#ECEFF1",
+      secondary: "#B0BEC5",
+    },
+    divider: "rgba(255, 255, 255, 0.08)",
+    success: {
+      main: "#4CAF50",
+    },
+    info: {
+      main: "#64B5F6",
+    },
+    warning: {
+      main: "#FFB74D",
+    },
+    error: {
+      main: "#E57373",
     },
   },
-  typography: {
-    fontFamily: "Nunito, sans-serif",
-    h1: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "2.5rem",
-      lineHeight: 1.2,
-      color: "#FFFFFF",
-    },
-    h2: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "2rem",
-      lineHeight: 1.3,
-      color: "#FFFFFF",
-    },
-    h3: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1.75rem",
-      lineHeight: 1.4,
-      color: "#FFFFFF",
-    },
-    h4: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1.5rem",
-      lineHeight: 1.5,
-      color: "#FFFFFF",
-    },
-    h5: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1.25rem",
-      lineHeight: 1.6,
-      color: "#FFFFFF",
-    },
-    h6: {
-      fontFamily: "Nunito, sans-serif",
-      fontWeight: 700,
-      fontSize: "1rem",
-      lineHeight: 1.7,
-      color: "#FFFFFF",
-    },
-    body1: {
-      fontFamily: "Nunito, sans-serif",
-      fontSize: "1rem",
-      lineHeight: 1.6,
-      color: "#B0B0B0",
-    },
-    body2: {
-      fontFamily: "Nunito, sans-serif",
-      fontSize: "0.875rem",
-      lineHeight: 1.6,
-      color: "#B0B0B0",
-    },
-    caption: {
-      color: "#B0B0B0",
-    },
-  },
+  typography: commonTypography,
   components: {
+    ...commonComponents,
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#2E2E2E",
+          backgroundColor: "#1E1E1E",
+          color: "#FFFFFF",
         },
       },
     },
     MuiToolbar: {
       styleOverrides: {
         root: {
-          backgroundColor: "#2E2E2E",
+          backgroundColor: "#1E1E1E",
         },
       },
     },
-    MuiButton: {
+    MuiPaper: {
       styleOverrides: {
         root: {
-          textTransform: "capitalize",
+          backgroundImage: "none",
+          backgroundColor: "#1E1E1E",
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#252525",
+        },
+      },
+    },
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "rgba(255, 255, 255, 0.08)",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+        },
+      },
+    },
+    MuiSwitch: {
+      styleOverrides: {
+        thumb: {
+          backgroundColor: "#4ECDC4",
         },
       },
     },
   },
+  shape: {
+    borderRadius: 8,
+  },
+  shadows: [
+    "none",
+    "0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3)",
+    "0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 5px rgba(0, 0, 0, 0.3)",
+    "0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 10px rgba(0, 0, 0, 0.3)",
+    "0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3)",
+    "0 20px 25px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(0, 0, 0, 0.3)",
+  ],
 });

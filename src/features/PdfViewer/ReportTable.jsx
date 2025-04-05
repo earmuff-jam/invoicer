@@ -48,8 +48,8 @@ export default function ReportTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
+          {rows.map((row, index) => (
+            <TableRow key={index}>
               <TableCell>
                 <Stack direction="row" spacing={1} alignItems="flex-end">
                   <Typography variant="subtitle">{row.descpription}</Typography>
