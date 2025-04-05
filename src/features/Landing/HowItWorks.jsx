@@ -1,24 +1,7 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
+import { LANDING_PAGE_DETAILS } from "src/features/Landing/constants";
 
 export default function HowItWorks() {
-  const steps = [
-    {
-      title: "Create an account",
-      description: "Sign up in seconds with just your email address.",
-    },
-    {
-      title: "Set up your business profile",
-      description: "Add your logo, business details, and payment information.",
-    },
-    {
-      title: "Create your first invoice",
-      description: "Use our intuitive editor to create professional invoices.",
-    },
-    {
-      title: "Send and get paid",
-      description: "Send invoices directly to clients and track payments.",
-    },
-  ];
 
   return (
     <Box sx={{ py: { xs: 8, sm: 12 } }}>
@@ -43,7 +26,7 @@ export default function HowItWorks() {
         </Typography>
 
         <Grid container spacing={2} justifyContent="center">
-          {steps.map((step, idx) => (
+          {LANDING_PAGE_DETAILS.howItWorks.map((step, idx) => (
             <Grid item xs={12} md={6} lg={3} key={idx}>
               <Box
                 sx={{
@@ -85,7 +68,7 @@ export default function HowItWorks() {
                   {step.description}
                 </Typography>
 
-                {idx < steps.length - 1 && (
+                {idx < LANDING_PAGE_DETAILS.howItWorks.length - 1 && (
                   <Box
                     sx={{
                       display: { xs: "none", lg: "block" },

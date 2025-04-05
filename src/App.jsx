@@ -1,15 +1,18 @@
-import { Container, Dialog } from "@mui/material";
 import { Suspense } from "react";
+
 import { RouterProvider } from "react-router-dom";
-import { router } from "./router";
+
+import { Box, Dialog } from "@mui/material";
+
+import { router } from "src/router";
 
 function App() {
   return (
-    <Container maxWidth="xl">
+    <Box>
       <Suspense fallback={<Dialog open={false} title="Loading..." />}>
         <RouterProvider router={router} />
       </Suspense>
-    </Container>
+    </Box>
   );
 }
 

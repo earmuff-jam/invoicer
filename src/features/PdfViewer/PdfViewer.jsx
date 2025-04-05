@@ -1,9 +1,9 @@
 import { Container, Stack, Typography } from "@mui/material";
-import ReportTable from "./ReportTable";
-import RowHeader from "../../common/RowHeader/RowHeader";
+import ReportTable from "src/features/PdfViewer/ReportTable";
+import RowHeader from "src/common/RowHeader/RowHeader";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
-import Salutation from "../../common/UserInfo/Salutation";
+import Salutation from "src/common/UserInfo/Salutation";
 
 export default function PdfViewer() {
   const navigate = useNavigate();
@@ -16,8 +16,10 @@ export default function PdfViewer() {
   if (!invoice_form) {
     return (
       <Stack textAlign={"center"}>
-        <Typography>Sorry, no invoice found to display</Typography>
-        <Typography variant="caption">
+        <Typography sx={{ textTransform: "initial" }}>
+          Sorry, no invoice found to display
+        </Typography>
+        <Typography variant="caption" sx={{ textTransform: "initial" }}>
           Create new invoice form
           <Typography
             component={"span"}

@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 
 import { useTheme } from "@emotion/react";
-import { NAVIGATION_LIST } from "./constants";
 import { useLocation, useNavigate } from "react-router-dom";
+import { NAVIGATION_LIST } from "src/features/Layout/constants";
 
 export default function Content({
   openDrawer,

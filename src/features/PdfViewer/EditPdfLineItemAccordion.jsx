@@ -6,7 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import EditPdfLineItem from "./EditPdfLineItem";
+import EditPdfLineItem from "src/features/PdfViewer/EditPdfLineItem";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DeleteRounded } from "@mui/icons-material";
 

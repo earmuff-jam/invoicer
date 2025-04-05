@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import UserInfoViewer from "../../common/UserInfo/UserInfoViewer";
-import { BLANK_INDIVIDUAL_INFORMATION_DETAILS } from "../../common/UserInfo/constants";
-import RowHeader from "../../common/RowHeader/RowHeader";
+import UserInfoViewer from "src/common/UserInfo/UserInfoViewer";
+import { BLANK_INDIVIDUAL_INFORMATION_DETAILS } from "src/common/UserInfo/constants";
+import RowHeader from "src/common/RowHeader/RowHeader";
 import { Stack } from "@mui/material";
 import dayjs from "dayjs";
-import CustomSnackbar from "../../common/CustomSnackbar/CustomSnackbar";
+import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
 
 export default function RecieverInfo() {
