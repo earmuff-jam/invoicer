@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
-import Review from "./Review";
-import TextContent from "../Landing/TextContent";
+import Review from "src/features/Testimonials/Review";
+import TextContent from "src/features/Landing/TextContent";
 
 function Testimonials() {
   return (

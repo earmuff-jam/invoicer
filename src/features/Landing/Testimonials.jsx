@@ -6,26 +6,9 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
+import { LANDING_PAGE_DETAILS } from "src/features/Landing/constants";
 
 export default function Testimonials() {
-  const testimonials = [
-    {
-      quote:
-        "This invoicing app has transformed how I manage my freelance business. I save hours every week on invoicing tasks.",
-      author: "Sarah J., Graphic Designer",
-    },
-    {
-      quote:
-        "The simplicity of this app is its greatest strength. I was able to send my first invoice within minutes of signing up.",
-      author: "Mark T., Consultant",
-    },
-    {
-      quote:
-        "After trying several invoicing solutions, this is the only one that perfectly balances features with ease of use.",
-      author: "Elena M., Marketing Agency",
-    },
-  ];
-
   return (
     <Box
       sx={{
@@ -35,12 +18,7 @@ export default function Testimonials() {
       }}
     >
       <Container maxWidth="lg">
-        <Typography
-          variant="h3"
-          component="h2"
-          align="center"
-          gutterBottom
-        >
+        <Typography variant="h3" component="h2" align="center" gutterBottom>
           What Our Users Say
         </Typography>
         <Typography
@@ -52,7 +30,7 @@ export default function Testimonials() {
         </Typography>
 
         <Grid container spacing={4}>
-          {testimonials.map((testimonial, idx) => (
+          {LANDING_PAGE_DETAILS.testimonials.map((testimonial, idx) => (
             <Grid item xs={12} md={4} key={idx}>
               <Card
                 sx={{

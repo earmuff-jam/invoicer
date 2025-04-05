@@ -1,10 +1,13 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import RecieverInfo from "./features/RecieverInfo/RecieverInfo";
-import SenderInfo from "./features/SenderInfo/SenderInfo";
-import Layout from "./features/Layout/Layout";
-import PdfViewer from "./features/PdfViewer/PdfViewer";
-import EditPdf from "./features/PdfViewer/EditPdf";
-import Overview from "./features/Landing/Overview";
+
+const Layout = lazy(() => import("features/Layout/Layout"));
+const Overview = lazy(() => import("features/Landing/Overview"));
+const PdfViewer = lazy(() => import("features/PdfViewer/PdfViewer"));
+
+const EditPdf = lazy(() => import("features/PdfViewer/EditPdf"));
+const SenderInfo = lazy(() => import("features/SenderInfo/SenderInfo"));
+const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
 
 export const router = createBrowserRouter([
   {

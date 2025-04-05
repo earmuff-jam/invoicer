@@ -6,19 +6,19 @@ import {
   IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import TextFieldWithLabel from "../../common/UserInfo/TextFieldWithLabel";
+import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
 import {
   BLANK_INVOICE_DETAILS_FORM,
   BLANK_INVOICE_LINE_ITEM_FORM,
-} from "./constants";
+} from "src/features/PdfViewer/constants";
 import { AddRounded, SaveRounded } from "@mui/icons-material";
-import EditPdfLineItemAccordion from "./EditPdfLineItemAccordion";
+import EditPdfLineItemAccordion from "src/features/PdfViewer/EditPdfLineItemAccordion";
 import dayjs from "dayjs";
 import { produce } from "immer";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useNavigate } from "react-router-dom";
-import CustomSnackbar from "../../common/CustomSnackbar/CustomSnackbar";
+import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 
 export default function EditPdf({
   title = "Edit Pdf",

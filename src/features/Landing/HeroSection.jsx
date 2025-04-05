@@ -1,6 +1,9 @@
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -28,13 +31,16 @@ export default function HeroSection() {
               results.
             </Typography>
             <Box sx={{ mt: 4 }}>
-              <Button variant="contained" size="large">
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => navigate("/view")}
+              >
                 Take me there
               </Button>
             </Box>
           </Grid>
           <Grid item xs={12} md={6} sx={{ position: "relative" }}>
-            
             <Box
               sx={{
                 width: "100%",

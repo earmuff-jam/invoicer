@@ -20,13 +20,11 @@ import {
   useTheme,
 } from "@mui/material";
 
-import Content from "./Content";
-import Footer from "../Footer/Footer";
-
+import Content from "src/features/Layout/Content";
+import Footer from "src/features/Footer/Footer";
 import { MenuOutlined } from "@mui/icons-material";
 import { Outlet, useLocation } from "react-router-dom";
-
-import { darkTheme, lightTheme } from "../../common/Theme";
+import { darkTheme, lightTheme } from "src/common/Theme";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -112,18 +110,37 @@ export default function Layout() {
             </Stack>
           </Toolbar>
         </AppBar>
-        <Stack direction="row" spacing="1rem" sx={{ mt: "5rem" }}>
+        <Stack
+          sx={{
+            marginTop: "5rem",
+            marginBottom: "1rem",
+            py: 2,
+            flexGrow: 1,
+          }}
+        >
           <Content
             openDrawer={openDrawer}
             handleDrawerClose={handleDrawerClose}
             smScreenSizeAndHigher={smScreenSizeAndHigher}
             lgScreenSizeAndHigher={lgScreenSizeAndHigher}
           />
-          <Stack sx={{ py: "1rem", minHeight: "90vh", flexGrow: 1 }}>
-            <Outlet />
-          </Stack>
+          <Box
+            sx={{
+              transition: "margin-left 0.3s ease",
+              marginLeft: openDrawer && lgScreenSizeAndHigher ? "300px" : "0px",
+              width:
+                openDrawer && lgScreenSizeAndHigher
+                  ? "calc(100% - 300px)"
+                  : "100%",
+              padding: "0rem 1rem",
+            }}
+          >
+            <Box sx={{ minHeight: "90vh" }}>
+              <Outlet />
+            </Box>
+            <Footer />
+          </Box>
         </Stack>
-        <Footer />
         <Dialog
           className="no-print"
           open={openDialog}

@@ -1,12 +1,11 @@
 
 import { Box, Fab } from "@mui/material";
 import { KeyboardArrowUp } from "@mui/icons-material";
-
-import HowItWorks from "./HowItWorks";
-import HeroSection from "./HeroSection";
-import Testimonials from "./Testimonials";
-import FeatureSection from "./FeatureSection";
-import ScrollTop from "../../common/ScrollToTop";
+import HeroSection from "src/features/Landing/HeroSection";
+import FeatureSection from "src/features/Landing/FeatureSection";
+import HowItWorks from "src/features/Landing/HowItWorks";
+import Testimonials from "src/features/Landing/Testimonials";
+import ScrollTop from "src/common/ScrollToTop";
 
 export default function Overview() {
   return (

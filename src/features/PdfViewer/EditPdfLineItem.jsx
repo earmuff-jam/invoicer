@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import TextFieldWithLabel from "../../common/UserInfo/TextFieldWithLabel";
+import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
 
 export default function EditPdfLineItem({
   index,
