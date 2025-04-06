@@ -2,7 +2,6 @@ import {
   Container,
   Stack,
   Typography,
-  Button,
   IconButton,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -19,6 +18,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
+import AButton from "src/common/AButton";
 
 export default function EditPdf({
   title = "Edit Pdf",
@@ -309,9 +309,12 @@ export default function EditPdf({
 
         {/* Line items */}
         <Stack alignItems={"flex-end"}>
-          <Button onClick={() => addLineItems()} startIcon={<AddRounded />} variant="outlined">
-            Add Item
-          </Button>
+          <AButton
+            onClick={() => addLineItems()}
+            startIcon={<AddRounded />}
+            variant="outlined"
+            label="Add Item"
+          />
         </Stack>
         {lineItems.map((item, index) => (
           <EditPdfLineItemAccordion
@@ -323,9 +326,12 @@ export default function EditPdf({
             handleDelete={handleDelete}
           />
         ))}
-        <Button variant="contained" onClick={submit} disabled={isDisabled()}>
-          Save
-        </Button>
+        <AButton
+          variant="contained"
+          onClick={submit}
+          disabled={isDisabled()}
+          label="Save"
+        />
       </Stack>
       <CustomSnackbar
         showSnackbar={showSnackbar}

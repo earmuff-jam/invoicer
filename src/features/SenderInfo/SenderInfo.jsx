@@ -8,7 +8,6 @@ import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
 
 export default function SenderInfo() {
-
   const navigate = useNavigate();
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(

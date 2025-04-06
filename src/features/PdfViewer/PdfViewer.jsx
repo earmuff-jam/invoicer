@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import Salutation from "src/common/UserInfo/Salutation";
 
 export default function PdfViewer() {
+
   const navigate = useNavigate();
+
   const senderInfo = JSON.parse(localStorage.getItem("senderInfo"));
   const recieverInfo = JSON.parse(localStorage.getItem("recieverInfo"));
   const invoice_form = JSON.parse(localStorage.getItem("pdfDetails"));
