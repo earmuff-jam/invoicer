@@ -1,5 +1,6 @@
-import { Stack, Typography, Button, Container } from "@mui/material";
+import { Stack, Typography, Container } from "@mui/material";
 import TextFieldWithLabel from "./TextFieldWithLabel";
+import AButton from "src/common/AButton";
 
 export default function UserInfoViewer({
   title,
@@ -112,9 +113,12 @@ export default function UserInfoViewer({
             errorMsg={formData.zipcode["errorMsg"]}
           />
         </Stack>
-        <Button variant="contained" onClick={onSubmit} disabled={isDisabled}>
-          Save
-        </Button>
+        <AButton
+          label="Save"
+          variant="contained"
+          onClick={onSubmit}
+          disabled={isDisabled}
+        />
       </Stack>
     </Container>
   );
