@@ -13,13 +13,13 @@ export const useFetchUserIp = () => {
     const fetchUserIp = async () => {
       try {
         const currentIpAddress = localStorage.getItem("ip");
-        if (currentIpAddress.length > 0) {
-          return;
+        if (!currentIpAddress) {
+          const response = await fetch("https://api.ipify.org/?format=json");
+          const data = await response.json();
+          const ip = data?.ip || "";
+          localStorage.setItem("ip", ip);  
         }
-        const response = await fetch("https://api.ipify.org/?format=json");
-        const data = await response.json();
-        const ip = data?.ip || "";
-        localStorage.setItem("ip", ip);
+        
       } catch (err) {
         /* eslint-disable no-console */
         console.error("Error retrieving user ip:", err);
