@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 import Salutation from "src/common/UserInfo/Salutation";
 
 export default function PdfViewer() {
-
   const navigate = useNavigate();
 
   const senderInfo = JSON.parse(localStorage.getItem("senderInfo"));
   const recieverInfo = JSON.parse(localStorage.getItem("recieverInfo"));
   const invoice_form = JSON.parse(localStorage.getItem("pdfDetails"));
+  const invoiceStatus = JSON.parse(localStorage.getItem("invoiceStatus"));
 
   const handleNavigate = () => navigate("/edit");
 
@@ -62,6 +62,17 @@ export default function PdfViewer() {
           taxRate={invoice_form.tax_rate}
           invoiceTitle={invoice_form.invoice_header}
         />
+        <Typography
+          color="error.light"
+          sx={{
+            transform: "rotate(-45deg)",
+            textTransform: "uppercase",
+            fontSize: "6rem",
+            textAlign: "center",
+          }}
+        >
+          {invoiceStatus}
+        </Typography>
         {invoice_form?.note.length > 0 && (
           <Typography variant="caption" fontStyle="italic" fontWeight="medium">
             Note: {invoice_form?.note}
