@@ -1,16 +1,20 @@
+import { useEffect, useState } from "react";
 import {
   Container,
   Stack,
   Typography,
   IconButton,
+  MenuList,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
 import {
   BLANK_INVOICE_DETAILS_FORM,
   BLANK_INVOICE_LINE_ITEM_FORM,
 } from "src/features/PdfViewer/constants";
-import { AddRounded, SaveRounded } from "@mui/icons-material";
 import EditPdfLineItemAccordion from "src/features/PdfViewer/EditPdfLineItemAccordion";
 import dayjs from "dayjs";
 import { produce } from "immer";
@@ -19,15 +23,72 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 import AButton from "src/common/AButton";
+import {
+  AddRounded,
+  SaveRounded,
+  CancelRounded,
+  CheckRounded,
+  DraftsRounded,
+  LocalAtmRounded,
+  PaidRounded,
+  PaymentsRounded,
+} from "@mui/icons-material";
+
+const defaultOptions = [
+  {
+    id: 1,
+    label: "Paid",
+    icon: <PaidRounded />,
+    selected: true,
+  },
+  {
+    id: 2,
+    label: "Draft",
+    icon: <DraftsRounded />,
+    selected: false,
+  },
+  {
+    id: 3,
+    label: "Overdue",
+    icon: <LocalAtmRounded />,
+    selected: false,
+  },
+  {
+    id: 4,
+    label: "Partially paid",
+    icon: <PaymentsRounded />,
+    selected: false,
+  },
+  {
+    id: 5,
+    label: "Void / Cancelled",
+    icon: <CancelRounded />,
+    selected: false,
+  },
+];
 
 export default function EditPdf({
   title = "Edit Pdf",
   caption = "Edit data to populate invoice",
 }) {
   const navigate = useNavigate();
+
   const [lineItems, setLineItems] = useState([]);
+
   const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const [options, setOptions] = useState(defaultOptions);
   const [formData, setFormData] = useState(BLANK_INVOICE_DETAILS_FORM);
+
+  const handleSelection = (label) => {
+    setOptions((prevItems) =>
+      produce(prevItems, (draft) => {
+        draft.forEach((item) => {
+          item.selected = item.label === label;
+        });
+      })
+    );
+  };
 
   const handleChange = (ev) => {
     const { id, value } = ev.target;
@@ -119,7 +180,11 @@ export default function EditPdf({
 
     draftData["items"] = draftLineItemData;
     draftData["updated_on"] = dayjs().toISOString();
+
+    const invoiceStatus = options.find((option) => option.selected)?.label;
+
     localStorage.setItem("pdfDetails", JSON.stringify(draftData));
+    localStorage.setItem("invoiceStatus", JSON.stringify(invoiceStatus));
     setShowSnackbar(true);
   };
 
@@ -159,6 +224,13 @@ export default function EditPdf({
   };
 
   useEffect(() => {
+    const existingInvoiceStatus = localStorage.getItem("invoiceStatus");
+    const parsedExistingInvoiceStatus = JSON.parse(existingInvoiceStatus);
+
+    if (parsedExistingInvoiceStatus) {
+      handleSelection(parsedExistingInvoiceStatus);
+    }
+
     const localValues = localStorage.getItem("pdfDetails");
     const parsedValues = JSON.parse(localValues);
 
@@ -306,6 +378,21 @@ export default function EditPdf({
           handleChange={handleChange}
           errorMsg={formData.tax_rate["errorMsg"]}
         />
+
+        <Paper sx={{ padding: "1rem" }}>
+          <Typography sx={{ fontWeight: "bold", marginTop: "1rem" }}>
+            Invoice status
+          </Typography>
+          <MenuList>
+            {options.map(({ id, label, icon, selected }) => (
+              <MenuItem key={id} onClick={() => handleSelection(label)}>
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText>{label}</ListItemText>
+                {selected ? <CheckRounded /> : null}
+              </MenuItem>
+            ))}
+          </MenuList>
+        </Paper>
 
         {/* Line items */}
         <Stack alignItems={"flex-end"}>

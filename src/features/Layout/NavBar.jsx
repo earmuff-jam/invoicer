@@ -15,7 +15,7 @@ import { useTheme } from "@emotion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { NAVIGATION_LIST } from "src/features/Layout/constants";
 
-export default function Content({
+export default function NavBar({
   openDrawer,
   handleDrawerClose,
   smScreenSizeAndHigher,
