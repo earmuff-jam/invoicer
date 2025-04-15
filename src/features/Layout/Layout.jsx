@@ -19,7 +19,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-import Content from "src/features/Layout/Content";
+import NavBar from "src/features/Layout/NavBar";
 import Footer from "src/features/Footer/Footer";
 import { MenuOutlined } from "@mui/icons-material";
 import { Outlet, useLocation } from "react-router-dom";
@@ -118,7 +118,7 @@ export default function Layout() {
               flexGrow: 1,
             }}
           >
-            <Content
+            <NavBar
               openDrawer={openDrawer}
               handleDrawerClose={handleDrawerClose}
               smScreenSizeAndHigher={smScreenSizeAndHigher}
