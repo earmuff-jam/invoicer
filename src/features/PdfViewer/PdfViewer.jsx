@@ -39,7 +39,7 @@ export default function PdfViewer() {
   }
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" data-tour="view-pdf-0">
       <Stack spacing={"2rem"}>
         {recieverInfo ? <Salutation userInfo={recieverInfo} /> : null}
         <RowHeader

@@ -61,6 +61,7 @@ export default function NavBar({
         }
       >
         <Stack
+          data-tour="view-pdf-4"
           sx={{
             flexDirection: "row",
             justifyContent: "space-between",
@@ -79,6 +80,7 @@ export default function NavBar({
         </Stack>
         <Divider />
         <List
+          data-tour="view-pdf-5"
           sx={{ width: "100%" }}
           component="nav"
           aria-labelledby="nested-list-subheader"
