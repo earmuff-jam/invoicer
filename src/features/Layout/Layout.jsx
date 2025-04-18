@@ -28,6 +28,7 @@ import { NavigationProvider } from "src/common/ANavigation";
 import { MenuOutlined, QuestionMarkRounded } from "@mui/icons-material";
 import AIconButton from "src/common/AIconButton";
 import { useTour } from "@reactour/tour";
+
 import {
   DefaultTourStepsMapperObj,
   GeneratedTourSteps,
@@ -40,14 +41,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function Layout() {
   const theme = useTheme();
   const location = useLocation();
+
   const { setIsOpen, setCurrentStep, setSteps } = useTour();
 
-  const showHelpButton = location?.pathname !== "/";
-  const showPrintButton = location?.pathname === "/view";
+  const currentUri = location?.pathname || "";
+  const showHelpButton = currentUri !== "/";
+  const showPrintButton = currentUri === "/view";
 
   const smScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("sm"));
   const lgScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("lg"));
 
+  const [dialogTitle, setDialogTitle] = useState("");
   const [openHelpDialog, setOpenHelpDialog] = useState(false);
   const [openPrintDialog, setOpenPrintDialog] = useState(false);
 
@@ -60,7 +64,6 @@ export default function Layout() {
   );
 
   const setTour = () => {
-    const currentUri = location.pathname;
     const currentStep = DefaultTourStepsMapperObj[currentUri];
 
     const formattedDraftTourSteps = GeneratedTourSteps.slice(
@@ -75,7 +78,14 @@ export default function Layout() {
 
   const handleDrawerOpen = () => setOpenDrawer(true);
   const handleDrawerClose = () => setOpenDrawer(false);
-  const handleHelp = () => setOpenHelpDialog(!openHelpDialog);
+
+  const handleHelp = () => {
+    const draftDialogTitle = DefaultTourStepsMapperObj[currentUri]?.title;
+
+    setDialogTitle(draftDialogTitle);
+    setOpenHelpDialog(!openHelpDialog);
+    handleDrawerOpen();
+  };
 
   const changeTheme = (_, currentThemeIdx) => {
     if (Number(currentThemeIdx) === 0) {
@@ -190,7 +200,7 @@ export default function Layout() {
             <DialogTitle>Help and Support</DialogTitle>
             <DialogContent>
               <Typography sx={{ textTransform: "initial" }}>
-                Press next button to start help tour of the application.
+                {dialogTitle}
               </Typography>
             </DialogContent>
             <DialogActions>

@@ -127,14 +127,20 @@ const derieveTourSteps = (staticSteps, prefix) => {
  */
 export const DefaultTourStepsMapperObj = {
   "/view": {
+    title:
+      "This help / guide is designed to aide you in learning how to view / print invoices? Feel free to restart the guide if necessary.",
     start: 0,
     end: ViewPdfHelpSteps.length,
   },
   "/edit": {
+    title:
+      "This help / guide is designed to aide you in learning how to edit / update invoice? Feel free to restart the guide if necessary. ",
     start: ViewPdfHelpSteps.length,
     end: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
   },
   "/sender": {
+    title:
+      "This help / guide is designed to aide you in learning how to edit / update sender information? Feel free to restart the guide if necessary. ",
     start: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
     end:
       ViewPdfHelpSteps.length +
@@ -142,6 +148,8 @@ export const DefaultTourStepsMapperObj = {
       SenderInfoHelpSteps.length,
   },
   "/reciever": {
+    title:
+      "This help / guide is designed to aide you in learning how to edit / update reciever information? Feel free to restart the guide if necessary. ",
     start:
       ViewPdfHelpSteps.length +
       EditPdfHelpSteps.length +

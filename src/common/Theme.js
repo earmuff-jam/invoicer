@@ -69,8 +69,7 @@ const commonComponents = {
     styleOverrides: {
       root: {
         textTransform: "none",
-        borderRadius: 8,
-        padding: "8px 16px",
+        borderRadius: 4,
         fontWeight: 500,
       },
       containedPrimary: {
