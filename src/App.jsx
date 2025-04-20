@@ -1,22 +1,23 @@
-import { Suspense } from "react";
-
-import { RouterProvider } from "react-router-dom";
-
-import { Box, Dialog } from "@mui/material";
-
-import { router } from "src/router";
-import { TourProvider } from "@reactour/tour";
-import { GeneratedTourSteps } from "src/common/TourSteps";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Layout from "src/features/Layout/Layout";
+import { InvoicerRoutes } from "src/router";
 
 function App() {
+  const buildAppRoutes = (routes) => {
+    return routes.map((route) => (
+      <Route key={route.path} exact path={route.path} element={route.element} />
+    ));
+  };
+
   return (
-    <Box>
-      <Suspense fallback={<Dialog open={false} title="Loading..." />}>
-        <TourProvider steps={GeneratedTourSteps}>
-          <RouterProvider router={router} />
-        </TourProvider>
-      </Suspense>
-    </Box>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {buildAppRoutes(InvoicerRoutes)}
+        </Route>
+        <Route path="/*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
