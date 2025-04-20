@@ -10,10 +10,11 @@ export default function TextFieldWithLabel({
   errorMsg,
   multiline = false,
   maxRows = 0,
+  dataTour,
 }) {
   return (
-    <Stack spacing={0.5} width="100%">
-      <Typography variant="body2" fontWeight="medium" >
+    <Stack spacing={0.5} width="100%" data-tour={dataTour}>
+      <Typography variant="body2" fontWeight="medium">
         {label}
       </Typography>
       <TextField

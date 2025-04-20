@@ -83,7 +83,7 @@ export default function SenderInfo() {
   }, []);
 
   return (
-    <Stack spacing={1} alignItems="center">
+    <Stack spacing={1} alignItems="center" data-tour={'sender-0'}>
       <RowHeader
         title="Add details about the sender"
         caption="Required fields are marked with an * "

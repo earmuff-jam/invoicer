@@ -1,7 +1,6 @@
 import React, { Suspense, useState } from "react";
 
 import {
-  AppBar,
   Box,
   CircularProgress,
   CssBaseline,
@@ -9,11 +8,9 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Slide,
   Stack,
   ThemeProvider,
-  Toolbar,
   Typography,
   useMediaQuery,
   useTheme,
@@ -21,25 +18,40 @@ import {
 
 import NavBar from "src/features/Layout/NavBar";
 import Footer from "src/features/Footer/Footer";
-import { MenuOutlined } from "@mui/icons-material";
 import { Outlet, useLocation } from "react-router-dom";
 import { darkTheme, lightTheme } from "src/common/Theme";
 import AButton from "src/common/AButton";
 import { NavigationProvider } from "src/common/ANavigation";
+import { useTour } from "@reactour/tour";
+
+import {
+  DefaultTourStepsMapperObj,
+  GeneratedTourSteps,
+} from "src/common/TourSteps";
+import AppToolbar from "src/features/Layout/AppToolbar";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+const defaultDialog = {
+  title: "",
+  label: "",
+  type: "",
+  display: false,
+};
+
 export default function Layout() {
   const theme = useTheme();
   const location = useLocation();
 
+  const { setIsOpen, setCurrentStep, setSteps } = useTour();
+
+  const currentUri = location?.pathname || "";
   const smScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("sm"));
   const lgScreenSizeAndHigher = useMediaQuery(theme.breakpoints.up("lg"));
 
-  const [openDialog, setOpenDialog] = useState(false);
-
+  const [dialog, setDialog] = useState(defaultDialog);
   const [currentThemeIdx, setCurrentThemeIdx] = useState(
     localStorage.getItem("theme") || 0
   );
@@ -48,19 +60,19 @@ export default function Layout() {
     smScreenSizeAndHigher ? true : false
   );
 
-  const handleDrawerOpen = () => setOpenDrawer(true);
-  const handleDrawerClose = () => setOpenDrawer(false);
+  const closeDialog = () => setDialog(defaultDialog);
 
-  const showExportAndPrint = location?.pathname === "/view";
+  const setTour = () => {
+    const currentStep = DefaultTourStepsMapperObj[currentUri];
 
-  const changeTheme = (_, currentThemeIdx) => {
-    if (Number(currentThemeIdx) === 0) {
-      localStorage.setItem("theme", 1);
-      setCurrentThemeIdx(1);
-      return;
-    }
-    localStorage.setItem("theme", 0);
-    setCurrentThemeIdx(0);
+    const formattedDraftTourSteps = GeneratedTourSteps.slice(
+      currentStep.start,
+      currentStep.end
+    );
+
+    setIsOpen(true);
+    setCurrentStep(0);
+    setSteps(formattedDraftTourSteps);
   };
 
   return (
@@ -81,35 +93,14 @@ export default function Layout() {
             </Box>
           }
         >
-          <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }}>
-            <Toolbar>
-              <IconButton onClick={handleDrawerOpen}>
-                <MenuOutlined />
-              </IconButton>
-              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                Invoicer
-              </Typography>
-              <Stack direction="row" spacing={1}>
-                {showExportAndPrint ? (
-                  <AButton
-                    variant="contained"
-                    onClick={() => {
-                      setOpenDialog(true);
-                      handleDrawerClose();
-                    }}
-                    className="no-print"
-                    label="Print"
-                  />
-                ) : null}
-                <AButton
-                  variant="outlined"
-                  onClick={(ev) => changeTheme(ev, currentThemeIdx)}
-                  className="no-print"
-                  label="Change Theme"
-                />
-              </Stack>
-            </Toolbar>
-          </AppBar>
+          <AppToolbar
+            currentUri={currentUri}
+            handleDrawerClose={() => setOpenDrawer(false)}
+            handleDrawerOpen={() => setOpenDrawer(true)}
+            currentThemeIdx={currentThemeIdx}
+            setCurrentThemeIdx={setCurrentThemeIdx}
+            setDialog={setDialog}
+          />
           <Stack
             sx={{
               marginTop: "5rem",
@@ -120,7 +111,7 @@ export default function Layout() {
           >
             <NavBar
               openDrawer={openDrawer}
-              handleDrawerClose={handleDrawerClose}
+              handleDrawerClose={() => setOpenDrawer(false)}
               smScreenSizeAndHigher={smScreenSizeAndHigher}
               lgScreenSizeAndHigher={lgScreenSizeAndHigher}
             />
@@ -142,34 +133,37 @@ export default function Layout() {
               <Footer />
             </Box>
           </Stack>
+          {/* Dialog for help and print */}
           <Dialog
             className="no-print"
-            open={openDialog}
+            open={dialog.type === "HELP" || dialog.type === "PRINT"}
             TransitionComponent={Transition}
             keepMounted
-            onClose={() => setOpenDialog(false)}
-            aria-describedby="alert-dialog-slide-description"
+            onClose={() => setDialog(defaultDialog)}
+            aria-describedby="alert-dialog-slide-help-box"
           >
-            <DialogTitle>Verify Information</DialogTitle>
+            <DialogTitle>{dialog.label}</DialogTitle>
             <DialogContent>
               <Typography sx={{ textTransform: "initial" }}>
-                Verify all information is correct before proceeding to print.
-                Press print when ready.
+                {dialog.title}
               </Typography>
             </DialogContent>
             <DialogActions>
               <AButton
-                variant="outlined"
                 onClick={() => {
-                  setOpenDialog(false);
-                  print();
+                  closeDialog();
+                  dialog.type === "HELP" && setTour();
+                  dialog.type === "PRINT" && print();
                 }}
-                label="Print"
+                className="no-print"
+                label={dialog.type === "HELP" ? "Start help" : "Print"}
               />
               <AButton
-                variant="contained"
-                onClick={() => setOpenDialog(false)}
-                label="Close"
+                size="small"
+                variant="outlined"
+                onClick={closeDialog}
+                className="no-print"
+                label="Cancel"
               />
             </DialogActions>
           </Dialog>

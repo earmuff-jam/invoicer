@@ -83,7 +83,7 @@ export default function RecieverInfo() {
   }, []);
 
   return (
-    <Stack spacing={1} alignItems="center">
+    <Stack spacing={1} alignItems="center" data-tour={"reciever-0"}>
       <RowHeader
         title="Add details about the reciever"
         caption="Required fields are marked with an * "

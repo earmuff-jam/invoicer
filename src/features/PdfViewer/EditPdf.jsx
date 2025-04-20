@@ -74,7 +74,6 @@ export default function EditPdf({
   const navigate = useNavigate();
 
   const [lineItems, setLineItems] = useState([]);
-
   const [showSnackbar, setShowSnackbar] = useState(false);
 
   const [options, setOptions] = useState(defaultOptions);
@@ -263,6 +262,7 @@ export default function EditPdf({
   return (
     <Container
       maxWidth="md"
+      data-tour="edit-pdf-0"
       sx={{
         backgroundColor: "background.paper",
         borderRadius: 2,
@@ -289,6 +289,7 @@ export default function EditPdf({
         {/* First and Last Name */}
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
+            dataTour="edit-pdf-1"
             label="Invoice Title"
             id="title"
             name="title"
@@ -298,6 +299,7 @@ export default function EditPdf({
             errorMsg={formData.title["errorMsg"]}
           />
           <TextFieldWithLabel
+            dataTour="edit-pdf-2"
             label="Invoice Caption"
             id="caption"
             name="caption"
@@ -308,6 +310,7 @@ export default function EditPdf({
           />
         </Stack>
         <TextFieldWithLabel
+          dataTour="edit-pdf-3"
           label="Additional Notes "
           id="note"
           name="note"
@@ -320,7 +323,7 @@ export default function EditPdf({
         />
 
         {/* Start and end dates */}
-        <Stack direction="row" spacing={2}>
+        <Stack direction="row" spacing={2} data-tour="edit-pdf-4">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Start Date *"
@@ -360,6 +363,7 @@ export default function EditPdf({
         </Stack>
         {/* Invoice Header */}
         <TextFieldWithLabel
+          dataTour="edit-pdf-5"
           label="Invoice Header "
           id="invoice_header"
           name="invoice_header"
@@ -371,6 +375,7 @@ export default function EditPdf({
         {/* Tax Rate */}
         <TextFieldWithLabel
           label="Tax Rate "
+          dataTour="edit-pdf-6"
           id="tax_rate"
           name="tax_rate"
           placeholder="Standard tax rate."
@@ -379,7 +384,7 @@ export default function EditPdf({
           errorMsg={formData.tax_rate["errorMsg"]}
         />
 
-        <Paper sx={{ padding: "1rem" }}>
+        <Paper sx={{ padding: "1rem" }} data-tour="edit-pdf-7">
           <Typography sx={{ fontWeight: "bold", marginTop: "1rem" }}>
             Invoice status
           </Typography>
@@ -397,6 +402,7 @@ export default function EditPdf({
         {/* Line items */}
         <Stack alignItems={"flex-end"}>
           <AButton
+            data-tour="edit-pdf-8"
             onClick={() => addLineItems()}
             startIcon={<AddRounded />}
             variant="outlined"
@@ -414,6 +420,7 @@ export default function EditPdf({
           />
         ))}
         <AButton
+        data-tour="edit-pdf-9"
           variant="contained"
           onClick={submit}
           disabled={isDisabled()}

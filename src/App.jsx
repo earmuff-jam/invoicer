@@ -5,12 +5,16 @@ import { RouterProvider } from "react-router-dom";
 import { Box, Dialog } from "@mui/material";
 
 import { router } from "src/router";
+import { TourProvider } from "@reactour/tour";
+import { GeneratedTourSteps } from "src/common/TourSteps";
 
 function App() {
   return (
     <Box>
       <Suspense fallback={<Dialog open={false} title="Loading..." />}>
-        <RouterProvider router={router} />
+        <TourProvider steps={GeneratedTourSteps}>
+          <RouterProvider router={router} />
+        </TourProvider>
       </Suspense>
     </Box>
   );
