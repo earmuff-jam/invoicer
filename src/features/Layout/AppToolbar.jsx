@@ -1,6 +1,18 @@
-import { AppBar, IconButton, Stack, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  IconButton,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
-import { MenuOutlined, QuestionMarkRounded } from "@mui/icons-material";
+import {
+  DarkModeRounded,
+  HelpCenterRounded,
+  LightModeRounded,
+  MenuOutlined,
+} from "@mui/icons-material";
 
 import AButton from "src/common/AButton";
 import AIconButton from "src/common/AIconButton";
@@ -75,22 +87,30 @@ export default function AppToolbar({
               label="Print"
             />
           ) : null}
-          <AButton
-            data-tour="view-pdf-2"
-            size="small"
-            variant="outlined"
-            onClick={(ev) => changeTheme(ev, currentThemeIdx)}
-            className="no-print"
-            label="Change Theme"
-          />
-          {showHelp && (
+          <Tooltip title="Change theme of the application. ">
             <AIconButton
-              data-tour="view-pdf-3"
-              size="small"
-              label={<QuestionMarkRounded />}
-              onClick={handleHelp}
+              data-tour="view-pdf-2"
+              variant="outlined"
+              onClick={(ev) => changeTheme(ev, currentThemeIdx)}
               className="no-print"
+              label={
+                Number(currentThemeIdx) === 1 ? (
+                  <LightModeRounded />
+                ) : (
+                  <DarkModeRounded />
+                )
+              }
             />
+          </Tooltip>
+          {showHelp && (
+            <Tooltip title="Click here to learn more about this page.">
+              <AIconButton
+                data-tour="view-pdf-3"
+                label={<HelpCenterRounded />}
+                onClick={handleHelp}
+                className="no-print"
+              />
+            </Tooltip>
           )}
         </Stack>
       </Toolbar>
