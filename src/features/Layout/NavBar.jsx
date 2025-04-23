@@ -12,8 +12,11 @@ import {
 } from "@mui/material";
 
 import { useTheme } from "@emotion/react";
+import { InvoicerRoutes } from "src/Routes";
 import { useLocation, useNavigate } from "react-router-dom";
-import { NAVIGATION_LIST } from "src/features/Layout/constants";
+import validateClientPermissions, {
+  isValidPermissions,
+} from "src/common/ValidateClientPerms";
 
 export default function NavBar({
   openDrawer,
@@ -32,6 +35,28 @@ export default function NavBar({
     setTimeout(() => {
       navigate(to);
     }, 200);
+  };
+
+  const formattedInvoicerRoutes = (InvoicerRoutes = []) => {
+    const validRouteFlags = validateClientPermissions();
+    return InvoicerRoutes.map(({ id, path, label, icon, requiredFlags }) => {
+      const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
+      if (!isRequired) return;
+      return (
+        <ListItemButton
+          key={id}
+          selected={pathname === path}
+          onClick={() => handleMenuItemClick(path)}
+        >
+          <ListItemIcon
+            sx={{ color: pathname === path && theme.palette.primary.main }}
+          >
+            {icon}
+          </ListItemIcon>
+          <ListItemText primary={label} />
+        </ListItemButton>
+      );
+    });
   };
 
   return (
@@ -85,20 +110,7 @@ export default function NavBar({
           component="nav"
           aria-labelledby="nested-list-subheader"
         >
-          {NAVIGATION_LIST.map((v) => (
-            <ListItemButton
-              key={v.id}
-              selected={pathname === v.to}
-              onClick={() => handleMenuItemClick(v.to)}
-            >
-              <ListItemIcon
-                sx={{ color: pathname === v.to && theme.palette.primary.main }}
-              >
-                {v.icon}
-              </ListItemIcon>
-              <ListItemText primary={v.label} />
-            </ListItemButton>
-          ))}
+          {formattedInvoicerRoutes(InvoicerRoutes)}
         </List>
       </Drawer>
     </Stack>

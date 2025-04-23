@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Box,
   IconButton,
   Stack,
   Toolbar,
@@ -88,28 +89,32 @@ export default function AppToolbar({
             />
           ) : null}
           <Tooltip title="Change theme of the application. ">
-            <AIconButton
-              data-tour="view-pdf-2"
-              variant="outlined"
-              onClick={(ev) => changeTheme(ev, currentThemeIdx)}
-              className="no-print"
-              label={
-                Number(currentThemeIdx) === 1 ? (
-                  <LightModeRounded />
-                ) : (
-                  <DarkModeRounded />
-                )
-              }
-            />
+            <Box>
+              <AIconButton
+                data-tour="view-pdf-2"
+                variant="outlined"
+                onClick={(ev) => changeTheme(ev, currentThemeIdx)}
+                className="no-print"
+                label={
+                  Number(currentThemeIdx) === 1 ? (
+                    <LightModeRounded />
+                  ) : (
+                    <DarkModeRounded />
+                  )
+                }
+              />
+            </Box>
           </Tooltip>
           {showHelp && (
             <Tooltip title="Click here to learn more about this page.">
-              <AIconButton
-                data-tour="view-pdf-3"
-                label={<HelpCenterRounded />}
-                onClick={handleHelp}
-                className="no-print"
-              />
+              <Box>
+                <AIconButton
+                  data-tour="view-pdf-3"
+                  label={<HelpCenterRounded />}
+                  onClick={handleHelp}
+                  className="no-print"
+                />
+              </Box>
             </Tooltip>
           )}
         </Stack>
