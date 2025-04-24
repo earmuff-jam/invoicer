@@ -27,7 +27,8 @@ export default function AppToolbar({
   handleDrawerClose,
   setDialog,
 }) {
-  const showHelp = currentUri !== "/";
+  // hide for landing page and dashboard page temp
+  const showHelp = currentUri !== "/" && currentUri !== "/dashboard";
   const showPrint = currentUri === "/view";
 
   const handleHelp = () => {
