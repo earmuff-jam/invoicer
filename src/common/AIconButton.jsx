@@ -1,7 +1,7 @@
 import { IconButton } from "@mui/material";
 import { useButtonAnalytics } from "src/hooks/useButtonAnalytics";
 
-const analyticsEnabled = import.meta.env.VITE_ENABLE_ANALYTICS;
+const analyticsEnabled = import.meta.env.VITE_ENABLE_ANALYTICS || "false";
 
 /**
  * AIconButton
@@ -19,7 +19,7 @@ export default function AIconButton({ label, onClick, ...rest }) {
 
   const handleClick = (ev) => {
     // log data only if analytics is enabled
-    analyticsEnabled.toLowerCase() === "true" && buttonAnalytics?.(label);
+    analyticsEnabled?.toLowerCase() === "true" && buttonAnalytics?.(label);
     onClick(ev);
   };
 

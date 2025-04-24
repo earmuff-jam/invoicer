@@ -14,7 +14,7 @@ import dayjs from "dayjs";
  */
 
 const NavigationContext = createContext();
-const analyticsEnabled = import.meta.env.VITE_ENABLE_ANALYTICS;
+const analyticsEnabled = import.meta.env.VITE_ENABLE_ANALYTICS || "false";
 
 export const NavigationProvider = ({ children }) => {
   useFetchUserIp();
@@ -24,7 +24,7 @@ export const NavigationProvider = ({ children }) => {
     const ipAddress = localStorage.getItem("ip");
 
     // log data only if analytics is enabled
-    if (analyticsEnabled.toLowerCase() === "true") {
+    if (analyticsEnabled?.toLowerCase() === "true") {
       const logUserAnalyticsToFirestore = async () => {
         try {
           if (pathname) {

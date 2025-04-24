@@ -1,3 +1,5 @@
+import { Box, Typography } from "@mui/material";
+
 /**
  * ViewPdfHelpSteps
  *
@@ -114,7 +116,7 @@ const derieveTourSteps = (staticSteps, prefix) => {
   return staticSteps.map(({ title }, index) => ({
     id: index,
     selector: `[data-tour="${prefix}-${index}"]`,
-    content: title,
+    content: <Box padding="0.2rem"><Typography variant="caption">{title}</Typography></Box>,
   }));
 };
 
