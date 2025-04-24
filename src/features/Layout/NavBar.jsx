@@ -60,7 +60,7 @@ export default function NavBar({
   };
 
   return (
-    <Stack display="flex">
+    <Stack>
       <Drawer
         variant="persistent"
         open={openDrawer}
