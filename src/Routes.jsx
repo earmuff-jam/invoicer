@@ -9,7 +9,6 @@ import { lazy } from "react";
 
 const Overview = lazy(() => import("features/Landing/Overview"));
 const PdfViewer = lazy(() => import("features/PdfViewer/PdfViewer"));
-
 const EditPdf = lazy(() => import("features/PdfViewer/EditPdf"));
 const SenderInfo = lazy(() => import("features/SenderInfo/SenderInfo"));
 const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
@@ -17,8 +16,8 @@ const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
 /**
  * InvoicerRoutes
  *
- * Array of routes that are used to build navigation
- *
+ * used to build out the invoicer routes. required flags are array of string that are
+ * required to be met as a client permission for the route to be in operation.
  */
 export const InvoicerRoutes = [
   {

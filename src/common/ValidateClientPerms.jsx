@@ -1,3 +1,5 @@
+import { Route } from "react-router-dom";
+
 /**
  * validateClientPermissions ...
  *
@@ -20,7 +22,7 @@ export default function validateClientPermissions() {
     ["invoicerPro", invoicerAppProFeaturesEnabled === "true"],
     ["userInformation", invoicerAppUserInformationEnabled === "true"],
   ]);
-}
+};
 
 /**
  * isValidPermissions
@@ -38,4 +40,25 @@ export function isValidPermissions(validRouteFlags = [], requiredFlags = []) {
   });
 
   return isRequired;
+};
+
+/**
+ * buildAppRoutes
+ *
+ * used to build application level routes based on the passed in available routes.
+ * if all required Orgs are met and flags are on, said route is created.
+ *
+ * @param {Array} draftRoutes - array of draft routes that are within the application
+ * @returns Array of Routes with the route element from react router dom.
+ */
+export function buildAppRoutes(draftRoutes = []) {
+  const validRouteFlags = validateClientPermissions();
+  return draftRoutes
+    .map(({ path, element, requiredFlags }) => {
+      const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
+
+      if (!isRequired) return;
+      return <Route key={path} exact path={path} element={element} />;
+    })
+    .filter(Boolean);
 }

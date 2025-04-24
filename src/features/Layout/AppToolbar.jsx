@@ -17,7 +17,7 @@ import {
 
 import AButton from "src/common/AButton";
 import AIconButton from "src/common/AIconButton";
-import { DefaultTourStepsMapperObj } from "src/common/TourSteps";
+import { DefaultTourStepsMapperObj } from "src/common/Tour/TourSteps";
 
 export default function AppToolbar({
   currentUri,

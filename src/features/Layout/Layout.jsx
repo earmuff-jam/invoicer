@@ -23,7 +23,7 @@ import { useTour } from "@reactour/tour";
 import {
   DefaultTourStepsMapperObj,
   GeneratedTourSteps,
-} from "src/common/TourSteps";
+} from "src/common/Tour/TourSteps";
 import AppToolbar from "src/features/Layout/AppToolbar";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -65,6 +65,7 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
 
     setIsOpen(true);
     setCurrentStep(0);
+    setCurrentThemeIdx(0);
     setSteps(formattedDraftTourSteps);
   };
 

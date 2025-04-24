@@ -1,27 +1,15 @@
 import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { CssBaseline, Dialog, ThemeProvider } from "@mui/material";
-
-import { GeneratedTourSteps } from "src/common/TourSteps";
-
 import "./main.css";
 import App from "./App";
 import { lightTheme } from "common/Theme";
-import { TourProvider } from "@reactour/tour";
-import CustomPopover from "src/common/Tour/CustomPopover";
 
 createRoot(document.getElementById("root")).render(
   <ThemeProvider theme={lightTheme}>
+    <CssBaseline />
     <Suspense fallback={<Dialog open={false} title="Loading..." />}>
-      <TourProvider
-        steps={GeneratedTourSteps}
-        components={{
-          Content: CustomPopover,
-        }}
-      >
-        <CssBaseline />
-        <App />
-      </TourProvider>
+      <App />
     </Suspense>
   </ThemeProvider>
 );
