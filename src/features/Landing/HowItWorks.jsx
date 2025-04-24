@@ -73,7 +73,7 @@ export default function HowItWorks() {
                     sx={{
                       display: { xs: "none", lg: "block" },
                       position: "absolute",
-                      top: "30px",
+                      top: "50px",
                       right: "-16px",
                       width: "30px",
                       height: "2px",
