@@ -1,21 +1,43 @@
-import { Button, IconButton, Stack, Tooltip } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  Popover,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 import { AddRounded, RestartAltRounded } from "@mui/icons-material";
 
 import RowHeader from "src/common/RowHeader/RowHeader";
+import { useState } from "react";
+import AddWidget from "src/features/Dashboard/AddWidget";
 
 export default function Dashboard() {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <RowHeader
           sxProps={{ textAlign: "left" }}
-          title="Dashboard layout"
+          title="Default layout"
           caption="Displaying 3 out of 5 widgets"
         />
         <Stack direction="row" spacing={2}>
           <Tooltip title="Add Widget">
-            <IconButton>
+            <IconButton onClick={handleClick}>
               <AddRounded fontSize="small" />
             </IconButton>
           </Tooltip>
@@ -24,6 +46,18 @@ export default function Dashboard() {
           </Button>
         </Stack>
       </Stack>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+      >
+        <AddWidget />
+      </Popover>
     </Stack>
   );
 }
