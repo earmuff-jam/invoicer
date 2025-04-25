@@ -4,7 +4,6 @@ import {
   Popover,
   Stack,
   Tooltip,
-  Typography,
 } from "@mui/material";
 
 import { AddRounded, RestartAltRounded } from "@mui/icons-material";
