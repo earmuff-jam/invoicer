@@ -1,4 +1,4 @@
-import { Button, IconButton, Stack } from "@mui/material";
+import { Button, IconButton, Stack, Tooltip } from "@mui/material";
 
 import { AddRounded, RestartAltRounded } from "@mui/icons-material";
 
@@ -14,9 +14,11 @@ export default function Dashboard() {
           caption="Displaying 3 out of 5 widgets"
         />
         <Stack direction="row" spacing={2}>
-          <IconButton>
-            <AddRounded fontSize="small" />
-          </IconButton>
+          <Tooltip title="Add Widget">
+            <IconButton>
+              <AddRounded fontSize="small" />
+            </IconButton>
+          </Tooltip>
           <Button variant="outlined" endIcon={<RestartAltRounded />}>
             Reset
           </Button>
