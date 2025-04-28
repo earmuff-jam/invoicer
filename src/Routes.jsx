@@ -1,3 +1,5 @@
+import { lazy } from "react";
+
 import {
   DashboardCustomizeRounded,
   EditRounded,
@@ -5,10 +7,11 @@ import {
   Person2Rounded,
   PictureAsPdfRounded,
 } from "@mui/icons-material";
-import { lazy } from "react";
 
 const Overview = lazy(() => import("features/Landing/Overview"));
+const Dashboard = lazy(() => import("features/Dashboard/Dashboard"));
 const PdfViewer = lazy(() => import("features/PdfViewer/PdfViewer"));
+
 const EditPdf = lazy(() => import("features/PdfViewer/EditPdf"));
 const SenderInfo = lazy(() => import("features/SenderInfo/SenderInfo"));
 const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
@@ -32,7 +35,7 @@ export const InvoicerRoutes = [
     id: 2,
     label: "Dashboard",
     path: "/dashboard",
-    element: <div> Dashboard features </div>,
+    element: <Dashboard />,
     icon: <DashboardCustomizeRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
   },
