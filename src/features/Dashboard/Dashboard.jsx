@@ -1,38 +1,76 @@
-import {
-  Button,
-  IconButton,
-  Popover,
-  Stack,
-  Tooltip,
-} from "@mui/material";
+import { useEffect, useState } from "react";
+
+import { Button, IconButton, Popover, Stack, Tooltip } from "@mui/material";
 
 import { AddRounded, RestartAltRounded } from "@mui/icons-material";
 
 import RowHeader from "src/common/RowHeader/RowHeader";
-import { useState } from "react";
 import AddWidget from "src/features/Dashboard/AddWidget";
+import DndGridLayout from "src/features/Dashboard/DndGridLayout";
+import { WidgetTypeList } from "src/features/Dashboard/constants";
+import { pluralize } from "src/common/utils";
+import { v4 as uuidv4 } from "uuid";
 
 export default function Dashboard() {
+  const [widgets, setWidgets] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+  const handleClick = (ev) => setAnchorEl(ev.currentTarget);
+
+  const handleAddWidget = (id) => {
+    const selectedWidget = WidgetTypeList.find(
+      (widgetType) => widgetType.id === id
+    );
+
+    setWidgets((prevWidgets) => {
+      const updatedWidgets = [
+        ...prevWidgets,
+        // create a custom uuid to associate the widget
+        { ...selectedWidget, widgetID: uuidv4() },
+      ];
+      localStorage.setItem("widgets", JSON.stringify(updatedWidgets));
+
+      return updatedWidgets;
+    });
+
+    handleClose();
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleRemoveWidget = (widgetID) => {
+    setWidgets((prevWidgets) => {
+      const remainingWidgets = prevWidgets.filter(
+        (widget) => widget.widgetID !== widgetID
+      );
+
+      localStorage.setItem("widgets", JSON.stringify(remainingWidgets));
+      return remainingWidgets;
+    });
   };
 
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
+  const reset = () => {
+    setWidgets([]);
+    localStorage.setItem("widgets", JSON.stringify([]));
+    handleClose();
+  };
+
+  useEffect(() => {
+    const draftWidgets = localStorage.getItem("widgets");
+    if (draftWidgets) {
+      setWidgets(JSON.parse(draftWidgets));
+    }
+  }, []);
 
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <RowHeader
-          sxProps={{ textAlign: "left" }}
-          title="Default layout"
-          caption="Displaying 3 out of 5 widgets"
+          sxProps={{ textAlign: "left", fontWeight: "bold" }}
+          title="Standard Layout"
+          caption={`Displaying ${widgets.length} ${pluralize(
+            widgets?.length,
+            "widget"
+          )}`}
         />
         <Stack direction="row" spacing={2}>
           <Tooltip title="Add Widget">
@@ -40,14 +78,26 @@ export default function Dashboard() {
               <AddRounded fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Button variant="outlined" endIcon={<RestartAltRounded />}>
+          <Button
+            variant="outlined"
+            endIcon={<RestartAltRounded />}
+            onClick={reset}
+          >
             Reset
           </Button>
         </Stack>
       </Stack>
+
+      <DndGridLayout
+        widgets={widgets}
+        setWidgets={setWidgets}
+        handleRemoveWidget={handleRemoveWidget}
+      />
+
+      {/* Add Widget Popover Content */}
       <Popover
-        id={id}
-        open={open}
+        id={open ? "simple-popover" : undefined}
+        open={Boolean(anchorEl)}
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
@@ -55,7 +105,7 @@ export default function Dashboard() {
           horizontal: "left",
         }}
       >
-        <AddWidget />
+        <AddWidget handleAddWidget={handleAddWidget} />
       </Popover>
     </Stack>
   );

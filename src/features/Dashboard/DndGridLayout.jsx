@@ -1,0 +1,93 @@
+import { useState } from "react";
+
+import { pointerWithin, DndContext, DragOverlay } from "@dnd-kit/core";
+
+import {
+  arrayMove,
+  rectSortingStrategy,
+  SortableContext,
+} from "@dnd-kit/sortable";
+
+import { Stack, Typography } from "@mui/material";
+import Widget from "src/features/Dashboard/Widget";
+
+export default function DndGridLayout({
+  widgets,
+  setWidgets,
+  handleRemoveWidget,
+}) {
+  const [activeWidget, setActiveWidget] = useState(null); // active widget for drag overlay
+
+  const handleDragStart = (ev) => {
+    const { active } = ev;
+    const activeId = active.id.toString();
+    const widget = widgets.find((w) => w.widgetID === activeId);
+    setActiveWidget(widget);
+  };
+
+  const handleDragEnd = (ev) => {
+    const { active, over } = ev; // active is current, over is replacing
+
+    setActiveWidget(null);
+
+    if (!over) return;
+    if (active.id === over.id) return;
+
+    const originalIdx = widgets.findIndex(
+      (widget) => widget.widgetID === active.id.toString()
+    );
+    const newIdx = widgets.findIndex(
+      (widget) => widget.widgetID === over.id.toString()
+    );
+
+    const updatedWidgets = arrayMove(widgets, originalIdx, newIdx);
+    setWidgets(updatedWidgets);
+  };
+
+  if (widgets.length <= 0)
+    return (
+      <Stack textAlign="center">
+        <Typography variant="h5" sx={{ textTransform: "initial" }}>
+          Sorry, no matching records found
+        </Typography>
+        <Typography variant="caption" sx={{ textTransform: "initial" }}>
+          Add widgets for custom dashboard layout.
+        </Typography>
+      </Stack>
+    );
+
+  return (
+    <DndContext
+      collisionDetection={pointerWithin}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <SortableContext
+        items={widgets.map((w) => w.widgetID)}
+        strategy={rectSortingStrategy}
+      >
+        <Stack
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            gap: 2,
+          }}
+        >
+          {widgets.map((widget) => (
+            <Widget
+              widget={widget}
+              key={widget.id}
+              handleRemoveWidget={handleRemoveWidget}
+            />
+          ))}
+        </Stack>
+      </SortableContext>
+      <DragOverlay>
+        {activeWidget ? (
+          <Widget widget={activeWidget} handleRemoveWidget={() => {}} />
+        ) : null}
+      </DragOverlay>
+    </DndContext>
+  );
+}
