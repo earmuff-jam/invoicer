@@ -26,8 +26,11 @@ export default function Dashboard() {
     setWidgets((prevWidgets) => {
       const updatedWidgets = [
         ...prevWidgets,
-        // create a custom uuid to associate the widget
-        { ...selectedWidget, widgetID: uuidv4() },
+        {
+          ...selectedWidget,
+          widgetID: uuidv4(),
+          position: selectedWidget.config.position,
+        },
       ];
       localStorage.setItem("widgets", JSON.stringify(updatedWidgets));
 

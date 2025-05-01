@@ -1,22 +1,11 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { CancelRounded, DragHandleRounded } from "@mui/icons-material";
+import { CancelRounded, DragIndicatorRounded } from "@mui/icons-material";
 import { Badge, Box, IconButton, Paper, Stack, Tooltip } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
 
 export default function Widget({ widget = {}, handleRemoveWidget }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: widget.widgetID,
-    });
-
-  const style = {
-    transition,
-    transform: CSS.Transform.toString(transform),
-  };
-
+  console.log(widget);
   return (
-    <Box sx={{ ...style }} ref={setNodeRef}>
+    <Box sx={{ ...widget.config }}>
       <Badge
         badgeContent={
           <IconButton
@@ -39,7 +28,18 @@ export default function Widget({ widget = {}, handleRemoveWidget }) {
             backgroundColor: "background.paper",
           }}
         >
-          <Stack direction="row" justifyContent="space-between">
+          <Stack direction="row" spacing={1}>
+            <Tooltip title="Drag and drop to restructure widget layout">
+              <IconButton
+                size="small"
+                disableRipple
+                disableFocusRipple
+                disableTouchRipple
+                sx={{ cursor: "move", alignItems: "flex-start" }}
+              >
+                <DragIndicatorRounded fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
             <RowHeader
               title={widget.label}
               caption={widget.caption}
@@ -49,19 +49,6 @@ export default function Widget({ widget = {}, handleRemoveWidget }) {
                 color: "text.secondary",
               }}
             />
-            <Tooltip title="Drag and drop to restructure widget layout">
-              <IconButton
-                size="small"
-                {...attributes}
-                {...listeners}
-                disableRipple
-                disableFocusRipple
-                disableTouchRipple
-                sx={{ cursor: "move" }}
-              >
-                <DragHandleRounded fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
           </Stack>
         </Box>
       </Badge>

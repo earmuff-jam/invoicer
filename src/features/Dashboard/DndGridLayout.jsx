@@ -1,12 +1,5 @@
 import { useState } from "react";
-
-import { pointerWithin, DndContext, DragOverlay } from "@dnd-kit/core";
-
-import {
-  arrayMove,
-  rectSortingStrategy,
-  SortableContext,
-} from "@dnd-kit/sortable";
+import { Responsive as ResponsiveGridLayout } from "react-grid-layout";
 
 import { Stack, Typography } from "@mui/material";
 import Widget from "src/features/Dashboard/Widget";
@@ -56,38 +49,49 @@ export default function DndGridLayout({
       </Stack>
     );
 
+  console.log(widgets);
+
+  // const layout = [
+  //   { widgetID: 1, x: 0, y: 0, w: 1, h: 2 },
+  //   { widgetID: 2, x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
+  //   { widgetID: 3, x: 4, y: 0, w: 1, h: 2 },
+  // ];
+
+  const baseLayout = widgets.map((widget, index) => ({
+    i: widget.widgetID,
+    x: (index % 4) * 12, // 4 per row, spread horizontally
+    y: Math.floor(index / 4) * 8, // move vertically after 4 items
+    w: 12,
+    h: 8,
+  }));
+
+  const layouts = {
+    lg: baseLayout,
+    md: baseLayout,
+    sm: baseLayout,
+    xs: baseLayout,
+    xxs: baseLayout,
+  };
+
   return (
-    <DndContext
-      collisionDetection={pointerWithin}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext
-        items={widgets.map((w) => w.widgetID)}
-        strategy={rectSortingStrategy}
+    <>
+      <ResponsiveGridLayout
+        margin={[20, 20]}
+        containerPadding={[10, 10]}
+        rowHeight={20}
+        layouts={layouts}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 48, md: 48, sm: 48, xs: 48, xxs: 48 }}
+        onLayoutChange={() => {
+          console.log("layout has been changed. save it");
+        }}
       >
-        <Stack
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          {widgets.map((widget) => (
-            <Widget
-              widget={widget}
-              key={widget.id}
-              handleRemoveWidget={handleRemoveWidget}
-            />
-          ))}
-        </Stack>
-      </SortableContext>
-      <DragOverlay>
-        {activeWidget ? (
-          <Widget widget={activeWidget} handleRemoveWidget={() => {}} />
-        ) : null}
-      </DragOverlay>
-    </DndContext>
+        {widgets.map((widget) => (
+          <div key={widget.widgetID}>
+            <Widget widget={widget} handleRemoveWidget={handleRemoveWidget} />
+          </div>
+        ))}
+      </ResponsiveGridLayout>
+    </>
   );
 }
