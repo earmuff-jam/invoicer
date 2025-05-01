@@ -8,10 +8,11 @@ import {
   SortableContext,
 } from "@dnd-kit/sortable";
 
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import Widget from "src/features/Dashboard/Widget";
 
 export default function DndGridLayout({
+  editMode,
   widgets,
   setWidgets,
   handleRemoveWidget,
@@ -41,7 +42,9 @@ export default function DndGridLayout({
     );
 
     const updatedWidgets = arrayMove(widgets, originalIdx, newIdx);
+
     setWidgets(updatedWidgets);
+    localStorage.setItem("widgets", JSON.stringify(updatedWidgets));
   };
 
   if (widgets.length <= 0)
@@ -72,15 +75,31 @@ export default function DndGridLayout({
             flexDirection: "row",
             flexWrap: "wrap",
             gap: 2,
+            margin: "1rem 0rem",
           }}
         >
-          {widgets.map((widget) => (
-            <Widget
-              widget={widget}
-              key={widget.id}
-              handleRemoveWidget={handleRemoveWidget}
-            />
-          ))}
+          {widgets.map((widget) => {
+            const isDragging = activeWidget?.widgetID === widget.widgetID;
+            return (
+              <Box key={widget.widgetID}>
+                {isDragging ? (
+                  <Box
+                    sx={{
+                      width: activeWidget?.config?.width,
+                      height: activeWidget?.config?.height,
+                      backgroundColor: "slategrey",
+                    }}
+                  />
+                ) : (
+                  <Widget
+                  widget={widget}
+                  editMode={editMode}
+                    handleRemoveWidget={handleRemoveWidget}
+                  />
+                )}
+              </Box>
+            );
+          })}
         </Stack>
       </SortableContext>
       <DragOverlay>
