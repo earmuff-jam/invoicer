@@ -1,8 +1,8 @@
 export const WidgetTypeList = [
   {
     id: 1,
-    label: "Monetary Value Amount",
-    caption: "Details about generated $$ from invoice list.",
+    label: "Invoice Tax Amount",
+    caption: "Details about taxes from invoice list.",
     columns: [
       {
         label: "Label",
@@ -16,6 +16,7 @@ export const WidgetTypeList = [
       width: "48rem",
       minHeight: "24rem",
       minWidth: "48rem",
+      widgetID: "9caef12d-a611-4573-8fd2-b5bd3036ce13", // widgetID for config is for provision only
     },
   },
   {
@@ -30,6 +31,7 @@ export const WidgetTypeList = [
       width: "64rem",
       minHeight: "24rem",
       minWidth: "64rem",
+      widgetID: "c04637c7-080d-4641-a4f4-4fd523280d74",
     },
   },
   {
@@ -45,6 +47,7 @@ export const WidgetTypeList = [
       width: "24rem",
       minHeight: "24rem",
       minWidth: "24rem",
+      widgetID: "052fda00-2d37-4d0f-81b7-3fcb451e5ee1",
     },
   },
 ];

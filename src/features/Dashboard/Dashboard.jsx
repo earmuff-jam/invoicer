@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 
 import { Button, IconButton, Popover, Stack, Tooltip } from "@mui/material";
 
-import { AddRounded, RestartAltRounded } from "@mui/icons-material";
+import {
+  AddRounded,
+  EditRounded,
+  RestartAltRounded,
+} from "@mui/icons-material";
 
 import RowHeader from "src/common/RowHeader/RowHeader";
 import AddWidget from "src/features/Dashboard/AddWidget";
@@ -10,10 +14,13 @@ import DndGridLayout from "src/features/Dashboard/DndGridLayout";
 import { WidgetTypeList } from "src/features/Dashboard/constants";
 import { pluralize } from "src/common/utils";
 import { v4 as uuidv4 } from "uuid";
+import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 
 export default function Dashboard() {
   const [widgets, setWidgets] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [editMode, setEditMode] = useState(false); // re-arrange widgets
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   const handleClose = () => setAnchorEl(null);
   const handleClick = (ev) => setAnchorEl(ev.currentTarget);
@@ -26,7 +33,8 @@ export default function Dashboard() {
     setWidgets((prevWidgets) => {
       const updatedWidgets = [
         ...prevWidgets,
-        // create a custom uuid to associate the widget
+        // create a custom uuid to associate the widget for ui.
+        // widgetID !== config.widgetID
         { ...selectedWidget, widgetID: uuidv4() },
       ];
       localStorage.setItem("widgets", JSON.stringify(updatedWidgets));
@@ -34,6 +42,7 @@ export default function Dashboard() {
       return updatedWidgets;
     });
 
+    setShowSnackbar(true);
     handleClose();
   };
 
@@ -64,18 +73,35 @@ export default function Dashboard() {
   return (
     <Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <RowHeader
-          sxProps={{ textAlign: "left", fontWeight: "bold" }}
-          title="Standard Layout"
-          caption={`Displaying ${widgets.length} ${pluralize(
-            widgets?.length,
-            "widget"
-          )}`}
-        />
+        <Stack direction="row">
+          <Tooltip
+            title={editMode ? "Save widget layout" : "Edit widget layout"}
+          >
+            <IconButton
+              sx={{ alignSelf: "flex-start" }}
+              color="primary"
+              disabled={widgets.length <= 0}
+              onClick={() => setEditMode(!editMode)}
+            >
+              <EditRounded
+                fontSize="inherit"
+                color={editMode ? "primary" : "inherit"}
+              />
+            </IconButton>
+          </Tooltip>
+          <RowHeader
+            sxProps={{ textAlign: "left", fontWeight: "bold" }}
+            title={editMode ? "Editing Layout" : "Standard layout"}
+            caption={`Displaying ${widgets.length} ${pluralize(
+              widgets?.length,
+              "widget"
+            )}`}
+          />
+        </Stack>
         <Stack direction="row" spacing={2}>
           <Tooltip title="Add Widget">
             <IconButton onClick={handleClick}>
-              <AddRounded fontSize="small" />
+              <AddRounded fontSize="small" color="primary" />
             </IconButton>
           </Tooltip>
           <Button
@@ -89,6 +115,7 @@ export default function Dashboard() {
       </Stack>
 
       <DndGridLayout
+        editMode={editMode}
         widgets={widgets}
         setWidgets={setWidgets}
         handleRemoveWidget={handleRemoveWidget}
@@ -107,6 +134,12 @@ export default function Dashboard() {
       >
         <AddWidget handleAddWidget={handleAddWidget} />
       </Popover>
+
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Successfully added new widget."
+      />
     </Stack>
   );
 }
