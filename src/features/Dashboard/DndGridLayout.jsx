@@ -10,6 +10,7 @@ import {
 
 import { Box, Stack, Typography } from "@mui/material";
 import Widget from "src/features/Dashboard/Widget";
+import WidgetProps from "src/features/Dashboard/WidgetProps";
 
 export default function DndGridLayout({
   editMode,
@@ -92,10 +93,12 @@ export default function DndGridLayout({
                   />
                 ) : (
                   <Widget
-                  widget={widget}
-                  editMode={editMode}
+                    widget={widget}
+                    editMode={editMode}
                     handleRemoveWidget={handleRemoveWidget}
-                  />
+                  >
+                    {WidgetProps(widget)}
+                  </Widget>
                 )}
               </Box>
             );

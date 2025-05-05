@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 
 /**
@@ -12,6 +12,7 @@ import dayjs from "dayjs";
  * @param {boolean} showDate - The true or false value to display date
  * @param {dayjs} createdDate - The date value of the created timestamp
  * @param {Object} sxProps - Additional wrapper styles based on parent components.
+ * @param {Object} children - Can include jsx components to add more data / details to the RowHeader Component.
  *
  */
 export default function RowHeader({
@@ -20,14 +21,18 @@ export default function RowHeader({
   showDate = false,
   createdDate = dayjs().format("DD-MM-YYYY"),
   sxProps,
+  children,
 }) {
   return (
     <>
-      <Stack textAlign="center" {...sxProps}>
+      <Stack textAlign="center" {...sxProps} alignContent="center">
         <Typography variant="h5" fontWeight="medium" {...sxProps}>
           {title}
         </Typography>
-        <Typography variant="subtitle2">{caption}</Typography>
+        <Typography variant="subtitle2" sx={{ textTransform: "initial" }}>
+          {caption}
+        </Typography>
+        <Box sx={{ alignSelf: "flex-end" }}>{children}</Box>
       </Stack>
       {showDate && (
         <Typography

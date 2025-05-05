@@ -4,9 +4,12 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CancelRounded, DragIndicatorRounded } from "@mui/icons-material";
 import { Badge, Box, IconButton, Paper, Stack, Tooltip } from "@mui/material";
 
-import RowHeader from "src/common/RowHeader/RowHeader";
-
-export default function Widget({ editMode, widget = {}, handleRemoveWidget }) {
+export default function Widget({
+  editMode,
+  widget = {},
+  handleRemoveWidget,
+  children,
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: widget.widgetID,
@@ -55,21 +58,17 @@ export default function Widget({ editMode, widget = {}, handleRemoveWidget }) {
                   disableFocusRipple
                   disableTouchRipple
                   color="primary"
-                  sx={{ cursor: "move" }}
+                  sx={{
+                    cursor: "move",
+                    alignSelf: "flex-start", // put icon to the top of the widget container
+                    paddingTop: "1rem",
+                  }}
                 >
                   <DragIndicatorRounded fontSize="inherit" />
                 </IconButton>
               </Tooltip>
             )}
-            <RowHeader
-              title={widget.label}
-              caption={widget.caption}
-              sxProps={{
-                textAlign: "left",
-                fontWeight: "bold",
-                color: "text.secondary",
-              }}
-            />
+            {children}
           </Stack>
         </Box>
       </Badge>
