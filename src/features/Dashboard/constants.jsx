@@ -2,7 +2,7 @@ export const WidgetTypeList = [
   {
     id: 1,
     label: "Invoice Timeline Chart",
-    caption: "Displays rental periods across time.",
+    caption: "Displays period of timeline events",
     config: {
       inset: false, // makes text have extra spacing infront
       height: "25rem",
@@ -12,7 +12,7 @@ export const WidgetTypeList = [
   },
   {
     id: 2,
-    label: "Totals and Collected Tax",
+    label: "Collected tax and totals",
     caption: "Visual diagram of collected tax and invoice total.",
     columns: [],
     data: [],
