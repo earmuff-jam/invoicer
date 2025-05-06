@@ -64,13 +64,49 @@ export function fakeDataset() {
 }
 
 /**
+ * normalizeInvoiceItemTypeChartDataset
+ *
+ * used to build out a item type chart from the provided dataset
+ *
+ * @param {Array} draftInvoiceList - Array of invoices
+ * @returns Object containing the built dataset based on the passed in args
+ */
+export function normalizeInvoiceItemTypeChartDataset(draftInvoiceList = []) {
+  const itemCountMap = {};
+
+  draftInvoiceList.forEach(({ items = [] }) => {
+    items.forEach((item) => {
+      const itemDescription = item.type || "Unknown Item";
+      itemCountMap[itemDescription] = (itemCountMap[itemDescription] || 0) + 1;
+    });
+  });
+
+  const labels = Object.keys(itemCountMap);
+  const frequencies = Object.values(itemCountMap);
+  const datasets = [
+    {
+      label: "Item Type Frequency",
+      data: frequencies,
+      backgroundColor: "rgba(153, 102, 255, 0.7)",
+      borderColor: "rgba(153, 102, 255, 1)",
+      borderWidth: 1,
+    },
+  ];
+
+  return {
+    labels,
+    datasets,
+  };
+}
+
+/**
  * normalizeInvoiceTrendsChartsDataset
  *
  * used to build out a bar chart dataset for chartjs.
  *
  * @param {Array} draftInvoiceList - Array of invoices
  * @param {String} chartType - The type of chart
- * @returns Object containing single dataset
+ * @returns Object containing the built dataset based on the passed in args
  */
 export function normalizeInvoiceTrendsChartsDataset(
   draftInvoiceList = [],
@@ -141,8 +177,7 @@ export function normalizeInvoiceTrendsChartsDataset(
  * used to build out a bar chart dataset for chartjs.
  *
  * @param {Array} draftInvoiceList - Array of invoices
- *
- * @returns Object containing single dataset
+ * @returns Object containing the built dataset based on the passed in args
  */
 export function normalizeDataset(draftInvoiceList = []) {
   const months = new Set();
