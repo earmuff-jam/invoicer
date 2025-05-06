@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -14,6 +14,11 @@ import {
 import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
 import { BarChartRounded, StackedLineChartRounded } from "@mui/icons-material";
+import {
+  fakeDataset,
+  normalizeInvoiceTrendsChartsDataset,
+} from "src/features/Widgets/utils";
+import EmptyComponent from "src/features/Widgets/EmptyComponent";
 
 ChartJS.register(
   CategoryScale,
@@ -26,42 +31,9 @@ ChartJS.register(
   Title
 );
 
-const invoices = [
-  {
-    title: "Rent - March",
-    date: "2025-03-01",
-    total: 1000,
-    tax_rate: 5, // percent
-  },
-  {
-    title: "Rent - April",
-    date: "2025-04-01",
-    total: 1200,
-    tax_rate: 1,
-  },
-  {
-    title: "Rent - May",
-    date: "2025-05-01",
-    total: 900,
-    tax_rate: 1.5,
-  },
-];
-
 const InvoiceTrendsChart = ({ label, caption }) => {
+  const [chartData, setChartData] = useState(null);
   const [chartType, setChartType] = useState("bar"); // or "line"
-
-  // Process invoices into monthly labels, rent, and tax arrays
-  const labels = invoices.map((inv) =>
-    new Date(inv.date).toLocaleString("default", {
-      month: "short",
-      year: "numeric",
-    })
-  );
-
-  const rentTotals = invoices.map((inv) => inv.total);
-  const taxCollected = invoices.map((inv) =>
-    parseFloat(((inv.total * inv.tax_rate) / 100).toFixed(2))
-  );
 
   const handleChartType = (ev, draftChartType) => {
     if (draftChartType !== null) {
@@ -69,27 +41,22 @@ const InvoiceTrendsChart = ({ label, caption }) => {
     }
   };
 
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Rent Collected",
-        data: rentTotals,
-        backgroundColor: "rgba(54, 162, 235, 0.7)",
-        borderColor: "rgba(54, 162, 235, 1)",
-        fill: chartType === "line",
-        tension: 0.4,
-      },
-      {
-        label: "Tax Collected",
-        data: taxCollected,
-        backgroundColor: "rgba(255, 99, 132, 0.7)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        fill: chartType === "line",
-        tension: 0.4,
-      },
-    ],
-  };
+  useEffect(() => {
+    const draftDataList = JSON.parse(localStorage.getItem("invoiceDataList"));
+    if (draftDataList === null || draftDataList?.length <= 0) {
+      // temp fix to view widget data
+      fakeDataset();
+    }
+
+    if (Array.isArray(draftDataList) && draftDataList.length > 0) {
+      const chartData = normalizeInvoiceTrendsChartsDataset(
+        draftDataList,
+        chartType
+      );
+
+      setChartData(chartData[0]);
+    }
+  }, [chartType]);
 
   const options = {
     responsive: true,
@@ -143,14 +110,15 @@ const InvoiceTrendsChart = ({ label, caption }) => {
         </Box>
       </Stack>
 
-      <div>
-        <div style={{ marginBottom: "10px" }}></div>
-        {chartType === "bar" ? (
-          <Bar data={data} options={options} />
+      <Box>
+        {chartData === null ? (
+          <EmptyComponent />
+        ) : chartType === "bar" ? (
+          <Bar data={chartData} options={options} />
         ) : (
-          <Line data={data} options={options} />
+          <Line data={chartData} options={options} />
         )}
-      </div>
+      </Box>
     </Stack>
   );
 };

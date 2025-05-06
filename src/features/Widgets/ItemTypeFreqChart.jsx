@@ -10,6 +10,9 @@ import {
 } from "chart.js";
 import { Stack } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
+import { useEffect, useState } from "react";
+import { fakeDataset, normalizeInvoiceItemTypeChartDataset } from "src/features/Widgets/utils";
+import EmptyComponent from "src/features/Widgets/EmptyComponent";
 
 ChartJS.register(
   CategoryScale,
@@ -20,56 +23,28 @@ ChartJS.register(
   Legend
 );
 
-const invoices = [
-  {
-    date: "2025-04-01",
-    items: [
-      { description: "Rent", quantity: 1, price: 1000 },
-      { description: "Utilities", quantity: 1, price: 150 },
-    ],
-  },
-  {
-    date: "2025-05-01",
-    items: [
-      { description: "Rent", quantity: 1, price: 1000 },
-      { description: "Internet", quantity: 1, price: 60 },
-    ],
-  },
-];
-
 const ItemTypeFreqChart = ({ label, caption }) => {
-  // Flatten items across all invoices and count occurrences by description
-  const itemCountMap = {};
+  const [chartData, setChartData] = useState({});
 
-  invoices.forEach((invoice) => {
-    invoice.items.forEach((item) => {
-      const desc = item.description || "Unknown";
-      itemCountMap[desc] = (itemCountMap[desc] || 0) + 1;
-    });
-  });
+  useEffect(() => {
+    const draftDataList = JSON.parse(localStorage.getItem("invoiceDataList"));
+    if (draftDataList === null || draftDataList?.length <= 0) {
+      // temp fix to view widget data
+      fakeDataset();
+    }
 
-  const labels = Object.keys(itemCountMap);
-  const frequencies = Object.values(itemCountMap);
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "Item Type Frequency",
-        data: frequencies,
-        backgroundColor: "rgba(153, 102, 255, 0.7)",
-        borderColor: "rgba(153, 102, 255, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
+    if (Array.isArray(draftDataList) && draftDataList.length > 0) {
+      const chartData = normalizeInvoiceItemTypeChartDataset(draftDataList);
+      setChartData(chartData);
+    }
+  }, []);
 
   const options = {
     responsive: true,
     plugins: {
       title: {
         display: true,
-        text: "Item/Service Type Frequency",
+        text: "Item Type Frequency",
       },
       legend: {
         display: false,
@@ -96,8 +71,11 @@ const ItemTypeFreqChart = ({ label, caption }) => {
           color: "text.secondary",
         }}
       />
-
-      <Bar data={data} options={options} />
+      {Object.keys(chartData).length <= 0 ? (
+        <EmptyComponent />
+      ) : (
+        <Bar data={chartData} options={options} />
+      )}
     </Stack>
   );
 };
