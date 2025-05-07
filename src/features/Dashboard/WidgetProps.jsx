@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import DetailsTableView from "src/features/Widgets/DetailsTableView";
 import InvoiceTimelineChart from "src/features/Widgets/InvoiceTimelineChart";
 import InvoiceTrendsChart from "src/features/Widgets/InvoiceTrends";
 import ItemTypeFreqChart from "src/features/Widgets/ItemTypeFreqChart";
@@ -14,21 +15,17 @@ export default function WidgetProps(widget) {
     case 2:
       return (
         <Box sx={{ height: "20rem", width: "40rem" }}>
-          <InvoiceTrendsChart
-            label={widget.label}
-            caption={widget.caption}
-          />
+          <InvoiceTrendsChart label={widget.label} caption={widget.caption} />
         </Box>
       );
     case 3:
       return (
         <Box sx={{ height: "20rem", width: "40rem" }}>
-          <ItemTypeFreqChart
-            label={widget.label}
-            caption={widget.caption}
-          />
+          <ItemTypeFreqChart label={widget.label} caption={widget.caption} />
         </Box>
       );
+    case 4:
+      return <DetailsTableView label={widget.label} caption={widget.caption} />;
     default:
       return null;
   }

@@ -43,7 +43,7 @@ export function fakeDataset() {
         quantity: "1",
         price: "1389.98",
         payment: "1389.98",
-        payment_method: "zelle",
+        payment_method: "DHA",
       },
       {
         descpription: "Floor replacement",
@@ -61,6 +61,47 @@ export function fakeDataset() {
     "invoiceDataList",
     JSON.stringify([draftData, draftData2])
   );
+}
+
+/**
+ * noramlizeDetailsTableData
+ *
+ * used to build out a invoice details table data
+ *
+ * @param {Array} draftInvoiceList - Array of invoices
+ * @returns Array of invoice details built for table view
+ */
+export function noramlizeDetailsTableData(draftInvoiceList = []) {
+  const formatted = draftInvoiceList.map((invoice) => {
+    const items = invoice.items || [];
+
+    const total = items.reduce((acc, el) => {
+      if (el?.payment) {
+        acc += Number(el?.payment);
+      }
+
+      return acc;
+    }, 0);
+
+    const uniquePaymentMethods = new Map();
+    items.forEach((item) => {
+      if (!uniquePaymentMethods.has(item?.payment_method)) {
+        uniquePaymentMethods.set(item?.payment_method);
+      }
+    });
+
+    return {
+      type: invoice?.type || "",
+      invoice_status: invoice?.invoice_status || "",
+      start_date: invoice?.start_date,
+      end_date: invoice?.end_date,
+      total,
+      payment_method: Array.from(uniquePaymentMethods.keys()).join(" / "),
+      updated_on: invoice?.updated_on,
+    };
+  });
+
+  return formatted;
 }
 
 /**

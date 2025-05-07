@@ -36,4 +36,17 @@ export const WidgetTypeList = [
       widgetID: "052fda00-2d37-4d0f-81b7-3fcb451e5ee1",
     },
   },
+  {
+    id: 4,
+    label: "Item Details Table",
+    caption: "View details about imported invoices in list form.",
+    columns: [],
+    data: [],
+    config: {
+      inset: false,
+      height: "25rem",
+      width: "70rem",
+      widgetID: "a4c036a4-feef-4f2b-bb90-b5eea115fcce",
+    },
+  },
 ];
