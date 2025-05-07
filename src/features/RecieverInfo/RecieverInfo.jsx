@@ -6,8 +6,10 @@ import { Stack } from "@mui/material";
 import dayjs from "dayjs";
 import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
+import { useAppTitle } from "src/hooks/useAppTitle";
 
 export default function RecieverInfo() {
+  useAppTitle("Reciever Information");
   const navigate = useNavigate();
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(

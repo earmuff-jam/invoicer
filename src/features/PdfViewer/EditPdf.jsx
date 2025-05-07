@@ -33,6 +33,7 @@ import {
   PaidRounded,
   PaymentsRounded,
 } from "@mui/icons-material";
+import { useAppTitle } from "src/hooks/useAppTitle";
 
 const defaultOptions = [
   {
@@ -71,6 +72,7 @@ export default function EditPdf({
   title = "Edit Pdf",
   caption = "Edit data to populate invoice",
 }) {
+  useAppTitle("Edit Invoice");
   const navigate = useNavigate();
 
   const [lineItems, setLineItems] = useState([]);
@@ -420,7 +422,7 @@ export default function EditPdf({
           />
         ))}
         <AButton
-        data-tour="edit-pdf-9"
+          data-tour="edit-pdf-9"
           variant="contained"
           onClick={submit}
           disabled={isDisabled()}

@@ -4,8 +4,11 @@ import RowHeader from "src/common/RowHeader/RowHeader";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import Salutation from "src/common/UserInfo/Salutation";
+import { useAppTitle } from "src/hooks/useAppTitle";
 
 export default function PdfViewer() {
+  useAppTitle("View Invoice");
+
   const navigate = useNavigate();
 
   const senderInfo = JSON.parse(localStorage.getItem("senderInfo"));
