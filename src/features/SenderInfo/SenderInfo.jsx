@@ -6,8 +6,10 @@ import { Stack } from "@mui/material";
 import dayjs from "dayjs";
 import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
+import { useAppTitle } from "src/hooks/useAppTitle";
 
 export default function SenderInfo() {
+  useAppTitle("Sender Information");
   const navigate = useNavigate();
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(
@@ -83,7 +85,7 @@ export default function SenderInfo() {
   }, []);
 
   return (
-    <Stack spacing={1} alignItems="center" data-tour={'sender-0'}>
+    <Stack spacing={1} alignItems="center" data-tour={"sender-0"}>
       <RowHeader
         title="Add details about the sender"
         caption="Required fields are marked with an * "

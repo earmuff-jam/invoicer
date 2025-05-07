@@ -15,8 +15,10 @@ import { WidgetTypeList } from "src/features/Dashboard/constants";
 import { pluralize } from "src/common/utils";
 import { v4 as uuidv4 } from "uuid";
 import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
+import { useAppTitle } from "src/hooks/useAppTitle";
 
 export default function Dashboard() {
+  useAppTitle("Dashboard");
   const [widgets, setWidgets] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [editMode, setEditMode] = useState(false); // re-arrange widgets
