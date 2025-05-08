@@ -13,11 +13,12 @@ import {
 export default function ReportTable({
   rows = [],
   taxRate = 0,
-  invoiceTitle = "Rent Details",
+  invoiceTitle = "Invoice Details",
 }) {
-  const numberFormatter = (number) => number.toFixed(2);
+  const numberFormatter = (number) => Number(number).toFixed(2);
+
   const subtotal = rows
-    .map(({ price }) => parseFloat(price))
+    .map(({ price }) => parseFloat(price) || 0)
     .reduce((sum, i) => sum + i, 0);
 
   const paymentRecieved = rows
@@ -26,65 +27,95 @@ export default function ReportTable({
 
   const invoiceSubtotal = subtotal - paymentRecieved;
   const formattedTax = parseFloat(taxRate) || 0;
-  const invoiceTaxes = formattedTax * invoiceSubtotal;
-  const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+  const invoiceTaxes = (formattedTax / 100) * invoiceSubtotal;
+  const invoiceTotal = invoiceSubtotal + invoiceTaxes;
 
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="spanning table">
         <TableHead>
           <TableRow>
-            <TableCell align="center" colSpan={4}>
+            <TableCell align="center" colSpan={5} sx={{ fontWeight: "bold" }}>
               {invoiceTitle}
             </TableCell>
-            <TableCell align="right">Price (USD) </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              Price (USD)
+            </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Description</TableCell>
-            <TableCell align="right">Qty.</TableCell>
-            <TableCell align="right">Cost</TableCell>
-            <TableCell align="right">Payment Recieved</TableCell>
-            <TableCell align="right">Balance Due</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Category</TableCell>
+            <TableCell sx={{ fontWeight: "bold" }}>Description</TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              Qty.
+            </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              Cost
+            </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              Payment Received
+            </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              Balance Due
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
             <TableRow key={index}>
               <TableCell>
+                <Typography variant="subtitle">
+                  {row?.category || ""}
+                </Typography>
+              </TableCell>
+              <TableCell>
                 <Stack direction="row" spacing={1} alignItems="flex-end">
-                  <Typography variant="subtitle">{row.descpription}</Typography>
-                  <Typography variant="caption">{row.caption}</Typography>
+                  <Typography variant="subtitle">
+                    {row.descpription || ""}
+                  </Typography>
+                  <Typography variant="caption">
+                    <sub>{row.caption || ""}</sub>
+                  </Typography>
                 </Stack>
               </TableCell>
               <TableCell align="right">{row.quantity}</TableCell>
-              <TableCell align="right">{row.price}</TableCell>
-              <TableCell align="right">{row.payment}</TableCell>
+              <TableCell align="right">{numberFormatter(row.price)}</TableCell>
               <TableCell align="right">
-                {numberFormatter(row.price - row.payment)}
+                {numberFormatter(row.payment)}
+              </TableCell>
+              <TableCell align="right">
+                {numberFormatter(
+                  (parseFloat(row.price) || 0) - (parseFloat(row.payment) || 0)
+                )}
               </TableCell>
             </TableRow>
           ))}
           <TableRow>
             <TableCell rowSpan={3} />
-            <TableCell colSpan={3}>Subtotal</TableCell>
-            <TableCell align="right">
+            <TableCell colSpan={4} sx={{ fontWeight: "bold" }}>
+              Subtotal
+            </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
               {numberFormatter(invoiceSubtotal)}
             </TableCell>
           </TableRow>
 
           <TableRow>
-            <TableCell>Tax</TableCell>
-            <TableCell
-              colSpan={1}
-              align="right"
-            >{`${formattedTax} %`}</TableCell>
-            <TableCell align="right" colSpan={2}>
-              {numberFormatter(formattedTax)}
+            <TableCell sx={{ fontWeight: "bold" }}>Tax</TableCell>
+            <TableCell colSpan={3} align="right" sx={{ fontWeight: "bold" }}>
+              {formattedTax}%
+            </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              {numberFormatter(invoiceTaxes)}
             </TableCell>
           </TableRow>
+
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell align="right">{numberFormatter(invoiceTotal)}</TableCell>
+            <TableCell colSpan={4} sx={{ fontWeight: "bold" }}>
+              Total
+            </TableCell>
+            <TableCell align="right" sx={{ fontWeight: "bold" }}>
+              {numberFormatter(invoiceTotal)}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>

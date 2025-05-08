@@ -16,6 +16,7 @@ export default function EditPdfLineItemAccordion({
   index,
   handleDelete,
   handleLineItemChange,
+  handleLineItemAutocompleteChange,
 }) {
   return (
     <Accordion defaultExpanded>
@@ -36,6 +37,7 @@ export default function EditPdfLineItemAccordion({
           index={index}
           formData={lineItem}
           handleLineItemChange={handleLineItemChange}
+          handleLineItemAutocompleteChange={handleLineItemAutocompleteChange}
         />
       </AccordionDetails>
     </Accordion>
