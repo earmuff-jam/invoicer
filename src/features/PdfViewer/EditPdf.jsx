@@ -14,6 +14,7 @@ import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
 import {
   BLANK_INVOICE_DETAILS_FORM,
   BLANK_INVOICE_LINE_ITEM_FORM,
+  InvoiceCategoryOptions,
 } from "src/features/PdfViewer/constants";
 import EditPdfLineItemAccordion from "src/features/PdfViewer/EditPdfLineItemAccordion";
 import dayjs from "dayjs";
@@ -125,6 +126,33 @@ export default function EditPdf({
       errorMsg,
     };
     setFormData(updatedFormData);
+  };
+
+  const handleLineItemAutocompleteChange = (index, fieldId, selectedOption) => {
+    const value = selectedOption?.value || "";
+
+    setLineItems((prevItems) =>
+      produce(prevItems, (draft) => {
+        let errorMsg = "";
+
+        const currentItem = draft[index];
+        const field = currentItem[fieldId];
+
+        for (const validator of field.validators) {
+          if (validator.validate(value)) {
+            errorMsg = validator.message;
+            break;
+          }
+        }
+
+        currentItem[fieldId] = {
+          ...field,
+          selectedOption,
+          value: selectedOption?.value,
+          errorMsg,
+        };
+      })
+    );
   };
 
   const handleLineItemChange = (ev, index) => {
@@ -249,6 +277,15 @@ export default function EditPdf({
 
       const draftLineItems = parsedValues.items.map((element) =>
         produce(BLANK_INVOICE_LINE_ITEM_FORM, (draft) => {
+          const draftCategoryValue = element.category || "";
+
+          const selectedCategoryValue = InvoiceCategoryOptions.find(
+            (option) => option.value === draftCategoryValue
+          );
+
+          draft.category.value = draftCategoryValue;
+          draft.category.selectedOption = selectedCategoryValue;
+
           draft.descpription.value = element.descpription || "";
           draft.caption.value = element.caption || "";
           draft.quantity.value = element.quantity || "";
@@ -417,8 +454,9 @@ export default function EditPdf({
             title={`Edit line ${index + 1}`}
             lineItem={item}
             index={index}
-            handleLineItemChange={handleLineItemChange}
             handleDelete={handleDelete}
+            handleLineItemChange={handleLineItemChange}
+            handleLineItemAutocompleteChange={handleLineItemAutocompleteChange}
           />
         ))}
         <AButton

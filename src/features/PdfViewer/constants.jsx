@@ -1,3 +1,21 @@
+/**
+ * Invoice Category Options
+ *
+ * used to build out the autocomplete component in edit / view invoice
+ */
+export const InvoiceCategoryOptions = [
+  { label: "Products", value: "products" },
+  { label: "Services", value: "services" },
+  { label: "Fees", value: "fees" },
+  { label: "Subscriptions/Recurring Charges", value: "subscriptions" },
+  { label: "Travel & Lodging", value: "travelLodging" },
+  { label: "Marketing & Advertising", value: "marketing" },
+  { label: "Office/Administrative", value: "officeAdmin" },
+  { label: "Utilities & Overhead", value: "utilities" },
+  { label: "Taxes", value: "taxes" },
+  { label: "Other", value: "other" },
+];
+
 export const GENERIC_FORM_FIELDS = {
   type: "text",
   variant: "outlined",
@@ -105,6 +123,18 @@ export const BLANK_INVOICE_DETAILS_FORM = {
  * Blank Invoice Details form
  */
 export const BLANK_INVOICE_LINE_ITEM_FORM = {
+  category: {
+    id: "category",
+    value: "",
+    errorMsg: "",
+    isRequired: true,
+    validators: [
+      {
+        validate: (value) => value.length <= 0,
+        message: "Select the category of the single item.",
+      },
+    ],
+  },
   descpription: {
     id: "descpription",
     value: "",

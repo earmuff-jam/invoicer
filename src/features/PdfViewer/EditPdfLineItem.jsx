@@ -1,23 +1,50 @@
-import { Stack } from "@mui/material";
+import { Autocomplete, Stack, TextField, Typography } from "@mui/material";
 import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
+import { InvoiceCategoryOptions } from "src/features/PdfViewer/constants";
 
 export default function EditPdfLineItem({
   index,
   formData,
   handleLineItemChange,
+  handleLineItemAutocompleteChange,
 }) {
   return (
-    <Stack>
-      {/* Description */}
-      <TextFieldWithLabel
-        label="Description"
-        id="descpription"
-        name="descpription"
-        placeholder="Description of charge"
-        value={formData?.descpription.value || ""}
-        handleChange={(ev) => handleLineItemChange(ev, index)}
-        errorMsg={formData.descpription["errorMsg"]}
-      />
+    <Stack spacing={2}>
+      <Stack direction="row" spacing={2} alignItems="center">
+        <Stack>
+          <Typography variant="body2" fontWeight="medium" gutterBottom>
+            Category {formData.category.isRequired && `*`}
+          </Typography>
+          <Autocomplete
+            id="category"
+            disablePortal
+            options={InvoiceCategoryOptions}
+            sx={{ width: 300 }}
+            value={formData.category?.selectedOption || ""}
+            onChange={(event, newValue) =>
+              handleLineItemAutocompleteChange(index, "category", newValue)
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                size="small"
+                placeholder="Select type of category"
+              />
+            )}
+          />
+        </Stack>
+
+        {/* Description */}
+        <TextFieldWithLabel
+          label="Description"
+          id="descpription"
+          name="descpription"
+          placeholder="Description of charge"
+          value={formData?.descpription.value || ""}
+          handleChange={(ev) => handleLineItemChange(ev, index)}
+          errorMsg={formData.descpription["errorMsg"]}
+        />
+      </Stack>
 
       {/* Caption */}
       <TextFieldWithLabel
