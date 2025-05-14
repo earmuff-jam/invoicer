@@ -14,10 +14,7 @@ import {
 import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
 import { BarChartRounded, StackedLineChartRounded } from "@mui/icons-material";
-import {
-  fakeDataset,
-  normalizeInvoiceTrendsChartsDataset,
-} from "src/features/Widgets/utils";
+import { normalizeInvoiceTrendsChartsDataset } from "src/features/Widgets/utils";
 import EmptyComponent from "src/features/Widgets/EmptyComponent";
 
 ChartJS.register(
@@ -42,12 +39,8 @@ const InvoiceTrendsChart = ({ label, caption }) => {
   };
 
   useEffect(() => {
-    const draftDataList = JSON.parse(localStorage.getItem("invoiceDataList"));
-    if (draftDataList === null || draftDataList?.length <= 0) {
-      // temp fix to view widget data
-      fakeDataset();
-    }
-
+    const draftData = JSON.parse(localStorage.getItem("pdfDetails"));
+    const draftDataList = [draftData];
     if (Array.isArray(draftDataList) && draftDataList.length > 0) {
       const chartData = normalizeInvoiceTrendsChartsDataset(
         draftDataList,

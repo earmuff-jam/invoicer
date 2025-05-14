@@ -12,7 +12,7 @@ import {
 import { Stack } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
 import EmptyComponent from "src/features/Widgets/EmptyComponent";
-import { fakeDataset, normalizeDataset } from "src/features/Widgets/utils";
+import { normalizeDataset } from "src/features/Widgets/utils";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Title);
 
@@ -20,12 +20,8 @@ const InvoiceTimelineChart = ({ label, caption }) => {
   const [data, setData] = useState({});
 
   useEffect(() => {
-    const draftDataList = JSON.parse(localStorage.getItem("invoiceDataList"));
-    if (draftDataList === null || draftDataList?.length <= 0) {
-      // temp fix to view widget data
-      fakeDataset();
-    }
-
+    const draftData = JSON.parse(localStorage.getItem("pdfDetails"));
+    const draftDataList = [draftData];
     if (Array.isArray(draftDataList) && draftDataList.length > 0) {
       const chartData = normalizeDataset(draftDataList);
       setData(chartData);

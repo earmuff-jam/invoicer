@@ -45,7 +45,7 @@ export const WidgetTypeList = [
     config: {
       inset: false,
       height: "25rem",
-      width: "70rem",
+      width: "75rem",
       widgetID: "a4c036a4-feef-4f2b-bb90-b5eea115fcce",
     },
   },

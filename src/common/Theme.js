@@ -130,6 +130,9 @@ export const lightTheme = createTheme({
     error: {
       main: "#E53E3E",
     },
+    transparent: {
+      main: "rgba(0, 0, 0, 0)",
+    },
   },
   typography: commonTypography,
   components: {
@@ -205,6 +208,9 @@ export const darkTheme = createTheme({
     },
     error: {
       main: "#E57373",
+    },
+    transparent: {
+      main: "rgba(0, 0, 0, 0)",
     },
   },
   typography: commonTypography,

@@ -5,10 +5,7 @@ import {
 } from "material-react-table";
 import { Stack } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
-import {
-  fakeDataset,
-  noramlizeDetailsTableData,
-} from "src/features/Widgets/utils";
+import { noramlizeDetailsTableData } from "src/features/Widgets/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
@@ -18,12 +15,12 @@ const DetailsTableView = ({ label, caption }) => {
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    const draftDataList = JSON.parse(localStorage.getItem("invoiceDataList"));
-    if (draftDataList === null || draftDataList?.length <= 0) {
-      // temp fix to view widget data
-      fakeDataset();
-    }
-
+    const draftData = JSON.parse(localStorage.getItem("pdfDetails"));
+    const draftInvoiceStatus = JSON.parse(
+      localStorage.getItem("invoiceStatus")
+    );
+    const formattedData = { ...draftData, invoice_status: draftInvoiceStatus };
+    const draftDataList = [formattedData];
     if (Array.isArray(draftDataList) && draftDataList.length > 0) {
       const formattedData = noramlizeDetailsTableData(draftDataList);
       setTableData(formattedData);
@@ -33,9 +30,9 @@ const DetailsTableView = ({ label, caption }) => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "type",
+        accessorKey: "category",
         header: "Invoice Type",
-        size: 150,
+        size: 200,
         Cell: ({ cell }) => (cell.getValue() ? cell.getValue() : "-"),
       },
       {
@@ -84,9 +81,19 @@ const DetailsTableView = ({ label, caption }) => {
     initialState: {
       density: "comfortable",
     },
+    mrtTheme: (theme) => ({
+      baseBackgroundColor: theme.palette.transparent.main,
+    }),
     muiTableContainerProps: {
       sx: {
         maxHeight: "16rem",
+        boxShadow: "none",
+      },
+    },
+    muiTablePaperProps: {
+      elevation: 0,
+      sx: {
+        boxShadow: "none",
       },
     },
   });

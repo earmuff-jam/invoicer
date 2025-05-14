@@ -1,66 +1,12 @@
 import dayjs from "dayjs";
 
-/**
- * fakeDataset
- *
- * creates a fake dataset function for testing purposes only.
- * TODO: REMOVE THIS AFTER DASHBOARD WORK IS COMPLETED.
- */
-export function fakeDataset() {
-  const draftData = {
-    title: "Rent for the month of April",
-    caption: "No additional information provided",
-    note: "Payment should be made by 3rd of every month",
-    start_date: "04-01-2025",
-    end_date: "04-30-2025",
-    tax_rate: "1.5",
-    invoice_header: "Rent details",
-    items: [
-      {
-        descpription: "Base rent",
-        caption: "Period of April",
-        quantity: "1",
-        price: "1389.98",
-        payment: "1389.98",
-        payment_method: "zelle",
-      },
-    ],
-    updated_on: "2025-04-30T13:14:09.627Z",
-  };
-
-  const draftData2 = {
-    title: "Rent for the month of May",
-    caption: "No additional information provided",
-    note: "Payment should be made by 3rd of every month",
-    start_date: "05-01-2025",
-    end_date: "05-31-2025",
-    tax_rate: "0.5",
-    invoice_header: "Rent details",
-    items: [
-      {
-        descpription: "Base rent",
-        caption: "Period of May",
-        quantity: "1",
-        price: "1389.98",
-        payment: "1389.98",
-        payment_method: "DHA",
-      },
-      {
-        descpription: "Floor replacement",
-        caption: "Period of May",
-        quantity: "1",
-        price: "240.00",
-        payment: "240.00",
-        payment_method: "zelle",
-      },
-    ],
-    updated_on: "2025-05-30T13:14:09.627Z",
-  };
-
-  localStorage.setItem(
-    "invoiceDataList",
-    JSON.stringify([draftData, draftData2])
-  );
+function populateMap(items = [], columnName, uniqueMap) {
+  items.forEach((item) => {
+    const currentItemValue = item[columnName];
+    if (!uniqueMap.has(currentItemValue)) {
+      uniqueMap.set(currentItemValue);
+    }
+  });
 }
 
 /**
@@ -83,15 +29,14 @@ export function noramlizeDetailsTableData(draftInvoiceList = []) {
       return acc;
     }, 0);
 
+    const uniqueCategories = new Map();
     const uniquePaymentMethods = new Map();
-    items.forEach((item) => {
-      if (!uniquePaymentMethods.has(item?.payment_method)) {
-        uniquePaymentMethods.set(item?.payment_method);
-      }
-    });
+
+    populateMap(items, "category", uniqueCategories);
+    populateMap(items, "payment_method", uniquePaymentMethods);
 
     return {
-      type: invoice?.type || "",
+      category: Array.from(uniqueCategories.keys()).join(" / "),
       invoice_status: invoice?.invoice_status || "",
       start_date: invoice?.start_date,
       end_date: invoice?.end_date,
@@ -117,7 +62,7 @@ export function normalizeInvoiceItemTypeChartDataset(draftInvoiceList = []) {
 
   draftInvoiceList.forEach(({ items = [] }) => {
     items.forEach((item) => {
-      const itemDescription = item.type || "Unknown Item";
+      const itemDescription = item.category || "Unknown Item";
       itemCountMap[itemDescription] = (itemCountMap[itemDescription] || 0) + 1;
     });
   });
@@ -160,7 +105,7 @@ export function normalizeInvoiceTrendsChartsDataset(
     const taxRate = Number(invoice.tax_rate || 0);
 
     const collectedTotal = invoice?.items?.reduce((acc, item) => {
-      return acc + Number(item?.price || 0);
+      return acc + Number(item?.payment || 0);
     }, 0);
 
     const taxCollected = parseFloat(
