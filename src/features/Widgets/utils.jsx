@@ -60,12 +60,15 @@ export function noramlizeDetailsTableData(draftInvoiceList = []) {
 export function normalizeInvoiceItemTypeChartDataset(draftInvoiceList = []) {
   const itemCountMap = {};
 
-  draftInvoiceList.forEach(({ items = [] }) => {
-    items.forEach((item) => {
-      const itemDescription = item.category || "Unknown Item";
-      itemCountMap[itemDescription] = (itemCountMap[itemDescription] || 0) + 1;
+  const filteredDraftInvoiceList = draftInvoiceList.filter(Boolean); // remove unwanted values
+  if (filteredDraftInvoiceList.length <= 0)
+    filteredDraftInvoiceList.forEach(({ items = [] }) => {
+      items.forEach((item) => {
+        const itemDescription = item.category || "Unknown Item";
+        itemCountMap[itemDescription] =
+          (itemCountMap[itemDescription] || 0) + 1;
+      });
     });
-  });
 
   const labels = Object.keys(itemCountMap);
   const frequencies = Object.values(itemCountMap);
@@ -100,7 +103,9 @@ export function normalizeInvoiceTrendsChartsDataset(
 ) {
   const monthMap = new Map();
 
-  draftInvoiceList.forEach((invoice) => {
+  const filteredDraftInvoiceList = draftInvoiceList.filter(Boolean); // remove unwanted values
+
+  filteredDraftInvoiceList.forEach((invoice) => {
     const month = dayjs(invoice.start_date).format("MMMM");
     const taxRate = Number(invoice.tax_rate || 0);
 
@@ -158,17 +163,19 @@ export function normalizeInvoiceTrendsChartsDataset(
 }
 
 /**
- * normalizeBarChartDataset
+ * normalizeInvoiceTimelineChartDataset
  *
  * used to build out a bar chart dataset for chartjs.
  *
  * @param {Array} draftInvoiceList - Array of invoices
  * @returns Object containing the built dataset based on the passed in args
  */
-export function normalizeDataset(draftInvoiceList = []) {
+export function normalizeInvoiceTimelineChartDataset(draftInvoiceList = []) {
   const months = new Set();
 
-  draftInvoiceList.forEach((invoice) => {
+  const filteredDraftInvoiceList = draftInvoiceList.filter(Boolean); // remove unwanted values
+
+  filteredDraftInvoiceList.forEach((invoice) => {
     const month = dayjs(invoice.start_date).format("MMMM");
     months.add(month);
   });

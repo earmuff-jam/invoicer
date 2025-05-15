@@ -40,13 +40,11 @@ const InvoiceTrendsChart = ({ label, caption }) => {
 
   useEffect(() => {
     const draftData = JSON.parse(localStorage.getItem("pdfDetails"));
-    const draftDataList = [draftData];
-    if (Array.isArray(draftDataList) && draftDataList.length > 0) {
+    if (draftData) {
       const chartData = normalizeInvoiceTrendsChartsDataset(
-        draftDataList,
+        [draftData],
         chartType
       );
-
       setChartData(chartData[0]);
     }
   }, [chartType]);
