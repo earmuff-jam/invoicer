@@ -28,9 +28,8 @@ const ItemTypeFreqChart = ({ label, caption }) => {
 
   useEffect(() => {
     const draftData = JSON.parse(localStorage.getItem("pdfDetails"));
-    const draftDataList = [draftData];
-    if (Array.isArray(draftDataList) && draftDataList.length > 0) {
-      const chartData = normalizeInvoiceItemTypeChartDataset(draftDataList);
+    if (draftData) {
+      const chartData = normalizeInvoiceItemTypeChartDataset([draftData]);
       setChartData(chartData);
     }
   }, []);

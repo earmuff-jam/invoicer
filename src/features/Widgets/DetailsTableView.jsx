@@ -8,6 +8,7 @@ import RowHeader from "src/common/RowHeader/RowHeader";
 import { noramlizeDetailsTableData } from "src/features/Widgets/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import EmptyComponent from "src/features/Widgets/EmptyComponent";
 
 dayjs.extend(relativeTime);
 
@@ -19,11 +20,17 @@ const DetailsTableView = ({ label, caption }) => {
     const draftInvoiceStatus = JSON.parse(
       localStorage.getItem("invoiceStatus")
     );
-    const formattedData = { ...draftData, invoice_status: draftInvoiceStatus };
-    const draftDataList = [formattedData];
-    if (Array.isArray(draftDataList) && draftDataList.length > 0) {
-      const formattedData = noramlizeDetailsTableData(draftDataList);
-      setTableData(formattedData);
+
+    let formattedData;
+    formattedData = { ...draftData };
+
+    if (draftInvoiceStatus) {
+      formattedData = { ...formattedData, invoice_status: draftInvoiceStatus };
+    }
+
+    if (draftData) {
+      const data = noramlizeDetailsTableData([formattedData]);
+      setTableData(data);
     }
   }, []);
 
@@ -81,6 +88,7 @@ const DetailsTableView = ({ label, caption }) => {
     initialState: {
       density: "comfortable",
     },
+    renderEmptyRowsFallback: () => <EmptyComponent />,
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.transparent.main,
     }),
