@@ -2,7 +2,7 @@ import { Container, Stack, Typography } from "@mui/material";
 import ReportTable from "src/features/PdfViewer/ReportTable";
 import RowHeader from "src/common/RowHeader/RowHeader";
 import dayjs from "dayjs";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Salutation from "src/common/UserInfo/Salutation";
 import { useAppTitle } from "src/hooks/useAppTitle";
 
@@ -10,6 +10,7 @@ export default function PdfViewer() {
   useAppTitle("View Invoice");
 
   const navigate = useNavigate();
+  const [showWatermark] = useOutletContext();
 
   const senderInfo = JSON.parse(localStorage.getItem("senderInfo"));
   const recieverInfo = JSON.parse(localStorage.getItem("recieverInfo"));
@@ -67,6 +68,7 @@ export default function PdfViewer() {
         />
         <Typography
           color="error.light"
+          className={!showWatermark && "no-print"} // print only when allowed
           sx={{
             transform: "rotate(-45deg)",
             textTransform: "uppercase",
