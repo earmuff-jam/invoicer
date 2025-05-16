@@ -3,6 +3,7 @@ import { CssBaseline } from "@mui/material";
 import { TourProvider } from "@reactour/tour";
 import { useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import ScrollTopProvider from "src/common/ScrollTop/ScrollTopProvider";
 import { darkTheme, lightTheme } from "src/common/Theme";
 import { GeneratedTourSteps } from "src/common/Tour/TourSteps";
 import { buildAppRoutes } from "src/common/ValidateClientPerms";
@@ -20,23 +21,25 @@ function App() {
     >
       <CssBaseline />
       <TourProvider steps={GeneratedTourSteps}>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Layout
-                  currentThemeIdx={currentThemeIdx}
-                  setCurrentThemeIdx={setCurrentThemeIdx}
-                />
-              }
-            >
-              {buildAppRoutes(InvoicerRoutes)}
-            </Route>
-            {/* force navigate to main page when routes are not found */}
-            <Route path="/*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
+        <ScrollTopProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Layout
+                    currentThemeIdx={currentThemeIdx}
+                    setCurrentThemeIdx={setCurrentThemeIdx}
+                  />
+                }
+              >
+                {buildAppRoutes(InvoicerRoutes)}
+              </Route>
+              {/* force navigate to main page when routes are not found */}
+              <Route path="/*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </ScrollTopProvider>
       </TourProvider>
     </ThemeProvider>
   );

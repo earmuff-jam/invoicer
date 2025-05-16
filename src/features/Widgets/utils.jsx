@@ -61,7 +61,7 @@ export function normalizeInvoiceItemTypeChartDataset(draftInvoiceList = []) {
   const itemCountMap = {};
 
   const filteredDraftInvoiceList = draftInvoiceList.filter(Boolean); // remove unwanted values
-  if (filteredDraftInvoiceList.length <= 0)
+  if (filteredDraftInvoiceList.length > 0) {
     filteredDraftInvoiceList.forEach(({ items = [] }) => {
       items.forEach((item) => {
         const itemDescription = item.category || "Unknown Item";
@@ -69,6 +69,7 @@ export function normalizeInvoiceItemTypeChartDataset(draftInvoiceList = []) {
           (itemCountMap[itemDescription] || 0) + 1;
       });
     });
+  }
 
   const labels = Object.keys(itemCountMap);
   const frequencies = Object.values(itemCountMap);

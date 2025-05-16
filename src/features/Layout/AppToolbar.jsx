@@ -39,6 +39,7 @@ export default function AppToolbar({
       label: "Help and Support",
       type: "HELP",
       display: true,
+      showWatermark: false,
     });
 
     handleDrawerOpen();
@@ -53,6 +54,7 @@ export default function AppToolbar({
       label: "Verify Information",
       type: "PRINT",
       display: true,
+      showWatermark: false,
     });
 
     handleDrawerClose();

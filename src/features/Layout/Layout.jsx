@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 import {
   Box,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Slide,
   Stack,
   Typography,
@@ -34,6 +36,7 @@ const defaultDialog = {
   title: "",
   label: "",
   type: "",
+  showWatermark: true,
   display: false,
 };
 
@@ -54,6 +57,10 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
   );
 
   const closeDialog = () => setDialog(defaultDialog);
+
+  const handleChange = () => {
+    setDialog((prev) => ({ ...prev, showWatermark: !prev.showWatermark }));
+  };
 
   const setTour = () => {
     const currentStep = DefaultTourStepsMapperObj[currentUri];
@@ -105,7 +112,7 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
           }}
         >
           <Box sx={{ minHeight: "90vh" }}>
-            <Outlet />
+            <Outlet context={[dialog.showWatermark]} />
           </Box>
           <Footer />
         </Box>
@@ -124,6 +131,16 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
           <Typography sx={{ textTransform: "initial" }}>
             {dialog.title}
           </Typography>
+          <FormControlLabel
+            label="Display watermark"
+            labelPlacement="end"
+            control={
+              <Checkbox
+                checked={dialog?.showWatermark || false}
+                onChange={handleChange}
+              />
+            }
+          />
         </DialogContent>
         <DialogActions>
           <AButton
