@@ -163,14 +163,6 @@ export const lightTheme = createTheme({
   shape: {
     borderRadius: 8,
   },
-  shadows: [
-    "none",
-    "0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1)",
-    "0 2px 4px rgba(0, 0, 0, 0.06), 0 1px 5px rgba(0, 0, 0, 0.1)",
-    "0 4px 6px rgba(0, 0, 0, 0.06), 0 2px 10px rgba(0, 0, 0, 0.1)",
-    "0 10px 15px rgba(0, 0, 0, 0.06), 0 4px 6px rgba(0, 0, 0, 0.1)",
-    "0 20px 25px rgba(0, 0, 0, 0.04), 0 10px 10px rgba(0, 0, 0, 0.1)",
-  ],
 });
 
 export const darkTheme = createTheme({
@@ -271,12 +263,4 @@ export const darkTheme = createTheme({
   shape: {
     borderRadius: 8,
   },
-  shadows: [
-    "none",
-    "0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3)",
-    "0 2px 4px rgba(0, 0, 0, 0.4), 0 1px 5px rgba(0, 0, 0, 0.3)",
-    "0 4px 6px rgba(0, 0, 0, 0.4), 0 2px 10px rgba(0, 0, 0, 0.3)",
-    "0 10px 15px rgba(0, 0, 0, 0.4), 0 4px 6px rgba(0, 0, 0, 0.3)",
-    "0 20px 25px rgba(0, 0, 0, 0.5), 0 10px 10px rgba(0, 0, 0, 0.3)",
-  ],
 });

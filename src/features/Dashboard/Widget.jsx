@@ -10,6 +10,7 @@ export default function Widget({
   handleRemoveWidget,
   children,
 }) {
+  const { widgetID, inset, ...config } = widget.config; // eslint-disable-line no-unused-vars
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: widget.widgetID,
@@ -40,7 +41,7 @@ export default function Widget({
       >
         <Box
           component={Paper}
-          {...widget.config}
+          {...config}
           sx={{
             padding: 1,
             overflow: "auto",

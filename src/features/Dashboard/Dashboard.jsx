@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 
-import { Button, IconButton, Popover, Stack, Tooltip } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Popover,
+  Stack,
+  Tooltip,
+} from "@mui/material";
 
 import {
   AddRounded,
@@ -79,17 +86,19 @@ export default function Dashboard() {
           <Tooltip
             title={editMode ? "Save widget layout" : "Edit widget layout"}
           >
-            <IconButton
-              sx={{ alignSelf: "flex-start" }}
-              color="primary"
-              disabled={widgets.length <= 0}
-              onClick={() => setEditMode(!editMode)}
-            >
-              <EditRounded
-                fontSize="inherit"
-                color={editMode ? "primary" : "inherit"}
-              />
-            </IconButton>
+            <Box component="span">
+              <IconButton
+                sx={{ alignSelf: "flex-start" }}
+                color="primary"
+                disabled={widgets.length <= 0}
+                onClick={() => setEditMode(!editMode)}
+              >
+                <EditRounded
+                  fontSize="inherit"
+                  color={editMode ? "primary" : "inherit"}
+                />
+              </IconButton>
+            </Box>
           </Tooltip>
           <RowHeader
             sxProps={{ textAlign: "left", fontWeight: "bold" }}
