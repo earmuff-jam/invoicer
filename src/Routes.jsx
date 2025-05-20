@@ -30,6 +30,10 @@ export const InvoicerRoutes = [
     element: <Overview />,
     icon: <HomeRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
+    config: {
+      displayHelpSelector: false,
+      displayPrintSelector: false,
+    },
   },
   {
     id: 2,
@@ -38,6 +42,10 @@ export const InvoicerRoutes = [
     element: <Dashboard />,
     icon: <DashboardCustomizeRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      displayHelpSelector: false,
+      displayPrintSelector: false,
+    },
   },
   {
     id: 3,
@@ -46,6 +54,10 @@ export const InvoicerRoutes = [
     element: <PdfViewer />,
     icon: <PictureAsPdfRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
+    config: {
+      displayHelpSelector: true,
+      displayPrintSelector: true,
+    },
   },
   {
     id: 4,
@@ -54,6 +66,10 @@ export const InvoicerRoutes = [
     element: <EditPdf />,
     icon: <EditRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
+    config: {
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
   },
   {
     id: 5,
@@ -62,6 +78,10 @@ export const InvoicerRoutes = [
     element: <SenderInfo />,
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
+    config: {
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
   },
   {
     id: 6,
@@ -70,5 +90,9 @@ export const InvoicerRoutes = [
     element: <RecieverInfo />,
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
+    config: {
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
   },
 ];

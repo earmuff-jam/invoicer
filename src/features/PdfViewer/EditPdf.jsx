@@ -33,6 +33,7 @@ import {
   LocalAtmRounded,
   PaidRounded,
   PaymentsRounded,
+  DeblurRounded,
 } from "@mui/icons-material";
 import { useAppTitle } from "src/hooks/useAppTitle";
 
@@ -57,14 +58,20 @@ const defaultOptions = [
   },
   {
     id: 4,
-    label: "Partially paid",
-    icon: <PaymentsRounded />,
+    label: "Due",
+    icon: <DeblurRounded />,
     selected: false,
   },
   {
     id: 5,
-    label: "Void / Cancelled",
+    label: "Cancelled",
     icon: <CancelRounded />,
+    selected: false,
+  },
+  {
+    id: 6,
+    label: "Partial payment",
+    icon: <PaymentsRounded />,
     selected: false,
   },
 ];

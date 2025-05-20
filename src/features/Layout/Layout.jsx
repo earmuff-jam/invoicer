@@ -40,7 +40,11 @@ const defaultDialog = {
   display: false,
 };
 
-export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
+export default function Layout({
+  routes,
+  currentThemeIdx,
+  setCurrentThemeIdx,
+}) {
   const theme = useTheme();
   const location = useLocation();
 
@@ -80,6 +84,7 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
     <NavigationProvider>
       <AppToolbar
         currentUri={currentUri}
+        currentRoute={routes.find((route) => route.path === currentUri)}
         handleDrawerClose={() => setOpenDrawer(false)}
         handleDrawerOpen={() => setOpenDrawer(true)}
         currentThemeIdx={currentThemeIdx}
@@ -131,16 +136,18 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
           <Typography sx={{ textTransform: "initial" }}>
             {dialog.title}
           </Typography>
-          <FormControlLabel
-            label="Display watermark"
-            labelPlacement="end"
-            control={
-              <Checkbox
-                checked={dialog?.showWatermark || false}
-                onChange={handleChange}
-              />
-            }
-          />
+          {dialog.type === "PRINT" && (
+            <FormControlLabel
+              label="Display watermark"
+              labelPlacement="end"
+              control={
+                <Checkbox
+                  checked={dialog?.showWatermark || false}
+                  onChange={handleChange}
+                />
+              }
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <AButton
