@@ -74,7 +74,7 @@ export default function AppToolbar({
   };
 
   return (
-    <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }}>
+    <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }} className="no-print">
       <Toolbar>
         <IconButton onClick={handleDrawerOpen}>
           <MenuOutlined />
