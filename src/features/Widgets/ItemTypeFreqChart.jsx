@@ -12,7 +12,7 @@ import { Stack } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
 import { useEffect, useState } from "react";
 import { normalizeInvoiceItemTypeChartDataset } from "src/features/Widgets/utils";
-import EmptyComponent from "src/features/Widgets/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
 
 ChartJS.register(
   CategoryScale,

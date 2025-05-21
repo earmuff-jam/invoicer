@@ -8,11 +8,14 @@ import {
   TableRow,
   Typography,
   Stack,
+  Box,
 } from "@mui/material";
 
 export default function ReportTable({
   rows = [],
   taxRate = 0,
+  showWatermark,
+  invoiceStatus,
   invoiceTitle = "Invoice Details",
 }) {
   const numberFormatter = (number) => Number(number).toFixed(2);
@@ -111,7 +114,27 @@ export default function ReportTable({
 
           <TableRow>
             <TableCell colSpan={4} sx={{ fontWeight: "bold" }}>
-              Total
+              <Stack direction="row" spacing={10}>
+                <Typography>Total</Typography>
+                <Box component="span">
+                  {invoiceStatus?.display && (
+                    <Typography
+                      color="error.light"
+                      variant="caption"
+                      className={!showWatermark && "no-print"} // print only when allowed
+                      sx={{
+                        textTransform: "uppercase",
+                        fontSize: "2rem",
+                        padding: "0.3rem 0.5rem",
+                        textAlign: "center",
+                        border: "0.3rem solid",
+                      }}
+                    >
+                      {invoiceStatus?.label}
+                    </Typography>
+                  )}
+                </Box>
+              </Stack>
             </TableCell>
             <TableCell align="right" sx={{ fontWeight: "bold" }}>
               {numberFormatter(invoiceTotal)}

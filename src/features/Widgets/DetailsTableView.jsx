@@ -8,7 +8,7 @@ import RowHeader from "src/common/RowHeader/RowHeader";
 import { noramlizeDetailsTableData } from "src/features/Widgets/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import EmptyComponent from "src/features/Widgets/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
 
 dayjs.extend(relativeTime);
 

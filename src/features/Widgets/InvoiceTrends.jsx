@@ -15,7 +15,7 @@ import { Box, Stack, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
 import { BarChartRounded, StackedLineChartRounded } from "@mui/icons-material";
 import { normalizeInvoiceTrendsChartsDataset } from "src/features/Widgets/utils";
-import EmptyComponent from "src/features/Widgets/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
 
 ChartJS.register(
   CategoryScale,

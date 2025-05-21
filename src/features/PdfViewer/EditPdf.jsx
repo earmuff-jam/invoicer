@@ -32,7 +32,6 @@ import {
   DraftsRounded,
   LocalAtmRounded,
   PaidRounded,
-  PaymentsRounded,
   DeblurRounded,
 } from "@mui/icons-material";
 import { useAppTitle } from "src/hooks/useAppTitle";
@@ -43,36 +42,35 @@ const defaultOptions = [
     label: "Paid",
     icon: <PaidRounded />,
     selected: true,
+    display: true,
   },
   {
     id: 2,
     label: "Draft",
     icon: <DraftsRounded />,
     selected: false,
+    display: true,
   },
   {
     id: 3,
     label: "Overdue",
     icon: <LocalAtmRounded />,
     selected: false,
+    display: true,
   },
   {
     id: 4,
-    label: "Due",
-    icon: <DeblurRounded />,
-    selected: false,
-  },
-  {
-    id: 5,
     label: "Cancelled",
     icon: <CancelRounded />,
     selected: false,
+    display: true,
   },
   {
-    id: 6,
-    label: "Partial payment",
-    icon: <PaymentsRounded />,
+    id: 5,
+    label: "None",
+    icon: <DeblurRounded />,
     selected: false,
+    display: false, // does not display status if none is selected
   },
 ];
 
@@ -217,7 +215,7 @@ export default function EditPdf({
     draftData["items"] = draftLineItemData;
     draftData["updated_on"] = dayjs().toISOString();
 
-    const invoiceStatus = options.find((option) => option.selected)?.label;
+    const invoiceStatus = options.find((option) => option.selected);
 
     localStorage.setItem("pdfDetails", JSON.stringify(draftData));
     localStorage.setItem("invoiceStatus", JSON.stringify(invoiceStatus));
@@ -264,7 +262,7 @@ export default function EditPdf({
     const parsedExistingInvoiceStatus = JSON.parse(existingInvoiceStatus);
 
     if (parsedExistingInvoiceStatus) {
-      handleSelection(parsedExistingInvoiceStatus);
+      handleSelection(parsedExistingInvoiceStatus.label);
     }
 
     const localValues = localStorage.getItem("pdfDetails");

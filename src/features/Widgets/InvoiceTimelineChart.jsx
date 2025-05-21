@@ -11,7 +11,7 @@ import {
 } from "chart.js";
 import { Stack } from "@mui/material";
 import RowHeader from "src/common/RowHeader/RowHeader";
-import EmptyComponent from "src/features/Widgets/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
 import { normalizeInvoiceTimelineChartDataset } from "src/features/Widgets/utils";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Title);
