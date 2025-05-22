@@ -28,6 +28,7 @@ function App() {
                 path="/"
                 element={
                   <Layout
+                    routes={InvoicerRoutes}
                     currentThemeIdx={currentThemeIdx}
                     setCurrentThemeIdx={setCurrentThemeIdx}
                   />

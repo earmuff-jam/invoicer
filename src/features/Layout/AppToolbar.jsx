@@ -21,15 +21,16 @@ import { DefaultTourStepsMapperObj } from "src/common/Tour/TourSteps";
 
 export default function AppToolbar({
   currentUri,
+  currentRoute,
   currentThemeIdx,
   setCurrentThemeIdx,
   handleDrawerOpen,
   handleDrawerClose,
   setDialog,
 }) {
-  // hide for landing page and dashboard page temp
-  const showHelp = currentUri !== "/" && currentUri !== "/dashboard";
-  const showPrint = currentUri === "/view";
+  // hide for landing page
+  const showHelp = currentRoute.config.displayHelpSelector;
+  const showPrint = currentRoute.config.displayPrintSelector;
 
   const handleHelp = () => {
     const draftDialogTitle = DefaultTourStepsMapperObj[currentUri]?.title;
@@ -73,7 +74,7 @@ export default function AppToolbar({
   };
 
   return (
-    <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }}>
+    <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }} className="no-print">
       <Toolbar>
         <IconButton onClick={handleDrawerOpen}>
           <MenuOutlined />

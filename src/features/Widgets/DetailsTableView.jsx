@@ -8,7 +8,7 @@ import RowHeader from "src/common/RowHeader/RowHeader";
 import { noramlizeDetailsTableData } from "src/features/Widgets/utils";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import EmptyComponent from "src/features/Widgets/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
 
 dayjs.extend(relativeTime);
 
@@ -25,7 +25,10 @@ const DetailsTableView = ({ label, caption }) => {
     formattedData = { ...draftData };
 
     if (draftInvoiceStatus) {
-      formattedData = { ...formattedData, invoice_status: draftInvoiceStatus };
+      formattedData = {
+        ...formattedData,
+        invoice_status: draftInvoiceStatus?.label,
+      };
     }
 
     if (draftData) {
@@ -107,7 +110,7 @@ const DetailsTableView = ({ label, caption }) => {
   });
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2} data-tour={"dashboard-7"}>
       <RowHeader
         title={label}
         caption={caption}

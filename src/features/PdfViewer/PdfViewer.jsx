@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import Salutation from "src/common/UserInfo/Salutation";
 import { useAppTitle } from "src/hooks/useAppTitle";
+import EmptyPdfViewer from "src/features/PdfViewer/EmptyPdfViewer";
 
 export default function PdfViewer() {
   useAppTitle("View Invoice");
@@ -20,26 +21,7 @@ export default function PdfViewer() {
   const handleNavigate = () => navigate("/edit");
 
   if (!invoice_form) {
-    return (
-      <Stack textAlign={"center"}>
-        <Typography sx={{ textTransform: "initial" }}>
-          Sorry, no invoice found to display
-        </Typography>
-        <Typography variant="caption" sx={{ textTransform: "initial" }}>
-          Create new invoice form
-          <Typography
-            component={"span"}
-            variant="caption"
-            color="primary"
-            sx={{ cursor: "pointer" }}
-            onClick={handleNavigate}
-          >
-            {" "}
-            here.
-          </Typography>
-        </Typography>
-      </Stack>
-    );
+    return <EmptyPdfViewer handleNavigate={handleNavigate} />;
   }
 
   return (
@@ -65,19 +47,10 @@ export default function PdfViewer() {
           rows={invoice_form.items || []}
           taxRate={invoice_form.tax_rate}
           invoiceTitle={invoice_form.invoice_header}
+          invoiceStatus={invoiceStatus}
+          showWatermark={showWatermark}
         />
-        <Typography
-          color="error.light"
-          className={!showWatermark && "no-print"} // print only when allowed
-          sx={{
-            transform: "rotate(-45deg)",
-            textTransform: "uppercase",
-            fontSize: "6rem",
-            textAlign: "center",
-          }}
-        >
-          {invoiceStatus}
-        </Typography>
+
         {invoice_form?.note.length > 0 && (
           <Typography variant="caption" fontStyle="italic" fontWeight="medium">
             Note: {invoice_form?.note}

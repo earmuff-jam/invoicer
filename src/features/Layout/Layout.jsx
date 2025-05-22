@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Slide,
   Stack,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -27,6 +28,7 @@ import {
   GeneratedTourSteps,
 } from "src/common/Tour/TourSteps";
 import AppToolbar from "src/features/Layout/AppToolbar";
+import { InfoRounded } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -40,7 +42,11 @@ const defaultDialog = {
   display: false,
 };
 
-export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
+export default function Layout({
+  routes,
+  currentThemeIdx,
+  setCurrentThemeIdx,
+}) {
   const theme = useTheme();
   const location = useLocation();
 
@@ -80,6 +86,7 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
     <NavigationProvider>
       <AppToolbar
         currentUri={currentUri}
+        currentRoute={routes.find((route) => route.path === currentUri)}
         handleDrawerClose={() => setOpenDrawer(false)}
         handleDrawerOpen={() => setOpenDrawer(true)}
         currentThemeIdx={currentThemeIdx}
@@ -131,16 +138,26 @@ export default function Layout({ currentThemeIdx, setCurrentThemeIdx }) {
           <Typography sx={{ textTransform: "initial" }}>
             {dialog.title}
           </Typography>
-          <FormControlLabel
-            label="Display watermark"
-            labelPlacement="end"
-            control={
-              <Checkbox
-                checked={dialog?.showWatermark || false}
-                onChange={handleChange}
+          {dialog.type === "PRINT" && (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <FormControlLabel
+                label="Display watermark"
+                labelPlacement="end"
+                control={
+                  <Checkbox
+                    checked={dialog?.showWatermark || false}
+                    onChange={handleChange}
+                  />
+                }
               />
-            }
-          />
+              <Tooltip title="Display invoice status if checked during print.">
+                <InfoRounded
+                  sx={{ color: "text.secondary" }}
+                  fontSize="small"
+                />
+              </Tooltip>
+            </Stack>
+          )}
         </DialogContent>
         <DialogActions>
           <AButton

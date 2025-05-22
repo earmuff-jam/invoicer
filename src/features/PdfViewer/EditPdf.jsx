@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
 import {
@@ -32,7 +33,8 @@ import {
   DraftsRounded,
   LocalAtmRounded,
   PaidRounded,
-  PaymentsRounded,
+  DeblurRounded,
+  InfoRounded,
 } from "@mui/icons-material";
 import { useAppTitle } from "src/hooks/useAppTitle";
 
@@ -42,30 +44,35 @@ const defaultOptions = [
     label: "Paid",
     icon: <PaidRounded />,
     selected: true,
+    display: true,
   },
   {
     id: 2,
     label: "Draft",
     icon: <DraftsRounded />,
     selected: false,
+    display: true,
   },
   {
     id: 3,
     label: "Overdue",
     icon: <LocalAtmRounded />,
     selected: false,
+    display: true,
   },
   {
     id: 4,
-    label: "Partially paid",
-    icon: <PaymentsRounded />,
+    label: "Cancelled",
+    icon: <CancelRounded />,
     selected: false,
+    display: true,
   },
   {
     id: 5,
-    label: "Void / Cancelled",
-    icon: <CancelRounded />,
+    label: "None",
+    icon: <DeblurRounded />,
     selected: false,
+    display: false, // does not display status if none is selected
   },
 ];
 
@@ -210,7 +217,7 @@ export default function EditPdf({
     draftData["items"] = draftLineItemData;
     draftData["updated_on"] = dayjs().toISOString();
 
-    const invoiceStatus = options.find((option) => option.selected)?.label;
+    const invoiceStatus = options.find((option) => option.selected);
 
     localStorage.setItem("pdfDetails", JSON.stringify(draftData));
     localStorage.setItem("invoiceStatus", JSON.stringify(invoiceStatus));
@@ -257,7 +264,7 @@ export default function EditPdf({
     const parsedExistingInvoiceStatus = JSON.parse(existingInvoiceStatus);
 
     if (parsedExistingInvoiceStatus) {
-      handleSelection(parsedExistingInvoiceStatus);
+      handleSelection(parsedExistingInvoiceStatus.label);
     }
 
     const localValues = localStorage.getItem("pdfDetails");
@@ -424,9 +431,17 @@ export default function EditPdf({
         />
 
         <Paper sx={{ padding: "1rem" }} data-tour="edit-pdf-7">
-          <Typography sx={{ fontWeight: "bold", marginTop: "1rem" }}>
-            Invoice status
-          </Typography>
+          <Tooltip
+            title="The current status of the invoice. Selecting 'none' will not display any status."
+            placement="top-start"
+          >
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography sx={{ fontWeight: "bold", marginTop: "1rem" }}>
+                Invoice status
+              </Typography>
+              <InfoRounded sx={{ color: "text.secondary" }} fontSize="small" />
+            </Stack>
+          </Tooltip>
           <MenuList>
             {options.map(({ id, label, icon, selected }) => (
               <MenuItem key={id} onClick={() => handleSelection(label)}>

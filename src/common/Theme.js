@@ -92,6 +92,15 @@ const commonComponents = {
       },
     },
   },
+  MuiTooltip: {
+    styleOverrides: {
+      tooltip: {
+        fontSize: "0.875rem",
+        borderRadius: 4,
+        textTransform: "none",
+      },
+    },
+  },
 };
 
 export const lightTheme = createTheme({
