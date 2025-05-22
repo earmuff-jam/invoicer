@@ -43,7 +43,7 @@ export const InvoicerRoutes = [
     icon: <DashboardCustomizeRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
     config: {
-      displayHelpSelector: false,
+      displayHelpSelector: true,
       displayPrintSelector: false,
     },
   },

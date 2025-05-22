@@ -56,7 +56,7 @@ const InvoiceTimelineChart = ({ label, caption }) => {
   };
 
   return (
-    <Stack>
+    <Stack data-tour={"dashboard-4"}>
       <RowHeader
         title={label}
         caption={caption}

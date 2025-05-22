@@ -9,6 +9,7 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
+  Tooltip,
 } from "@mui/material";
 import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
 import {
@@ -33,6 +34,7 @@ import {
   LocalAtmRounded,
   PaidRounded,
   DeblurRounded,
+  InfoRounded,
 } from "@mui/icons-material";
 import { useAppTitle } from "src/hooks/useAppTitle";
 
@@ -429,9 +431,17 @@ export default function EditPdf({
         />
 
         <Paper sx={{ padding: "1rem" }} data-tour="edit-pdf-7">
-          <Typography sx={{ fontWeight: "bold", marginTop: "1rem" }}>
-            Invoice status
-          </Typography>
+          <Tooltip
+            title="The current status of the invoice. Selecting 'none' will not display any status."
+            placement="top-start"
+          >
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography sx={{ fontWeight: "bold", marginTop: "1rem" }}>
+                Invoice status
+              </Typography>
+              <InfoRounded sx={{ color: "text.secondary" }} fontSize="small" />
+            </Stack>
+          </Tooltip>
           <MenuList>
             {options.map(({ id, label, icon, selected }) => (
               <MenuItem key={id} onClick={() => handleSelection(label)}>

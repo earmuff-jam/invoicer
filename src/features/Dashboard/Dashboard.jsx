@@ -81,7 +81,12 @@ export default function Dashboard() {
 
   return (
     <Stack>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        data-tour={"dashboard-0"}
+      >
         <Stack direction="row">
           <Tooltip
             title={editMode ? "Save widget layout" : "Edit widget layout"}
@@ -111,11 +116,12 @@ export default function Dashboard() {
         </Stack>
         <Stack direction="row" spacing={2}>
           <Tooltip title="Add Widget">
-            <IconButton onClick={handleClick}>
+            <IconButton onClick={handleClick} data-tour={"dashboard-1"}>
               <AddRounded fontSize="small" color="primary" />
             </IconButton>
           </Tooltip>
           <Button
+            data-tour={"dashboard-2"}
             variant="outlined"
             endIcon={<RestartAltRounded />}
             onClick={reset}
@@ -125,12 +131,14 @@ export default function Dashboard() {
         </Stack>
       </Stack>
 
-      <DndGridLayout
-        editMode={editMode}
-        widgets={widgets}
-        setWidgets={setWidgets}
-        handleRemoveWidget={handleRemoveWidget}
-      />
+      <Box data-tour={"dashboard-3"}>
+        <DndGridLayout
+          editMode={editMode}
+          widgets={widgets}
+          setWidgets={setWidgets}
+          handleRemoveWidget={handleRemoveWidget}
+        />
+      </Box>
 
       {/* Add Widget Popover Content */}
       <Popover

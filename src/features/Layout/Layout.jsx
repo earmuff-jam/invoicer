@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Slide,
   Stack,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
@@ -27,6 +28,7 @@ import {
   GeneratedTourSteps,
 } from "src/common/Tour/TourSteps";
 import AppToolbar from "src/features/Layout/AppToolbar";
+import { InfoRounded } from "@mui/icons-material";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -137,16 +139,24 @@ export default function Layout({
             {dialog.title}
           </Typography>
           {dialog.type === "PRINT" && (
-            <FormControlLabel
-              label="Display watermark"
-              labelPlacement="end"
-              control={
-                <Checkbox
-                  checked={dialog?.showWatermark || false}
-                  onChange={handleChange}
+            <Stack direction="row" spacing={1} alignItems="center">
+              <FormControlLabel
+                label="Display watermark"
+                labelPlacement="end"
+                control={
+                  <Checkbox
+                    checked={dialog?.showWatermark || false}
+                    onChange={handleChange}
+                  />
+                }
+              />
+              <Tooltip title="Display invoice status if checked during print.">
+                <InfoRounded
+                  sx={{ color: "text.secondary" }}
+                  fontSize="small"
                 />
-              }
-            />
+              </Tooltip>
+            </Stack>
           )}
         </DialogContent>
         <DialogActions>

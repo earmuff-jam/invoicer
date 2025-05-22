@@ -105,6 +105,46 @@ const RecieverInfoHelpSteps = [
 ];
 
 /**
+ * DashboardHelpSteps
+ *
+ * User helpful steps in the dashboard page. This is where users can view a breakdown of how their invoice performed with a help of couple
+ * of widgets.
+ */
+const DashboardHelpSteps = [
+  {
+    title:
+      "Welcome to your local dashboard view. Your most recent invoice data characteristics are displayed here. This is your standard layout. Press the 'Edit' button to edit or remove a selected widget.",
+  },
+  {
+    title:
+      "Select '+' to add widgets in the dashboard. You can add multiple of the same widgets as well.",
+  },
+  {
+    title: "Reset your dashboard to remove clutter.",
+  },
+  {
+    title:
+      "View your added invoices here. If you do not have widgets, add widgets and restart the tutorial to proceed.",
+  },
+  {
+    title:
+      "This is the Invoice Timeline Chart Widget. This displays the posted payment and timeline of the posted payment.",
+  },
+  {
+    title:
+      "This is the Collected Tax and Totals Widget. This displays the monetary amount collected and taxes collected. View timeline chart if many invoices are selected.",
+  },
+  {
+    title:
+      "This is the Items and Service Type Widget. This displays the type of item the invoice was created for.",
+  },
+  {
+    title:
+      "This is the Item Details Table. We can view details about the imported invoices in the list form. If you have many invoices, you can view them in a list form.",
+  },
+];
+
+/**
  * derieveTourSteps
  *
  * used to build the necessary object from the steps to render the tour correctly.
@@ -116,7 +156,11 @@ const derieveTourSteps = (staticSteps, prefix) => {
   return staticSteps.map(({ title }, index) => ({
     id: index,
     selector: `[data-tour="${prefix}-${index}"]`,
-    content: <Box padding="0.2rem"><Typography variant="caption">{title}</Typography></Box>,
+    content: (
+      <Box padding="0.2rem">
+        <Typography variant="caption">{title}</Typography>
+      </Box>
+    ),
   }));
 };
 
@@ -162,6 +206,21 @@ export const DefaultTourStepsMapperObj = {
       SenderInfoHelpSteps.length +
       RecieverInfoHelpSteps.length,
   },
+  "/dashboard": {
+    title:
+      "This help / guide is designed to aide you in learning how to view the dashboard for your inovice. Feel free to restart the guide anytime if necessary.",
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length,
+  },
 };
 
 /**
@@ -175,4 +234,5 @@ export const GeneratedTourSteps = [
   ...derieveTourSteps(EditPdfHelpSteps, "edit-pdf"),
   ...derieveTourSteps(SenderInfoHelpSteps, "sender"),
   ...derieveTourSteps(RecieverInfoHelpSteps, "reciever"),
+  ...derieveTourSteps(DashboardHelpSteps, "dashboard"),
 ];

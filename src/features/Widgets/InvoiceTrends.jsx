@@ -72,7 +72,7 @@ const InvoiceTrendsChart = ({ label, caption }) => {
   };
 
   return (
-    <Stack>
+    <Stack data-tour={"dashboard-5"}>
       <Stack direction="row" justifyContent="space-between">
         <RowHeader
           title={label}
