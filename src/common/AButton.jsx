@@ -10,11 +10,12 @@ const analyticsEnabled = import.meta.env.VITE_ENABLE_ANALYTICS || "false";
  * analytics of the user location based on the route
  *
  * @param {string} label - the label of the button component
+ * @param {boolean} loading - the loading state of the selected component, defaults to false
  * @param {function} onClick - the onClick handler to perform action on the button
  * @param {object} rest - the props passed in as a ...rest component
  *
  */
-export default function AButton({ label, onClick, ...rest }) {
+export default function AButton({ label, onClick, loading = false, ...rest }) {
   const buttonAnalytics = useButtonAnalytics();
 
   const handleClick = (ev) => {
@@ -24,7 +25,7 @@ export default function AButton({ label, onClick, ...rest }) {
   };
 
   return (
-    <Button {...rest} onClick={handleClick}>
+    <Button {...rest} onClick={handleClick} loading={loading}>
       {label}
     </Button>
   );

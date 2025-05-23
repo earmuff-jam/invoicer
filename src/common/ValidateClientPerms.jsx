@@ -15,14 +15,16 @@ export default function validateClientPermissions() {
     .VITE_ENABLE_INVOICER_PRO;
   const invoicerAppUserInformationEnabled = import.meta.env
     .VITE_ENABLE_INVOICER_USER_INFORMATION;
+  const invoicerAppSendEmailEnabled = import.meta.env.VITE_ENABLE_EMAIL_FEATURE;
 
   return new Map([
     ["analytics", invoicerAppAnalyticsEnabled === "true"],
     ["invoicer", invoicerAppEnabled === "true"],
     ["invoicerPro", invoicerAppProFeaturesEnabled === "true"],
     ["userInformation", invoicerAppUserInformationEnabled === "true"],
+    ["sendEmail", invoicerAppSendEmailEnabled === "true"],
   ]);
-};
+}
 
 /**
  * isValidPermissions
@@ -40,7 +42,7 @@ export function isValidPermissions(validRouteFlags = [], requiredFlags = []) {
   });
 
   return isRequired;
-};
+}
 
 /**
  * buildAppRoutes
