@@ -3,6 +3,7 @@ import { Alert, Snackbar, Typography } from "@mui/material";
 function CustomSnackbar({
   showSnackbar,
   setShowSnackbar,
+  severity = "success",
   title,
   caption,
   onClick,
@@ -15,7 +16,7 @@ function CustomSnackbar({
     >
       <Alert
         onClose={() => setShowSnackbar(false)}
-        severity="success"
+        severity={severity}
         variant="filled"
         onClick={onClick}
         sx={{ width: "100%", cursor: "pointer" }}

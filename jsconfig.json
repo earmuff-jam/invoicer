@@ -4,6 +4,7 @@
     "paths": {
       "src/*": ["src/*"],
       "common/*": ["src/common/*"],
+      "hooks/*": ["src/hooks/*"],
       "features/*": ["src/features/*"]
     },
     "jsx": "react"

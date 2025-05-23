@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       common: path.resolve(__dirname, "src/common"),
+      hooks: path.resolve(__dirname, "src/hooks"),
       features: path.resolve(__dirname, "src/features"),
       src: path.resolve(__dirname, "src"),
     },

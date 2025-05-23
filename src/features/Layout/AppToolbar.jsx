@@ -15,9 +15,12 @@ import {
   MenuOutlined,
 } from "@mui/icons-material";
 
-import AButton from "src/common/AButton";
-import AIconButton from "src/common/AIconButton";
-import { DefaultTourStepsMapperObj } from "src/common/Tour/TourSteps";
+import AButton from "common/AButton";
+import AIconButton from "common/AIconButton";
+import { DefaultTourStepsMapperObj } from "common/Tour/TourSteps";
+import useSendEmail, { generateInvoiceHTML } from "hooks/useSendEmail";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
+import validateClientPermissions from "common/ValidateClientPerms";
 
 export default function AppToolbar({
   currentUri,
@@ -28,9 +31,42 @@ export default function AppToolbar({
   handleDrawerClose,
   setDialog,
 }) {
+  const { sendEmail, reset, loading, error, success } = useSendEmail();
+
   // hide for landing page
   const showHelp = currentRoute.config.displayHelpSelector;
   const showPrint = currentRoute.config.displayPrintSelector;
+
+  const userEnabledFlagMap = validateClientPermissions();
+  const isSendEmailFeatureEnabled = userEnabledFlagMap.get("sendEmail");
+
+  const handleSendEmail = () => {
+    const draftPdfDetails = JSON.parse(localStorage.getItem("pdfDetails"));
+
+    const draftInvoiceStatus = JSON.parse(
+      localStorage.getItem("invoiceStatus")
+    );
+
+    const draftInvoiceHeader = draftPdfDetails?.invoice_header;
+    const draftInvoiceStatusLabel = draftInvoiceStatus?.label;
+
+    const draftRecieverUserInfo = JSON.parse(
+      localStorage.getItem("recieverInfo")
+    );
+
+    sendEmail({
+      to: draftRecieverUserInfo.email_address,
+      subject: draftInvoiceHeader
+        ? `Invoice Details - ${draftInvoiceHeader}`
+        : "Invoice Details",
+      text: "Please view your attached invoice.",
+      html: generateInvoiceHTML(
+        draftRecieverUserInfo,
+        draftPdfDetails,
+        draftInvoiceStatusLabel
+      ),
+    });
+  };
 
   const handleHelp = () => {
     const draftDialogTitle = DefaultTourStepsMapperObj[currentUri]?.title;
@@ -84,15 +120,26 @@ export default function AppToolbar({
         </Typography>
         <Stack direction="row" spacing={1}>
           {showPrint ? (
-            <AButton
-              data-tour="view-pdf-1"
-              variant="contained"
-              onClick={handlePrint}
-              className="no-print"
-              label="Print"
-            />
+            <>
+              <AButton
+                data-tour="view-pdf-1"
+                variant="contained"
+                onClick={handlePrint}
+                className="no-print"
+                label="Print"
+              />
+              {isSendEmailFeatureEnabled ? (
+                <AButton
+                  variant="contained"
+                  onClick={handleSendEmail}
+                  className="no-print"
+                  label="Send Email"
+                  loading={loading}
+                />
+              ) : null}
+            </>
           ) : null}
-          <Tooltip title="Change theme of the application. ">
+          <Tooltip title="Change theme of the application.">
             <Box>
               <AIconButton
                 data-tour="view-pdf-2"
@@ -123,6 +170,16 @@ export default function AppToolbar({
           )}
         </Stack>
       </Toolbar>
+      <CustomSnackbar
+        showSnackbar={success || error !== null}
+        setShowSnackbar={reset}
+        severity={success ? "success" : "error"}
+        title={
+          success
+            ? "Email sent successfully. Check spam."
+            : "Error sending email."
+        }
+      />
     </AppBar>
   );
 }
