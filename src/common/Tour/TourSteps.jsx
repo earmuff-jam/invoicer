@@ -11,23 +11,8 @@ const ViewPdfHelpSteps = [
       "View created pdf from here. If you do not have any pdf to print, navigate to 'Edit Invoice' to create new invoices.",
   },
   {
-    title: "Print created invoices with this button.",
-  },
-  {
     title:
-      "Change selected viewing theme from here. You can view both dark mode and light mode.",
-  },
-  {
-    title:
-      "This help button is presented to allow users to learn the system visually.",
-  },
-  {
-    title:
-      "The main application logo. Use the chevron to open the navigation drawer at will.",
-  },
-  {
-    title:
-      "This is navigation drawer. Use it to quickly navigate between various pages within the application.",
+      "Use options to help navigate or perform certain actions on specific pages. Such as Sending Email, Printing etc.",
   },
 ];
 

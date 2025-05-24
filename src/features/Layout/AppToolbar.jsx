@@ -1,28 +1,13 @@
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Stack,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { MenuOutlined } from "@mui/icons-material";
 
-import {
-  DarkModeRounded,
-  EmailRounded,
-  HelpCenterRounded,
-  LightModeRounded,
-  MenuOutlined,
-  PrintRounded,
-} from "@mui/icons-material";
+import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
 
-import AIconButton from "common/AIconButton";
 import { DefaultTourStepsMapperObj } from "common/Tour/TourSteps";
 import useSendEmail, { generateInvoiceHTML } from "hooks/useSendEmail";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import validateClientPermissions from "common/ValidateClientPerms";
 import { useGenerateUserData } from "hooks/useGenerateUserData";
+import MenuOptions from "features/Layout/MenuOptions";
 
 export default function AppToolbar({
   currentUri,
@@ -112,66 +97,18 @@ export default function AppToolbar({
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Invoicer
         </Typography>
-        <Stack direction="row" spacing={1}>
-          {showPrint ? (
-            <>
-              <Tooltip title="Print this page">
-                <Box>
-                  <AIconButton
-                    data-tour="view-pdf-1"
-                    variant="outlined"
-                    onClick={handlePrint}
-                    className="no-print"
-                    label={<PrintRounded />}
-                  />
-                </Box>
-              </Tooltip>
-              {isSendEmailFeatureEnabled ? (
-                <Tooltip title="Send email">
-                  <Box>
-                    <AIconButton
-                      variant="contained"
-                      disabled={isDisabled}
-                      onClick={handleSendEmail}
-                      className="no-print"
-                      loading={loading}
-                      label={<EmailRounded />}
-                    />
-                  </Box>
-                </Tooltip>
-              ) : null}
-            </>
-          ) : null}
-          <Tooltip title="Change theme of the application.">
-            <Box>
-              <AIconButton
-                data-tour="view-pdf-2"
-                variant="outlined"
-                onClick={(ev) => changeTheme(ev, currentThemeIdx)}
-                className="no-print"
-                label={
-                  Number(currentThemeIdx) === 1 ? (
-                    <LightModeRounded />
-                  ) : (
-                    <DarkModeRounded />
-                  )
-                }
-              />
-            </Box>
-          </Tooltip>
-          {showHelp && (
-            <Tooltip title="Click here to learn more about this page.">
-              <Box>
-                <AIconButton
-                  data-tour="view-pdf-3"
-                  label={<HelpCenterRounded />}
-                  onClick={handleHelp}
-                  className="no-print"
-                />
-              </Box>
-            </Tooltip>
-          )}
-        </Stack>
+        <MenuOptions
+          showPrint={showPrint}
+          handleHelp={handleHelp}
+          handlePrint={handlePrint}
+          handleSendEmail={handleSendEmail}
+          handleTheme={() => changeTheme("", currentThemeIdx)}
+          isSendEmailFeatureEnabled={isSendEmailFeatureEnabled} // email feature check
+          isSendEmailIconDisabled={isDisabled} // valid data check
+          isLightTheme={Number(currentThemeIdx) === 1}
+          showHelpAndSupport={showHelp}
+          isSendEmailLoading={loading}
+        />
       </Toolbar>
       <CustomSnackbar
         showSnackbar={success || error !== null}
