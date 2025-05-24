@@ -15,8 +15,9 @@ import { useTheme } from "@emotion/react";
 import { InvoicerRoutes } from "src/Routes";
 import { useLocation, useNavigate } from "react-router-dom";
 import validateClientPermissions, {
+  filterValidRoutesForNavigationBar,
   isValidPermissions,
-} from "src/common/ValidateClientPerms";
+} from "common/ValidateClientPerms";
 
 export default function NavBar({
   openDrawer,
@@ -39,24 +40,28 @@ export default function NavBar({
 
   const formattedInvoicerRoutes = (InvoicerRoutes = []) => {
     const validRouteFlags = validateClientPermissions();
-    return InvoicerRoutes.map(({ id, path, label, icon, requiredFlags }) => {
-      const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
-      if (!isRequired) return;
-      return (
-        <ListItemButton
-          key={id}
-          selected={pathname === path}
-          onClick={() => handleMenuItemClick(path)}
-        >
-          <ListItemIcon
-            sx={{ color: pathname === path && theme.palette.primary.main }}
+    const filteredNavigationRoutes =
+      filterValidRoutesForNavigationBar(InvoicerRoutes);
+    return filteredNavigationRoutes.map(
+      ({ id, path, label, icon, requiredFlags }) => {
+        const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
+        if (!isRequired) return;
+        return (
+          <ListItemButton
+            key={id}
+            selected={pathname === path}
+            onClick={() => handleMenuItemClick(path)}
           >
-            {icon}
-          </ListItemIcon>
-          <ListItemText primary={label} />
-        </ListItemButton>
-      );
-    });
+            <ListItemIcon
+              sx={{ color: pathname === path && theme.palette.primary.main }}
+            >
+              {icon}
+            </ListItemIcon>
+            <ListItemText primary={label} />
+          </ListItemButton>
+        );
+      }
+    );
   };
 
   return (

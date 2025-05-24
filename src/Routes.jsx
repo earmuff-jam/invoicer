@@ -4,8 +4,10 @@ import {
   DashboardCustomizeRounded,
   EditRounded,
   HomeRounded,
+  LiveHelpRounded,
   Person2Rounded,
   PictureAsPdfRounded,
+  WhatshotRounded,
 } from "@mui/icons-material";
 
 const Overview = lazy(() => import("features/Landing/Overview"));
@@ -31,6 +33,7 @@ export const InvoicerRoutes = [
     icon: <HomeRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
     config: {
+      displayInNavBar: true,
       displayHelpSelector: false,
       displayPrintSelector: false,
     },
@@ -43,6 +46,7 @@ export const InvoicerRoutes = [
     icon: <DashboardCustomizeRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
     config: {
+      displayInNavBar: true,
       displayHelpSelector: true,
       displayPrintSelector: false,
     },
@@ -55,6 +59,7 @@ export const InvoicerRoutes = [
     icon: <PictureAsPdfRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
     config: {
+      displayInNavBar: true,
       displayHelpSelector: true,
       displayPrintSelector: true,
     },
@@ -67,6 +72,7 @@ export const InvoicerRoutes = [
     icon: <EditRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
     config: {
+      displayInNavBar: true,
       displayHelpSelector: true,
       displayPrintSelector: false,
     },
@@ -79,6 +85,7 @@ export const InvoicerRoutes = [
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
     config: {
+      displayInNavBar: true,
       displayHelpSelector: true,
       displayPrintSelector: false,
     },
@@ -91,6 +98,33 @@ export const InvoicerRoutes = [
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
     config: {
+      displayInNavBar: true,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 7,
+    label: "What's New",
+    path: "/new",
+    element: <RecieverInfo />,
+    icon: <WhatshotRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      displayInNavBar: false,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 8,
+    label: "FAQ",
+    path: "/faq",
+    element: <RecieverInfo />,
+    icon: <LiveHelpRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      displayInNavBar: false,
       displayHelpSelector: true,
       displayPrintSelector: false,
     },

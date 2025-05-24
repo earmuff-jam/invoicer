@@ -48,7 +48,7 @@ export default function AppToolbar({
   };
 
   const handleHelp = () => {
-    const draftDialogTitle = DefaultTourStepsMapperObj[currentUri]?.title;
+    const draftDialogTitle = DefaultTourStepsMapperObj[currentUri]?.element;
 
     setDialog({
       title: draftDialogTitle,

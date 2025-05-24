@@ -69,11 +69,11 @@ export default function Layout({
   };
 
   const setTour = () => {
-    const currentStep = DefaultTourStepsMapperObj[currentUri];
+    const currentTourEl = DefaultTourStepsMapperObj[currentUri];
 
     const formattedDraftTourSteps = GeneratedTourSteps.slice(
-      currentStep.start,
-      currentStep.end
+      currentTourEl.start,
+      currentTourEl.end
     );
 
     setIsOpen(true);
