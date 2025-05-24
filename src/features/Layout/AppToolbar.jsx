@@ -10,17 +10,19 @@ import {
 
 import {
   DarkModeRounded,
+  EmailRounded,
   HelpCenterRounded,
   LightModeRounded,
   MenuOutlined,
+  PrintRounded,
 } from "@mui/icons-material";
 
-import AButton from "common/AButton";
 import AIconButton from "common/AIconButton";
 import { DefaultTourStepsMapperObj } from "common/Tour/TourSteps";
 import useSendEmail, { generateInvoiceHTML } from "hooks/useSendEmail";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import validateClientPermissions from "common/ValidateClientPerms";
+import { useGenerateUserData } from "hooks/useGenerateUserData";
 
 export default function AppToolbar({
   currentUri,
@@ -33,6 +35,15 @@ export default function AppToolbar({
 }) {
   const { sendEmail, reset, loading, error, success } = useSendEmail();
 
+  const {
+    data,
+    recieverInfo,
+    draftInvoiceHeader,
+    draftInvoiceStatusLabel,
+    draftRecieverUserEmailAddress,
+    isDisabled,
+  } = useGenerateUserData();
+
   // hide for landing page
   const showHelp = currentRoute.config.displayHelpSelector;
   const showPrint = currentRoute.config.displayPrintSelector;
@@ -41,30 +52,13 @@ export default function AppToolbar({
   const isSendEmailFeatureEnabled = userEnabledFlagMap.get("sendEmail");
 
   const handleSendEmail = () => {
-    const draftPdfDetails = JSON.parse(localStorage.getItem("pdfDetails"));
-
-    const draftInvoiceStatus = JSON.parse(
-      localStorage.getItem("invoiceStatus")
-    );
-
-    const draftInvoiceHeader = draftPdfDetails?.invoice_header;
-    const draftInvoiceStatusLabel = draftInvoiceStatus?.label;
-
-    const draftRecieverUserInfo = JSON.parse(
-      localStorage.getItem("recieverInfo")
-    );
-
     sendEmail({
-      to: draftRecieverUserInfo.email_address,
+      to: draftRecieverUserEmailAddress,
       subject: draftInvoiceHeader
         ? `Invoice Details - ${draftInvoiceHeader}`
         : "Invoice Details",
       text: "Please view your attached invoice.",
-      html: generateInvoiceHTML(
-        draftRecieverUserInfo,
-        draftPdfDetails,
-        draftInvoiceStatusLabel
-      ),
+      html: generateInvoiceHTML(recieverInfo, data, draftInvoiceStatusLabel),
     });
   };
 
@@ -121,21 +115,30 @@ export default function AppToolbar({
         <Stack direction="row" spacing={1}>
           {showPrint ? (
             <>
-              <AButton
-                data-tour="view-pdf-1"
-                variant="contained"
-                onClick={handlePrint}
-                className="no-print"
-                label="Print"
-              />
+              <Tooltip title="Print this page">
+                <Box>
+                  <AIconButton
+                    data-tour="view-pdf-1"
+                    variant="outlined"
+                    onClick={handlePrint}
+                    className="no-print"
+                    label={<PrintRounded />}
+                  />
+                </Box>
+              </Tooltip>
               {isSendEmailFeatureEnabled ? (
-                <AButton
-                  variant="contained"
-                  onClick={handleSendEmail}
-                  className="no-print"
-                  label="Send Email"
-                  loading={loading}
-                />
+                <Tooltip title="Send email">
+                  <Box>
+                    <AIconButton
+                      variant="contained"
+                      disabled={isDisabled}
+                      onClick={handleSendEmail}
+                      className="no-print"
+                      loading={loading}
+                      label={<EmailRounded />}
+                    />
+                  </Box>
+                </Tooltip>
               ) : null}
             </>
           ) : null}
