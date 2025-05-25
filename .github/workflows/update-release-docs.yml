@@ -24,7 +24,7 @@ jobs:
           VERSION: ${{ github.event.release.tag_name }}
           DATE: ${{ github.event.release.published_at }}
           BODY: ${{ github.event.release.body }}
-        run: node public/update-release-docs.js
+        run: node dev/update-release-docs.js
 
       - name: Commit and push changes
         run: |
