@@ -45,6 +45,17 @@ export function isValidPermissions(validRouteFlags = [], requiredFlags = []) {
 }
 
 /**
+ * filterValidRoutesForNavigationBar
+ *
+ * function used to filter the valid routes for left side navigation bar.
+ * @param {Array} draftRoutes - the array of routes that need to be filtered out based on the route config
+ */
+export const filterValidRoutesForNavigationBar = (draftRoutes = []) => {
+  if (!draftRoutes) return [];
+  return draftRoutes.filter(({ config }) => Boolean(config.displayInNavBar));
+};
+
+/**
  * buildAppRoutes
  *
  * used to build application level routes based on the passed in available routes.

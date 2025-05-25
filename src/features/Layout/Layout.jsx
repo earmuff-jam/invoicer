@@ -29,6 +29,7 @@ import {
 } from "src/common/Tour/TourSteps";
 import AppToolbar from "src/features/Layout/AppToolbar";
 import { InfoRounded } from "@mui/icons-material";
+import BreadCrumbs from "src/features/Layout/BreadCrumbs";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -69,11 +70,11 @@ export default function Layout({
   };
 
   const setTour = () => {
-    const currentStep = DefaultTourStepsMapperObj[currentUri];
+    const currentTourEl = DefaultTourStepsMapperObj[currentUri];
 
     const formattedDraftTourSteps = GeneratedTourSteps.slice(
-      currentStep.start,
-      currentStep.end
+      currentTourEl.start,
+      currentTourEl.end
     );
 
     setIsOpen(true);
@@ -119,6 +120,12 @@ export default function Layout({
           }}
         >
           <Box sx={{ minHeight: "90vh" }}>
+            {/* no breadcrumbs on landing page */}
+            {currentUri !== "/" && (
+              <BreadCrumbs
+                currentRoute={routes.find((route) => route.path === currentUri)}
+              />
+            )}
             <Outlet context={[dialog.showWatermark]} />
           </Box>
           <Footer />

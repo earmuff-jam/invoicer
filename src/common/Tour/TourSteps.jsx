@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import { createHelperSentences } from "src/common/utils";
 
 /**
  * ViewPdfHelpSteps
@@ -7,11 +8,11 @@ import { Box, Typography } from "@mui/material";
  */
 const ViewPdfHelpSteps = [
   {
-    title:
+    element:
       "View created pdf from here. If you do not have any pdf to print, navigate to 'Edit Invoice' to create new invoices.",
   },
   {
-    title:
+    element:
       "Use options to help navigate or perform certain actions on specific pages. Such as Sending Email, Printing etc.",
   },
 ];
@@ -23,42 +24,42 @@ const ViewPdfHelpSteps = [
  */
 const EditPdfHelpSteps = [
   {
-    title:
+    element:
       "Create or update a selected invoice. Invoices created are temporarily stored in the device so users can retrieve it easily.",
   },
   {
-    title:
-      "Fill in the title of the invoice. Sample: Rent for the month of January. ",
+    element:
+      "Fill in the element of the invoice. Sample: Rent for the month of January. ",
   },
   {
-    title:
+    element:
       "Invoice captions are more like a sub heading. Emphasize on what you expect. Sample: Invoice Due every 3rd of month",
   },
   {
-    title:
+    element:
       "Add additional notes that would be added beneath the Invoice. This is similar to footnote. Sample: No Additional payment due at this time.",
   },
   {
-    title: "Select the start date and the end date for the selected invoice.",
+    element: "Select the start date and the end date for the selected invoice.",
   },
   {
-    title:
+    element:
       "Invoice Header is the small section on top of the invoice. This is used to give emphasis to the invoice. Sample: Rent Details.",
   },
   {
-    title:
+    element:
       "Add the standard tax rate. If you are unsure leave it at 0. Keep in mind that this does not include tax during calculations.",
   },
   {
-    title:
+    element:
       "Select the status of the invoice. This watermark will transpond on the actual paper. Choose between various options of your invoice.",
   },
   {
-    title:
-      "Add Item as a line item in the invoice. Each line item is customized and includes its own title and caption to allow users to provide more information.",
+    element:
+      "Add Item as a line item in the invoice. Each line item is customized and includes its own element and caption to allow users to provide more information.",
   },
   {
-    title:
+    element:
       "After meeting the requirements and adding sufficient line items to your liking, press 'Save' button. Navigate to 'View Invoice' to view the look and feel of your invoice.",
   },
 ];
@@ -71,7 +72,7 @@ const EditPdfHelpSteps = [
  */
 const SenderInfoHelpSteps = [
   {
-    title:
+    element:
       "Sender biographic information. Store details for selected sender. Sender is the person who is requesting to send the invoice.",
   },
 ];
@@ -84,7 +85,7 @@ const SenderInfoHelpSteps = [
  */
 const RecieverInfoHelpSteps = [
   {
-    title:
+    element:
       "Reciever biographic information. Store details for selected reciever. Reciever is the person who will be recieving this invoice.",
   },
 ];
@@ -97,34 +98,34 @@ const RecieverInfoHelpSteps = [
  */
 const DashboardHelpSteps = [
   {
-    title:
+    element:
       "Welcome to your local dashboard view. Your most recent invoice data characteristics are displayed here. This is your standard layout. Press the 'Edit' button to edit or remove a selected widget.",
   },
   {
-    title:
+    element:
       "Select '+' to add widgets in the dashboard. You can add multiple of the same widgets as well.",
   },
   {
-    title: "Reset your dashboard to remove clutter.",
+    element: "Reset your dashboard to remove clutter.",
   },
   {
-    title:
+    element:
       "View your added invoices here. If you do not have widgets, add widgets and restart the tutorial to proceed.",
   },
   {
-    title:
+    element:
       "This is the Invoice Timeline Chart Widget. This displays the posted payment and timeline of the posted payment.",
   },
   {
-    title:
+    element:
       "This is the Collected Tax and Totals Widget. This displays the monetary amount collected and taxes collected. View timeline chart if many invoices are selected.",
   },
   {
-    title:
+    element:
       "This is the Items and Service Type Widget. This displays the type of item the invoice was created for.",
   },
   {
-    title:
+    element:
       "This is the Item Details Table. We can view details about the imported invoices in the list form. If you have many invoices, you can view them in a list form.",
   },
 ];
@@ -138,15 +139,56 @@ const DashboardHelpSteps = [
  * @returns Array of steps with combined values of id, selector and content to build the tour properly.
  */
 const derieveTourSteps = (staticSteps, prefix) => {
-  return staticSteps.map(({ title }, index) => ({
+  return staticSteps.map(({ element }, index) => ({
     id: index,
     selector: `[data-tour="${prefix}-${index}"]`,
-    content: (
-      <Box padding="0.2rem">
-        <Typography variant="caption">{title}</Typography>
-      </Box>
-    ),
+    content: <Box padding="0.2rem">{element}</Box>,
   }));
+};
+
+/**
+ * DisplaySubHelperSection
+ *
+ * used to populate the faq and what's new section for the invoicer
+ */
+const DisplaySubHelperSection = () => {
+  const handleClick = (to) => {
+    window.location.href = to;
+  };
+
+  return (
+    <Typography variant="caption">
+      View{" "}
+      <Box
+        component="span"
+        onClick={() => handleClick("/notes")}
+        sx={{
+          color: "primary.main",
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+        role="link"
+        tabIndex={0}
+      >
+        Release Notes
+      </Box>{" "}
+      to stay up to date with all the latest features. Stuck in a problem? Visit{" "}
+      <Box
+        component="span"
+        onClick={() => handleClick("/faq")}
+        sx={{
+          color: "primary.main",
+          cursor: "pointer",
+          textDecoration: "underline",
+        }}
+        role="link"
+        tabIndex={0}
+      >
+        FAQ
+      </Box>{" "}
+      to view our frequently asked questions.
+    </Typography>
+  );
 };
 
 /**
@@ -158,20 +200,32 @@ const derieveTourSteps = (staticSteps, prefix) => {
  */
 export const DefaultTourStepsMapperObj = {
   "/view": {
-    title:
-      "This help / guide is designed to aide you in learning how to view / print invoices? Feel free to restart the guide if necessary.",
+    element: (
+      <>
+        {createHelperSentences("view / print", "invoices")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start: 0,
     end: ViewPdfHelpSteps.length,
   },
   "/edit": {
-    title:
-      "This help / guide is designed to aide you in learning how to edit / update invoice? Feel free to restart the guide if necessary. ",
+    element: (
+      <>
+        {createHelperSentences("edit / update", "invoices")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start: ViewPdfHelpSteps.length,
     end: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
   },
   "/sender": {
-    title:
-      "This help / guide is designed to aide you in learning how to edit / update sender information? Feel free to restart the guide if necessary. ",
+    element: (
+      <>
+        {createHelperSentences("edit / update", "sender information")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
     end:
       ViewPdfHelpSteps.length +
@@ -179,8 +233,12 @@ export const DefaultTourStepsMapperObj = {
       SenderInfoHelpSteps.length,
   },
   "/reciever": {
-    title:
-      "This help / guide is designed to aide you in learning how to edit / update reciever information? Feel free to restart the guide if necessary. ",
+    element: (
+      <>
+        {createHelperSentences("edit / update", "reciever information")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start:
       ViewPdfHelpSteps.length +
       EditPdfHelpSteps.length +
@@ -192,8 +250,12 @@ export const DefaultTourStepsMapperObj = {
       RecieverInfoHelpSteps.length,
   },
   "/dashboard": {
-    title:
-      "This help / guide is designed to aide you in learning how to view the dashboard for your inovice. Feel free to restart the guide anytime if necessary.",
+    element: (
+      <>
+        {createHelperSentences("interpret", " the dashboard ")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start:
       ViewPdfHelpSteps.length +
       EditPdfHelpSteps.length +
