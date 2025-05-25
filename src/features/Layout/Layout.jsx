@@ -2,14 +2,12 @@ import React, { useState } from "react";
 
 import {
   Box,
-  Breadcrumbs,
   Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  Link,
   Slide,
   Stack,
   Tooltip,
@@ -30,7 +28,7 @@ import {
   GeneratedTourSteps,
 } from "src/common/Tour/TourSteps";
 import AppToolbar from "src/features/Layout/AppToolbar";
-import { HomeRounded, InfoRounded } from "@mui/icons-material";
+import { InfoRounded } from "@mui/icons-material";
 import BreadCrumbs from "src/features/Layout/BreadCrumbs";
 
 const Transition = React.forwardRef(function Transition(props, ref) {

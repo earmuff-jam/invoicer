@@ -1,6 +1,5 @@
 import { HomeRounded } from "@mui/icons-material";
-import { Box, Breadcrumbs, Icon, Stack, Typography } from "@mui/material";
-import React from "react";
+import { Box, Breadcrumbs, Stack, Typography } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function BreadCrumbs({ currentRoute }) {

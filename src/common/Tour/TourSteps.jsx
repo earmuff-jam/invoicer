@@ -1,6 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import AButton from "src/common/AButton";
+import { Box, Typography } from "@mui/material";
 import { createHelperSentences } from "src/common/utils";
 
 /**
@@ -172,7 +170,7 @@ const DisplaySubHelperSection = () => {
         role="link"
         tabIndex={0}
       >
-        What's New
+        What&apos;s New
       </Box>{" "}
       to stay up to date with all the latest features. Stuck in a problem? Visit{" "}
       <Box
