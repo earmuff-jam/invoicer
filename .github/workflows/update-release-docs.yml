@@ -23,22 +23,22 @@ jobs:
         run: |
           VERSION="${{ github.event.release.tag_name }}"
           DATE=$(date -u -d "${{ github.event.release.published_at }}" +"%Y-%m-%d")
-          BODY=$(echo '${{ github.event.release.body }}' | jq -Rs .)
-          
-          echo "const body = $BODY;" > parse.js
-          cat <<'EOF' >> parse.js
+          BODY="${{ github.event.release.body }}"
+
+          cat <<EOF > parse.js
           const fs = require("fs");
 
           const releaseDocsFile = "release-docs.json";
-          const version = process.env.VERSION.replace(/^v/, "");
-          const date = process.env.DATE;
+          const version = "${VERSION/v/}";
+          const date = "${DATE}";
+          const body = \`${BODY//\`/\\\`}\`; // escape backticks just in case
 
-          const notes = JSON.parse(body)
-            .split("\n")
+          const notes = body
+            .split("\\n")
             .map(line => line.trim())
-            .filter(line => /^\[.*?\]\s*-\s*/.test(line))
+            .filter(line => /^\\[.*?\\]\\s*-\\s*/.test(line))
             .map(line => {
-              const match = line.match(/^\[(.*?)\]\s*-\s*(.*)$/);
+              const match = line.match(/^\\[(.*?)\\]\\s*-\\s*(.*)$/);
               if (!match) return null;
               const [, type, value] = match;
               return {
@@ -65,10 +65,6 @@ jobs:
 EOF
 
           node parse.js
-
-        env:
-          VERSION: ${{ github.event.release.tag_name }}
-          DATE: ${{ github.event.release.published_at }}
 
       - name: Commit and push changes
         run: |
