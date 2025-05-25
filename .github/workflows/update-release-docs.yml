@@ -19,52 +19,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Create and run parser
-        run: |
-          VERSION="${{ github.event.release.tag_name }}"
-          DATE=$(date -u -d "${{ github.event.release.published_at }}" +"%Y-%m-%d")
-          BODY="${{ github.event.release.body }}"
-
-          cat <<EOF > parse.js
-const fs = require("fs");
-
-const releaseDocsFile = "release-docs.json";
-const version = "${VERSION/v/}";
-const date = "${DATE}";
-const body = \`${BODY.replace(/`/g, "\\`")}\`;
-
-const notes = body
-  .split("\\n")
-  .map(line => line.trim())
-  .filter(line => /^\\[.*?\\]\\s*-\\s*/.test(line))
-  .map(line => {
-    const match = line.match(/^\\[(.*?)\\]\\s*-\\s*(.*)$/);
-    if (!match) return null;
-    const [, type, value] = match;
-    return {
-      type: type.toLowerCase(),
-      value: value.trim(),
-      caption: value.trim()
-    };
-  })
-  .filter(Boolean);
-
-const newEntry = {
-  version,
-  date,
-  notes
-};
-
-let existing = [];
-if (fs.existsSync(releaseDocsFile)) {
-  existing = JSON.parse(fs.readFileSync(releaseDocsFile, "utf8"));
-}
-
-const updated = [newEntry, ...existing];
-fs.writeFileSync(releaseDocsFile, JSON.stringify(updated, null, 2));
-EOF
-
-          node parse.js
+      - name: Run release docs updater
+        env:
+          VERSION: ${{ github.event.release.tag_name }}
+          DATE: ${{ github.event.release.published_at }}
+          BODY: ${{ github.event.release.body }}
+        run: node public/update-release-docs.js
 
       - name: Commit and push changes
         run: |
