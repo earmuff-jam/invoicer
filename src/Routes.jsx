@@ -21,9 +21,7 @@ const EditPdf = lazy(() => import("features/PdfViewer/EditPdf"));
 const SenderInfo = lazy(() => import("features/SenderInfo/SenderInfo"));
 const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
 const FaqSection = lazy(() => import("features/HelpAndSupport/FaqSection"));
-const WhatsNewSection = lazy(() =>
-  import("features/HelpAndSupport/WhatsNewSection")
-);
+const ReleaseNotes = lazy(() => import("features/HelpAndSupport/ReleaseNotes"));
 
 /**
  * InvoicerRoutes
@@ -136,14 +134,14 @@ export const InvoicerRoutes = [
   },
   {
     id: 7,
-    label: "What's New",
-    path: "/new",
-    element: <WhatsNewSection />,
+    label: "Release Notes",
+    path: "/notes",
+    element: <ReleaseNotes />,
     icon: <WhatshotRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
     config: {
       breadcrumb: {
-        value: "Whats' New",
+        value: "Release Notes",
         icon: <WhatshotRounded fontSize="small" />,
       },
       displayInNavBar: false,

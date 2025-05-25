@@ -1,0 +1,39 @@
+[
+  {
+    "version": "1.2.0",
+    "date": "2025-05-25",
+    "notes": [
+      {
+        "type": "feature",
+        "value": "Added PDF export for invoices",
+        "caption": "Added PDF export for invoices"
+      },
+      {
+        "type": "improvement",
+        "value": "Improved mobile responsiveness",
+        "caption": "Improved mobile responsiveness"
+      },
+      {
+        "type": "bugfix",
+        "value": "Fixed date formatting bug",
+        "caption": "Fixed date formatting bug"
+      }
+    ]
+  },
+  {
+    "version": "1.1.0",
+    "date": "2025-04-18",
+    "notes": [
+      {
+        "type": "improvement",
+        "value": "Line items now support tax calculations",
+        "caption": "Line items now support tax calculations"
+      },
+      {
+        "type": "improvement",
+        "value": "Improved localStorage persistence",
+        "caption": "Improved localStorage persistence"
+      }
+    ]
+  }
+]

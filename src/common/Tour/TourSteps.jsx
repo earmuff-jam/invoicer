@@ -161,7 +161,7 @@ const DisplaySubHelperSection = () => {
       View{" "}
       <Box
         component="span"
-        onClick={() => handleClick("/new")}
+        onClick={() => handleClick("/notes")}
         sx={{
           color: "primary.main",
           cursor: "pointer",
@@ -170,7 +170,7 @@ const DisplaySubHelperSection = () => {
         role="link"
         tabIndex={0}
       >
-        What&apos;s New
+        Release Notes
       </Box>{" "}
       to stay up to date with all the latest features. Stuck in a problem? Visit{" "}
       <Box
