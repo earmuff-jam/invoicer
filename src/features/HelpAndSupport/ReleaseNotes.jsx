@@ -27,39 +27,13 @@ function groupChangesByType(changes) {
   }, {});
 }
 
-const updates = [
-  {
-    version: 1.01,
-    date: "2025-05-25T00:00:00Z",
-    changes: [
-      {
-        type: "feature",
-        value: "Added PDF export support for invoices",
-        caption: "You can now download invoices directly as PDF.",
-      },
-      {
-        type: "improvement",
-        value: "Improved dashboard performance",
-        caption: "Dashboard loads faster especially for large datasets.",
-      },
-      {
-        type: "fix",
-        value: "Fixed client validation issue",
-        caption:
-          "Resolved an error when saving clients with special characters.",
-      },
-    ],
-  },
-];
-
 export default function ReleaseNotes() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
     fetch("/release-docs.json")
       .then((res) => res.json())
-      .then(setData)
-      .catch(console.error);
+      .then(setData);
   }, []);
 
   return (
