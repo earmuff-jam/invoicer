@@ -2,12 +2,14 @@ import React, { useState } from "react";
 
 import {
   Box,
+  Breadcrumbs,
   Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControlLabel,
+  Link,
   Slide,
   Stack,
   Tooltip,
@@ -28,7 +30,8 @@ import {
   GeneratedTourSteps,
 } from "src/common/Tour/TourSteps";
 import AppToolbar from "src/features/Layout/AppToolbar";
-import { InfoRounded } from "@mui/icons-material";
+import { HomeRounded, InfoRounded } from "@mui/icons-material";
+import BreadCrumbs from "src/features/Layout/BreadCrumbs";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -119,6 +122,12 @@ export default function Layout({
           }}
         >
           <Box sx={{ minHeight: "90vh" }}>
+            {/* no breadcrumbs on landing page */}
+            {currentUri !== "/" && (
+              <BreadCrumbs
+                currentRoute={routes.find((route) => route.path === currentUri)}
+              />
+            )}
             <Outlet context={[dialog.showWatermark]} />
           </Box>
           <Footer />

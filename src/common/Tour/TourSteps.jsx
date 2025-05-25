@@ -204,7 +204,7 @@ export const DefaultTourStepsMapperObj = {
   "/view": {
     element: (
       <>
-        {createHelperSentences("view / print")}
+        {createHelperSentences("view / print", "invoices")}
         {DisplaySubHelperSection()}
       </>
     ),
@@ -212,14 +212,22 @@ export const DefaultTourStepsMapperObj = {
     end: ViewPdfHelpSteps.length,
   },
   "/edit": {
-    element:
-      "This help / guide is designed to aide you in learning how to edit / update invoice? Feel free to restart the guide if necessary. ",
+    element: (
+      <>
+        {createHelperSentences("edit / update", "invoices")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start: ViewPdfHelpSteps.length,
     end: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
   },
   "/sender": {
-    element:
-      "This help / guide is designed to aide you in learning how to edit / update sender information? Feel free to restart the guide if necessary. ",
+    element: (
+      <>
+        {createHelperSentences("edit / update", "sender information")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
     end:
       ViewPdfHelpSteps.length +
@@ -227,8 +235,12 @@ export const DefaultTourStepsMapperObj = {
       SenderInfoHelpSteps.length,
   },
   "/reciever": {
-    element:
-      "This help / guide is designed to aide you in learning how to edit / update reciever information? Feel free to restart the guide if necessary. ",
+    element: (
+      <>
+        {createHelperSentences("edit / update", "reciever information")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start:
       ViewPdfHelpSteps.length +
       EditPdfHelpSteps.length +
@@ -240,8 +252,12 @@ export const DefaultTourStepsMapperObj = {
       RecieverInfoHelpSteps.length,
   },
   "/dashboard": {
-    element:
-      "This help / guide is designed to aide you in learning how to view the dashboard for your inovice. Feel free to restart the guide anytime if necessary.",
+    element: (
+      <>
+        {createHelperSentences("interpret", " the dashboard ")}
+        {DisplaySubHelperSection()}
+      </>
+    ),
     start:
       ViewPdfHelpSteps.length +
       EditPdfHelpSteps.length +
