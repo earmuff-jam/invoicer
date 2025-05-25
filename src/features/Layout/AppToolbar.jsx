@@ -104,7 +104,7 @@ export default function AppToolbar({
           handleSendEmail={handleSendEmail}
           handleTheme={() => changeTheme("", currentThemeIdx)}
           isSendEmailFeatureEnabled={isSendEmailFeatureEnabled} // email feature check
-          isSendEmailIconDisabled={isDisabled} // valid data check
+          isDisabled={isDisabled} // valid data check
           isLightTheme={Number(currentThemeIdx) === 1}
           showHelpAndSupport={showHelp}
           isSendEmailLoading={loading}

@@ -25,8 +25,8 @@ export default function MenuOptions({
   isLightTheme = false,
   isSendEmailLoading = false,
   showHelpAndSupport = false,
-  isSendEmailIconDisabled = true,
   isSendEmailFeatureEnabled = false,
+  isDisabled = true,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -74,6 +74,7 @@ export default function MenuOptions({
         {showPrint ? (
           <>
             <MenuItem
+              disabled={isDisabled}
               onClick={() => {
                 handlePrint();
                 handleClose();
@@ -86,7 +87,7 @@ export default function MenuOptions({
             </MenuItem>
             {isSendEmailFeatureEnabled ? (
               <MenuItem
-                disabled={isSendEmailLoading || isSendEmailIconDisabled}
+                disabled={isSendEmailLoading || isDisabled}
                 onClick={() => {
                   handleSendEmail();
                   handleClose();
