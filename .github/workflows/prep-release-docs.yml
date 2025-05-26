@@ -4,8 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g., v1.0.2, v1.0.3.rc-0, etc)'
+        description: 'Release version (e.g., v1.0.2, v1.0.3.rc-0)'
         required: true
+      body:
+        description: 'Release notes in [Type] - Message format'
+        required: true
+      date:
+        description: 'Release date (e.g., 2025-05-25T00:00:00Z)'
+        required: false
 
 jobs:
   update-release-docs:
@@ -24,6 +30,8 @@ jobs:
       - name: Run release docs updater
         env:
           VERSION: ${{ github.event.inputs.version }}
+          DATE: ${{ github.event.inputs.date }}
+          BODY: ${{ github.event.inputs.body }}
         run: node dev/update-release-docs.js
 
       - name: Commit changes
