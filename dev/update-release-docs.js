@@ -1,6 +1,11 @@
-const fs = require("fs");
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const releaseDocsFile = "release-docs.json";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const releaseDocsFile = path.join(__dirname, "release-docs.json");
 
 const version = (process.env.VERSION || "").replace(/^v/, "");
 const date = process.env.DATE || "";
