@@ -1,5 +1,121 @@
 [
   {
+    "version": "1.0.3.rc-0",
+    "date": "2025-06-05",
+    "notes": [
+      {
+        "type": "feature",
+        "value": "Added ability to add stamps to invoices by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/7",
+        "caption": "Added ability to add stamps to invoices by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/7"
+      },
+      {
+        "type": "feature",
+        "value": "Add help by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/8",
+        "caption": "Add help by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/8"
+      },
+      {
+        "type": "feature",
+        "value": "11: Create dashboard route for more pro features by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/12",
+        "caption": "11: Create dashboard route for more pro features by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/12"
+      },
+      {
+        "type": "feature",
+        "value": "16: Added Dashboard Header Components by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/20",
+        "caption": "16: Added Dashboard Header Components by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/20"
+      },
+      {
+        "type": "feature",
+        "value": "14: Added grid layout for the dashboard workflow by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/21",
+        "caption": "14: Added grid layout for the dashboard workflow by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/21"
+      },
+      {
+        "type": "feature",
+        "value": "14: Updated Drag and drop feature by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/22",
+        "caption": "14: Updated Drag and drop feature by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/22"
+      },
+      {
+        "type": "feature",
+        "value": "24: Updated InvoiceTimelineChart by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/26",
+        "caption": "24: Updated InvoiceTimelineChart by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/26"
+      },
+      {
+        "type": "feature",
+        "value": "24: Added Invoice Trends Widget Component by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/27",
+        "caption": "24: Added Invoice Trends Widget Component by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/27"
+      },
+      {
+        "type": "feature",
+        "value": "29: Created Table Widget by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/30",
+        "caption": "29: Created Table Widget by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/30"
+      },
+      {
+        "type": "feature",
+        "value": "19: Added document title by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/32",
+        "caption": "19: Added document title by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/32"
+      },
+      {
+        "type": "bugfix",
+        "value": "28: Add type to selected invoice by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/33",
+        "caption": "28: Add type to selected invoice by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/33"
+      },
+      {
+        "type": "feature",
+        "value": "25: Removed test data previously used by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/38",
+        "caption": "25: Removed test data previously used by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/38"
+      },
+      {
+        "type": "bugfix",
+        "value": "25: Updated dashboard for null values by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/40",
+        "caption": "25: Updated dashboard for null values by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/40"
+      },
+      {
+        "type": "feature",
+        "value": "36: Added ScrollTop Provider functionality by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/43",
+        "caption": "36: Added ScrollTop Provider functionality by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/43"
+      },
+      {
+        "type": "feature",
+        "value": "42: help dashboard by @earmuff-jam in https://github.com/earmuff-jam/invoicer/pull/47",
+        "caption": "42: help dashboard by @earmuff-jam in https://github.com/earmuff-jam/invoicer/pull/47"
+      },
+      {
+        "type": "feature",
+        "value": "46: Added Netlify functions for cloud dev by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/48",
+        "caption": "46: Added Netlify functions for cloud dev by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/48"
+      },
+      {
+        "type": "bugfix",
+        "value": "50: Add cleanup by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/50",
+        "caption": "50: Add cleanup by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/50"
+      },
+      {
+        "type": "bugfix",
+        "value": "49: updated readme by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/49",
+        "caption": "49: updated readme by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/49"
+      },
+      {
+        "type": "bugfix",
+        "value": "51: Refactored Menu Options for Header Component by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/51",
+        "caption": "51: Refactored Menu Options for Header Component by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/51"
+      },
+      {
+        "type": "improvement",
+        "value": "53: Added support for FAQ section and Whats' New Section by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/54",
+        "caption": "53: Added support for FAQ section and Whats' New Section by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/54"
+      },
+      {
+        "type": "bugfix",
+        "value": "55: Fix yaml workflow by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/55",
+        "caption": "55: Fix yaml workflow by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/55"
+      },
+      {
+        "type": "bugfix",
+        "value": "56: Applied fix for esm modules by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/56",
+        "caption": "56: Applied fix for esm modules by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/56"
+      }
+    ]
+  },
+  {
     "version": "1.2.0",
     "date": "2025-05-25",
     "notes": [
