@@ -21,11 +21,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0  # <---- Important: fetch full history so pull works
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      - name: Pull latest changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull origin main
 
       - name: Run release docs updater
         env:
@@ -34,11 +41,8 @@ jobs:
           BODY: ${{ github.event.inputs.body }}
         run: node dev/update-release-docs.js
 
-      - name: Commit changes
+      - name: Commit and push changes
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add .
           git commit -m "chore: update release-docs.json for ${{ github.event.inputs.version }}" || echo "Nothing to commit"
           git push origin HEAD:main
