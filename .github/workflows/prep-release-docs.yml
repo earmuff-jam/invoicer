@@ -27,6 +27,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+      
+      - name: Set pull strategy to merge
+        run: git config --global pull.rebase false
 
       - name: Pull latest changes
         run: |
