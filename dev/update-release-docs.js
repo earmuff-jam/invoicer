@@ -17,8 +17,9 @@ const version = (inputs.version || "").replace(/^v/, "");
 const date = inputs.date || "";
 const body = inputs.body || "";
 
-const notes = body
-  .split("\n")
+const safeBody = body.replace(/\\n/g, "\n"); // handle escaped input
+const notes = safeBody
+  .split(/\r?\n/) // handle all newline types
   .map((line) => line.trim())
   .filter((line) => /^\[.*?\]\s*-\s*/.test(line))
   .map((line) => {

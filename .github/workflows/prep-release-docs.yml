@@ -10,8 +10,8 @@ on:
         description: 'Release notes in [Type] - Message format'
         required: true
       date:
-        description: 'Release date (e.g., 2025-05-25T00:00:00Z)'
-        required: false
+        description: 'Release date (e.g., 2025-05-25)'
+        required: true
 
 jobs:
   update-release-docs:
@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0  # <---- Important: fetch full history so pull works
+          fetch-depth: 0  # fetch full history so pull works
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
