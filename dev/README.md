@@ -25,11 +25,11 @@ The purpose of the firestore setup is to have some analytics to trace the user s
 messages to be in the format of
 
 ```
-[feature] Brief one liner | More detailed description
+[feature] - Added ability to add stamps to invoices by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/7
 
-[improvement] Brief one liner | More detailed description
+[bugfix] - 28: Add type to selected invoice by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/33
 
-[bugfix] Brief one liner | More detailed description
+[improvement] - 53: Added support for FAQ section and Whats' New Section by @mohit2530 in https://github.com/earmuff-jam/invoicer/pull/54
 
 ```
 
@@ -42,5 +42,33 @@ do the versioning of the application. This keeps our effort uniform.
 ```
 git tag <tagname> -a <!-- create new tag from here with description. -->
 git push origin tags
+
+```
+
+
+### Steps to invoke the deployment approach
+
+1. Navigate to the CI pipeline.
+
+The main CI workflow - `https://github.com/earmuff-jam/invoicer/actions/workflows/main.yml`
+
+The release note CI workflow - `https://github.com/earmuff-jam/invoicer/actions/workflows/prep-release-docs.yml`
+
+3. Execute the Release docs workflow.
+
+4. This should update the main branch with new release docs.
+
+5. Verify release docs from `src/public` folder.
+
+6. After this, run the git tag and execute release.
+
+7. This is the format of the tag. `v<major>.<minor>.<patch>[-releaseCandidate]`
+
+```
+git checkout master
+git pull
+git tag | grep <last_tag>
+git tag -a v1.3.0-rc1 -m "RC and/or version 1.3.0-rc1
+git push origin v1.3.0-rc1
 
 ```
