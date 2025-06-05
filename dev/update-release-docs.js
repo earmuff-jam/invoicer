@@ -5,7 +5,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Read the event payload
 const event = JSON.parse(
   fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")
 );
@@ -18,12 +17,16 @@ const date = inputs.date || "";
 const body = inputs.body || "";
 
 const safeBody = body.replace(/\\n/g, "\n"); // handle escaped input
-const notes = safeBody
-  .split(/\r?\n/) // handle all newline types
+
+// Split by "] -", then reattach "[" so we can parse `[type] - value`
+const rawEntries = safeBody.split("] -").map((entry, index) => {
+  return index === 0 ? entry : `[${entry.trim()}`;
+});
+
+const notes = rawEntries
   .map((line) => line.trim())
-  .filter((line) => /^\[.*?\]\s*-\s*/.test(line))
   .map((line) => {
-    const match = line.match(/^\[(.*?)\]\s*-\s*(.*)$/);
+    const match = line.match(/^\[(feature|bugfix|improvement)\]\s*-\s*(.*)$/i);
     if (!match) return null;
     const [, type, value] = match;
     return {
