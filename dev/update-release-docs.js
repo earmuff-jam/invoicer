@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Read the event payload
 const event = JSON.parse(
   fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")
 );
@@ -16,17 +17,21 @@ const version = (inputs.version || "").replace(/^v/, "");
 const date = inputs.date || "";
 const body = inputs.body || "";
 
-const safeBody = body.replace(/\\n/g, "\n"); // handle escaped input
+// --- Smart splitting ---
+const PR_SPLIT_REGEX = /\[(feature|bugfix|improvement)\]\s*-\s.*?\/pull\/\d+/gi;
 
-// Split by "] -", then reattach "[" so we can parse `[type] - value`
-const rawEntries = safeBody.split("] -").map((entry, index) => {
-  return index === 0 ? entry : `[${entry.trim()}`;
+const matches = [...body.matchAll(PR_SPLIT_REGEX)];
+const splitPoints = matches.map((m) => m.index).filter((i) => i !== undefined);
+
+// Cut the body using the found points
+const lines = splitPoints.map((start, idx) => {
+  const end = splitPoints[idx + 1] ?? body.length;
+  return body.slice(start, end).trim();
 });
 
-const notes = rawEntries
-  .map((line) => line.trim())
+const notes = lines
   .map((line) => {
-    const match = line.match(/^\[(feature|bugfix|improvement)\]\s*-\s*(.*)$/i);
+    const match = line.match(/^\[(.*?)\]\s*-\s*(.*)$/);
     if (!match) return null;
     const [, type, value] = match;
     return {
