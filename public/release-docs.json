@@ -2,6 +2,11 @@
   {
     "version": "1.0.3.rc-0",
     "date": "2025-06-05",
+    "notes": []
+  },
+  {
+    "version": "1.0.3.rc-0",
+    "date": "2025-06-05",
     "notes": [
       {
         "type": "feature",
