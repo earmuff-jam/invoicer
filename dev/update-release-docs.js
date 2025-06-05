@@ -5,11 +5,17 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Read the event payload
+const event = JSON.parse(
+  fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")
+);
+const inputs = event.inputs || {};
+
 const releaseDocsFile = path.join(__dirname, "../public/release-docs.json");
 
-const version = (process.env.VERSION || "").replace(/^v/, "");
-const date = process.env.DATE || "";
-const body = process.env.BODY || "";
+const version = (inputs.version || "").replace(/^v/, "");
+const date = inputs.date || "";
+const body = inputs.body || "";
 
 const notes = body
   .split("\n")
