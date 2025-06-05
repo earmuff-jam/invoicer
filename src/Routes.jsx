@@ -138,7 +138,7 @@ export const InvoicerRoutes = [
     path: "/notes",
     element: <ReleaseNotes />,
     icon: <WhatshotRounded fontSize="small" />,
-    requiredFlags: ["invoicer", "invoicerPro"],
+    requiredFlags: ["invoicer"],
     config: {
       breadcrumb: {
         value: "Release Notes",
@@ -155,7 +155,7 @@ export const InvoicerRoutes = [
     path: "/faq",
     element: <FaqSection />,
     icon: <LiveHelpRounded fontSize="small" />,
-    requiredFlags: ["invoicer", "invoicerPro"],
+    requiredFlags: ["invoicer"],
     config: {
       breadcrumb: {
         value: "Frequently Asked Questions",

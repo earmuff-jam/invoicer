@@ -65,10 +65,78 @@ The release note CI workflow - `https://github.com/earmuff-jam/invoicer/actions/
 7. This is the format of the tag. `v<major>.<minor>.<patch>[-releaseCandidate]`
 
 ```
-git checkout master
+git checkout main
 git pull
 git tag | grep <last_tag>
 git tag -a v1.3.0-rc1 -m "RC and/or version 1.3.0-rc1
 git push origin v1.3.0-rc1
 
 ```
+
+
+### Steps to invoke a patch release / update existing release
+
+1. First thing first, make PR and merge that PR into main.
+
+2. Once merged, we get new SHA Sum for the commit msg. This is not the same as the commit one. Be careful to get the right one.
+
+3. You can also get it from main branch.
+
+```
+git fetch --all
+git checkout main
+git pull
+git log
+```
+
+4. Create test branch and gear for deployment
+
+Whereever we are targeting our fix to go in, we need to check that tag out. For eg, at this time of writing, we are trying to get
+this patch into v1.3.0. We have a v1.3.0-rc1. Since we are targeting the release of v1.3.0 we should grep v1.3.0 tag.
+
+```
+git tag | grep v1.3
+
+```
+This lists all major | minor version of the application.
+
+
+5. Checkout the latest release. Create a +1 branch from there.
+
+```
+git checkout v1.3.0-rc1
+
+git checkout -b t1.3.0-rc2 <!-- creating new +1 tag -->
+
+git push -u origin/t1.3.0-rc2
+```
+
+Generally, we do not push to the RC, we just create a new RC. So the above is a demonstration only. 
+
+
+6. Create a hotfix branch from here.
+
+```
+git checkout -b hotfix-v1.3.0-rc2
+git cherry-pick <commit hash - THIS IS THE SHA checksum hash>
+git push -u origin hotfix-v1.3.0-rc2
+
+```
+
+7. Then create a PR. Your target is the tested branch above. NOT MASTER. Generally it should be like
+
+BASE : main
+
+COMPARE : <test_branch created above>
+
+8. Wait until the PR is merged. Get approvals and proceed with deployment. Run the following cmd after that is done.
+
+```
+git checkout t1.3.0-rc2
+git pull
+git tag -a v1.3.0-rc2 -m "Hotfix Version v1.3.0-rc2"
+git push origin v1.3.0-rc2
+
+```
+
+9. The pipeline should be built and everything should be good to go.
