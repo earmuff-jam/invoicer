@@ -1,5 +1,7 @@
 import { Route } from "react-router-dom";
 
+import { isUserLoggedIn } from "src/common/utils";
+
 /**
  * validateClientPermissions ...
  *
@@ -67,11 +69,23 @@ export const filterValidRoutesForNavigationBar = (draftRoutes = []) => {
 export function buildAppRoutes(draftRoutes = []) {
   const validRouteFlags = validateClientPermissions();
   return draftRoutes
-    .map(({ path, element, requiredFlags }) => {
-      const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
+    .map(({ path, element, requiredFlags, config }) => {
+      // verify the route validity first
+      const isRouteValid = isValidPermissions(validRouteFlags, requiredFlags);
+      if (!isRouteValid) return;
 
-      if (!isRequired) return;
-      return <Route key={path} exact path={path} element={element} />;
+      // verify the user login status for specific routes
+      const requiresLogin = Boolean(config.isLoggedInFeature);
+      if (requiresLogin) {
+        const isLoggedIn = isUserLoggedIn();
+        if (isLoggedIn) {
+          return <Route key={path} exact path={path} element={element} />;
+        } else {
+          return;
+        }
+      } else {
+        return <Route key={path} exact path={path} element={element} />;
+      }
     })
     .filter(Boolean);
 }
