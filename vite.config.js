@@ -7,9 +7,9 @@ const manifestForPlugIn = {
   registerType: "prompt",
   includeAssets: ["favicon.ico", "apple-touc-icon.png", "masked-icon.svg"],
   manifest: {
-    name: "React-vite-app",
-    short_name: "react-vite-app",
-    description: "I am a simple vite app",
+    name: "Invoicer",
+    short_name: "Invoicer",
+    description: "Invoicer application built by Earmuffjam LLC",
     icons: [
       {
         src: "/android-chrome-192x192.png",
