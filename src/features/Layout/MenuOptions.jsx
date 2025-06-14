@@ -17,11 +17,11 @@ import {
 } from "@mui/icons-material";
 
 export default function MenuOptions({
-  showPrint = false,
   handleHelp = () => {},
   handlePrint = () => {},
   handleTheme = () => {},
   handleSendEmail = () => {},
+  showPrint = false,
   isLightTheme = false,
   isSendEmailLoading = false,
   showHelpAndSupport = false,

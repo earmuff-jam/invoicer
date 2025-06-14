@@ -1,6 +1,6 @@
 import { HomeRounded } from "@mui/icons-material";
 import { Box, Breadcrumbs, Stack, Typography } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function BreadCrumbs({ currentRoute }) {
   const location = useLocation();
@@ -43,14 +43,7 @@ export default function BreadCrumbs({ currentRoute }) {
               {currentRoute?.config?.breadcrumb?.value}
             </Typography>
           </Stack>
-        ) : (
-          <Link underline="hover" color="inherit" to={to} key={to}>
-            {currentRoute?.config?.breadcrumb?.icon}
-            <Typography variant="caption">
-              {currentRoute?.config?.breadcrumb?.value}
-            </Typography>
-          </Link>
-        );
+        ) : null;
       })}
     </Breadcrumbs>
   );
