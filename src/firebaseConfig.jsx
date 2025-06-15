@@ -3,6 +3,25 @@ import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // -------------------------------------------
+// Util functions
+
+/**
+ * isFirebaseConfigOptionsValid ...
+ *
+ * function is used to check if the passed in configuration for the authenticator app
+ * is valid or not. Can be used to validate others.
+ *
+ * @param {Object} ConfigOptions - FirebaseConfig app
+ * @returns boolean - true or false
+ */
+const isFirebaseConfigOptionsValid = ({ options }) =>
+  options &&
+  !Object.values(options).some((option) => option.length === 0) &&
+  typeof options?.apiKey === "string" &&
+  typeof options?.authDomain === "string" &&
+  typeof options?.projectId === "string";
+
+// -------------------------------------------
 // Analytics App
 const analyticsFirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -36,14 +55,26 @@ export const authenticatorConfig =
   getApps().find((app) => app.name === "AUTHENTICATOR") ||
   initializeApp(authenticatorFirebaseConfig, "AUTHENTICATOR");
 
-// update user details based on auth state
-onAuthStateChanged(getAuth(authenticatorConfig), (user) => {
-  if (user) {
-    localStorage.setItem("user", JSON.stringify({ uid: user.uid }));
-  } else {
-    localStorage.removeItem("user");
-  }
-});
+// update user details only if auth config is valid based on auth state
+if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
+  const auth = getAuth(authenticatorConfig);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+    } else {
+      localStorage.removeItem("user");
+    }
+  });
+} else {
+  /* eslint-disable no-console */
+  console.error(
+    "Invalid Firebase config. Auth state listener not initialized."
+  );
+}
 
-export const authenticatorApp = getAuth(authenticatorConfig);
+export const authenticatorApp = isFirebaseConfigOptionsValid(
+  authenticatorConfig
+)
+  ? getAuth(authenticatorConfig)
+  : null;
 export const authenticatorFirestore = getFirestore(authenticatorConfig);

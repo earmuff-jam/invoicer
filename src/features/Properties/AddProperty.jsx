@@ -1,50 +1,12 @@
-import { useState } from "react";
 import { Stack, Button } from "@mui/material";
-import { BLANK_PROPERTY_DETAILS } from "features/Properties/constants";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 
-export default function AddProperty() {
-  const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
-
-  const handleChange = (ev) => {
-    const { id, value } = ev.target;
-    const updatedFormData = { ...formData };
-    let errorMsg = "";
-
-    for (const validator of updatedFormData[id].validators) {
-      if (validator.validate(value)) {
-        errorMsg = validator.message;
-        break;
-      }
-    }
-
-    updatedFormData[id] = {
-      ...updatedFormData[id],
-      value,
-      errorMsg,
-    };
-    setFormData(updatedFormData);
-  };
-
-  const isDisabled = () => {
-    const containsErrors = Object.values(formData).some(
-      (field) => field.errorMsg
-    );
-    const requiredMissing = Object.values(formData).some(
-      (field) => field.isRequired && field.value.trim() === ""
-    );
-    return containsErrors || requiredMissing;
-  };
-
-  const submit = (ev) => {
-    ev.preventDefault();
-    const result = Object.entries(formData).reduce((acc, [key, field]) => {
-      acc[key] = field.value;
-      return acc;
-    }, {});
-    /* eslint-disable no-console */
-    console.log("Submitted Property:", result);
-  };
+export default function AddProperty({
+  formData,
+  handleChange,
+  isDisabled,
+  submit,
+}) {
 
   return (
     <Stack direction="column" spacing={1}>
@@ -54,7 +16,7 @@ export default function AddProperty() {
           label="Property Name *"
           id="name"
           name="name"
-          placeholder="Property Name"
+          placeholder="Name of your property"
           value={formData.name.value}
           handleChange={handleChange}
           errorMsg={formData.name.errorMsg}
@@ -74,13 +36,13 @@ export default function AddProperty() {
         />
       </Stack>
 
-      {/* City and State */}
+      {/* City and State and Apt Number*/}
       <Stack direction="row" spacing={2}>
         <TextFieldWithLabel
           label="City *"
           id="city"
           name="city"
-          placeholder="Austin"
+          placeholder="Richmond"
           value={formData.city.value}
           handleChange={handleChange}
           errorMsg={formData.city.errorMsg}
@@ -89,7 +51,7 @@ export default function AddProperty() {
           label="State *"
           id="state"
           name="state"
-          placeholder="TX"
+          placeholder="NC"
           value={formData.state.value}
           handleChange={handleChange}
           errorMsg={formData.state.errorMsg}
@@ -131,7 +93,7 @@ export default function AddProperty() {
         />
       </Stack>
 
-      {/* Number of units */}
+      {/* Number of units / bathrooms */}
       <Stack direction="row" spacing={2}>
         <TextFieldWithLabel
           label="Number of Units / Bedroom *"
