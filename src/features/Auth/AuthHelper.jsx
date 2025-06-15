@@ -23,3 +23,5 @@ export const authenticateViaGoogle = async () => {
 
   localStorage.setItem("user", JSON.stringify(userDetails));
 };
+
+

@@ -8,6 +8,10 @@ export const BLANK_PROPERTY_DETAILS = {
         validate: (val) => val.trim() === "",
         message: "Property name is required",
       },
+      {
+        validate: (value) => value.trim().length >= 150,
+        message: "Property name should be less than 150 characters",
+      },
     ],
   },
   address: {
@@ -44,8 +48,12 @@ export const BLANK_PROPERTY_DETAILS = {
     errorMsg: "",
     validators: [
       {
-        validate: (val) => val.trim() === "",
-        message: "State is required",
+        validate: (value) => value.trim().length <= 0,
+        message: "State is required in the form of XX",
+      },
+      {
+        validate: (value) => value.trim().length > 2,
+        message: "State is required in the form of XX. Eg, AZ",
       },
     ],
   },
@@ -55,8 +63,12 @@ export const BLANK_PROPERTY_DETAILS = {
     errorMsg: "",
     validators: [
       {
-        validate: (val) => !/^\d{5}$/.test(val),
-        message: "ZIP code must be 5 digits",
+        validate: (value) => value.trim().length <= 0,
+        message: "Zip Code is required",
+      },
+      {
+        validate: (value) => !/^\d{5}$/.test(value),
+        message: "Zip Code should be within 5 digits",
       },
     ],
   },
@@ -66,9 +78,16 @@ export const BLANK_PROPERTY_DETAILS = {
     errorMsg: "",
     validators: [
       {
-        validate: (val) =>
-          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(val),
-        message: "Invalid email format",
+        validate: (value) => value.trim().length <= 0,
+        message: "Email address is required",
+      },
+      {
+        validate: (value) => value.trim().length >= 150,
+        message: "Email address should be less than 150 characters",
+      },
+      {
+        validate: (value) => !/^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/.test(value),
+        message: "Email address is not valid",
       },
     ],
   },

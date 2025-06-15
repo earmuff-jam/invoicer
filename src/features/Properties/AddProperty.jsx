@@ -3,7 +3,7 @@ import { Stack, Button } from "@mui/material";
 import { BLANK_PROPERTY_DETAILS } from "features/Properties/constants";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 
-export default function AddProperty() {
+export default function AddProperty({ closeDialog }) {
   const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
 
   const handleChange = (ev) => {
@@ -42,8 +42,8 @@ export default function AddProperty() {
       acc[key] = field.value;
       return acc;
     }, {});
-    /* eslint-disable no-console */
-    console.log("Submitted Property:", result);
+    localStorage.setItem("properties", JSON.stringify([result]));
+    closeDialog();
   };
 
   return (
@@ -54,7 +54,7 @@ export default function AddProperty() {
           label="Property Name *"
           id="name"
           name="name"
-          placeholder="Property Name"
+          placeholder="Name of your property"
           value={formData.name.value}
           handleChange={handleChange}
           errorMsg={formData.name.errorMsg}
@@ -74,13 +74,13 @@ export default function AddProperty() {
         />
       </Stack>
 
-      {/* City and State */}
+      {/* City and State and Apt Number*/}
       <Stack direction="row" spacing={2}>
         <TextFieldWithLabel
           label="City *"
           id="city"
           name="city"
-          placeholder="Austin"
+          placeholder="Richmond"
           value={formData.city.value}
           handleChange={handleChange}
           errorMsg={formData.city.errorMsg}
@@ -89,7 +89,7 @@ export default function AddProperty() {
           label="State *"
           id="state"
           name="state"
-          placeholder="TX"
+          placeholder="NC"
           value={formData.state.value}
           handleChange={handleChange}
           errorMsg={formData.state.errorMsg}
@@ -131,7 +131,7 @@ export default function AddProperty() {
         />
       </Stack>
 
-      {/* Number of units */}
+      {/* Number of units / bathrooms */}
       <Stack direction="row" spacing={2}>
         <TextFieldWithLabel
           label="Number of Units / Bedroom *"

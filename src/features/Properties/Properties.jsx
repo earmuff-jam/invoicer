@@ -56,7 +56,7 @@ export default function Properties() {
       >
         <DialogTitle>Add new property</DialogTitle>
         <DialogContent>
-          <AddProperty />
+          <AddProperty closeDialog={closeDialog} />
         </DialogContent>
         <DialogActions>
           <AButton

@@ -1,6 +1,5 @@
 import { Route } from "react-router-dom";
-
-import { isUserLoggedIn } from "src/common/utils";
+import AuthenticationProvider from "features/Auth/AuthenticationProvider";
 
 /**
  * validateClientPermissions ...
@@ -70,22 +69,17 @@ export function buildAppRoutes(draftRoutes = []) {
   const validRouteFlags = validateClientPermissions();
   return draftRoutes
     .map(({ path, element, requiredFlags, config }) => {
-      // verify the route validity first
       const isRouteValid = isValidPermissions(validRouteFlags, requiredFlags);
       if (!isRouteValid) return;
 
-      // verify the user login status for specific routes
       const requiresLogin = Boolean(config.isLoggedInFeature);
-      if (requiresLogin) {
-        const isLoggedIn = isUserLoggedIn();
-        if (isLoggedIn) {
-          return <Route key={path} exact path={path} element={element} />;
-        } else {
-          return;
-        }
-      } else {
-        return <Route key={path} exact path={path} element={element} />;
-      }
+      const wrappedEl = requiresLogin ? (
+        <AuthenticationProvider>{element}</AuthenticationProvider>
+      ) : (
+        element
+      );
+
+      return <Route key={path} path={path} element={wrappedEl} />;
     })
     .filter(Boolean);
 }
