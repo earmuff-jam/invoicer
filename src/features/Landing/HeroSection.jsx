@@ -1,9 +1,17 @@
-import { Box, Container, Grid, Typography } from "@mui/material";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import AButton from "src/common/AButton";
+import AButton from "common/AButton";
+import { isUserLoggedIn } from "common/utils";
+import { authenticateViaGoogle } from "features/Auth/AuthHelper";
 
 export default function HeroSection() {
   const navigate = useNavigate();
+  const isLoggedIn = isUserLoggedIn();
+
+  const handleGoogleAuthentication = async () => {
+    await authenticateViaGoogle();
+    navigate(`/properties?refresh=${Date.now()}`); // force refresh
+  };
 
   return (
     <Box
@@ -27,18 +35,26 @@ export default function HeroSection() {
             >
               Simple. Powerful. Professional.
             </Typography>
-            <Typography variant="h5">
-              Create and manage invoices in seconds. No complexity, just
-              results.
+            <Typography variant="h5" sx={{ textTransform: "initial" }}>
+              Create and manage assets in seconds. No complexity, just results.
             </Typography>
-            <Box sx={{ mt: 4 }}>
+
+            <Stack direction="row" spacing={1} margin="4rem 0rem">
+              {!isLoggedIn && (
+                <AButton
+                  label="Manage Properties"
+                  variant="contained"
+                  size="large"
+                  onClick={handleGoogleAuthentication}
+                />
+              )}
               <AButton
-                label="Take me there"
+                label="Manage Invoices"
                 variant="contained"
                 size="large"
-                onClick={() => navigate("/view")}
+                onClick={() => navigate("invoice/view")}
               />
-            </Box>
+            </Stack>
           </Grid>
           <Grid item xs={12} md={6} sx={{ position: "relative" }}>
             <Box
