@@ -1,51 +1,12 @@
-import { useState } from "react";
 import { Stack, Button } from "@mui/material";
-import { BLANK_PROPERTY_DETAILS } from "features/Properties/constants";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 
-export default function AddProperty({ closeDialog }) {
-  const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
-
-  const handleChange = (ev) => {
-    const { id, value } = ev.target;
-    const updatedFormData = { ...formData };
-    let errorMsg = "";
-
-    for (const validator of updatedFormData[id].validators) {
-      if (validator.validate(value)) {
-        errorMsg = validator.message;
-        break;
-      }
-    }
-
-    updatedFormData[id] = {
-      ...updatedFormData[id],
-      value,
-      errorMsg,
-    };
-    setFormData(updatedFormData);
-  };
-
-  const isDisabled = () => {
-    const containsErrors = Object.values(formData).some(
-      (field) => field.errorMsg
-    );
-    const requiredMissing = Object.values(formData).some(
-      (field) => field.isRequired && field.value.trim() === ""
-    );
-    return containsErrors || requiredMissing;
-  };
-
-  const submit = (ev) => {
-    ev.preventDefault();
-    const result = Object.entries(formData).reduce((acc, [key, field]) => {
-      acc[key] = field.value;
-      return acc;
-    }, {});
-    localStorage.setItem("properties", JSON.stringify([result]));
-    closeDialog();
-  };
-
+export default function AddProperty({
+  formData,
+  handleChange,
+  isDisabled,
+  submit,
+}) {
   return (
     <Stack direction="column" spacing={1}>
       {/* Property Name */}

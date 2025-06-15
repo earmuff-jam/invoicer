@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { AddRounded } from "@mui/icons-material";
 
@@ -15,6 +15,8 @@ import {
 import AButton from "common/AButton";
 import RowHeader from "common/RowHeader/RowHeader";
 import AddProperty from "features/Properties/AddProperty";
+import ViewProperties from "features/Properties/ViewProperties";
+import { BLANK_PROPERTY_DETAILS } from "features/Properties/constants";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -22,9 +24,58 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function Properties() {
   const [dialog, setDialog] = useState(false);
+  const [currentProperties, setCurrentProperties] = useState([]);
+  const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
+
+  const handleChange = (ev) => {
+    const { id, value } = ev.target;
+    const updatedFormData = { ...formData };
+    let errorMsg = "";
+
+    for (const validator of updatedFormData[id].validators) {
+      if (validator.validate(value)) {
+        errorMsg = validator.message;
+        break;
+      }
+    }
+
+    updatedFormData[id] = {
+      ...updatedFormData[id],
+      value,
+      errorMsg,
+    };
+    setFormData(updatedFormData);
+  };
+
+  const isDisabled = () => {
+    const containsErrors = Object.values(formData).some(
+      (field) => field.errorMsg
+    );
+    const requiredMissing = Object.values(formData).some(
+      (field) => field.isRequired && field.value.trim() === ""
+    );
+    return containsErrors || requiredMissing;
+  };
+
+  const submit = (ev) => {
+    ev.preventDefault();
+    const result = Object.entries(formData).reduce((acc, [key, field]) => {
+      acc[key] = field.value;
+      return acc;
+    }, {});
+    localStorage.setItem("properties", JSON.stringify([result]));
+    closeDialog();
+  };
 
   const closeDialog = () => setDialog(false);
   const toggleDialog = () => setDialog(!dialog);
+
+  useEffect(() => {
+    const draftPropertiesList = JSON.parse(localStorage.getItem("properties"));
+    if (Array.isArray(draftPropertiesList) && draftPropertiesList.length >= 0) {
+      setCurrentProperties(draftPropertiesList);
+    }
+  }, [dialog]);
 
   return (
     <Stack>
@@ -47,6 +98,10 @@ export default function Properties() {
         </Button>
       </Stack>
 
+      {/* View list of properties */}
+      <ViewProperties currentProperties={currentProperties} />
+
+      {/* Add Property Dialog */}
       <Dialog
         open={dialog}
         TransitionComponent={Transition}
@@ -56,7 +111,12 @@ export default function Properties() {
       >
         <DialogTitle>Add new property</DialogTitle>
         <DialogContent>
-          <AddProperty closeDialog={closeDialog} />
+          <AddProperty
+            formData={formData}
+            handleChange={handleChange}
+            isDisabled={isDisabled}
+            submit={submit}
+          />
         </DialogContent>
         <DialogActions>
           <AButton
