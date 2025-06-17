@@ -3,6 +3,7 @@ import {
   MoneyOffCsredRounded,
   PaidRounded,
 } from "@mui/icons-material";
+
 import {
   Avatar,
   Chip,
@@ -13,10 +14,11 @@ import {
   Typography,
   Stack,
 } from "@mui/material";
+
 import dayjs from "dayjs";
 import EmptyComponent from "src/common/EmptyComponent";
 
-const ViewPropertyDetails = ({ tenants }) => {
+const ViewPropertyAccordionDetails = ({ tenants }) => {
   if (!tenants || tenants.length === 0) {
     return <EmptyComponent caption="Add tenants to begin." />;
   }
@@ -152,4 +154,4 @@ const ViewPropertyDetails = ({ tenants }) => {
   );
 };
 
-export default ViewPropertyDetails;
+export default ViewPropertyAccordionDetails;

@@ -47,6 +47,14 @@ export default function Properties() {
     setFormData(updatedFormData);
   };
 
+  const handleDelete = (propertyId) => {
+    if (!propertyId) return;
+    const draftCurrentProperties = currentProperties.filter(
+      (property) => property.id === propertyId
+    );
+    setCurrentProperties(draftCurrentProperties);
+  };
+
   const isDisabled = () => {
     const containsErrors = Object.values(formData).some(
       (field) => field.errorMsg
@@ -63,6 +71,8 @@ export default function Properties() {
       acc[key] = field.value;
       return acc;
     }, {});
+    
+
     localStorage.setItem("properties", JSON.stringify([result]));
     closeDialog();
   };
@@ -99,7 +109,10 @@ export default function Properties() {
       </Stack>
 
       {/* View list of properties */}
-      <ViewProperties currentProperties={currentProperties} />
+      <ViewProperties
+        currentProperties={currentProperties}
+        handleDelete={handleDelete}
+      />
 
       {/* Add Property Dialog */}
       <Dialog

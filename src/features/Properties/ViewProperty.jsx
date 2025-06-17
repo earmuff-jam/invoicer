@@ -1,25 +1,25 @@
 import {
+  AddRounded,
   DeleteRounded,
   ExpandMoreRounded,
-  PersonRounded,
 } from "@mui/icons-material";
 
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
-  Badge,
   IconButton,
   Stack,
-  Tooltip,
   Typography,
 } from "@mui/material";
+import AButton from "src/common/AButton";
 
-import ViewPropertyDetails from "src/features/Properties/ViewPropertyDetails";
+import ViewPropertyAccordionDetails from "src/features/Properties/ViewPropertyAccordionDetails";
 
 const tenants = [
   {
     id: "tenant123",
+    propertyId: "", // the id of the property the tenant is associated with
     isPrimaryContact: true, // the main person to communicate with
     name: "John Doe",
     monthlyRent: 2750.0,
@@ -27,13 +27,11 @@ const tenants = [
     lastPaidDate: "2025-06-01",
     isPaid: true, // if there is no outstanding balance
     phone: "555-123-4567",
-    email: "john@example.com",
+    email: "john1988@example.com",
   },
 ];
 
-export default function ViewProperty({ property }) {
-  const handleDelete = () => {};
-
+export default function ViewProperty({ property, handleDelete }) {
   return (
     <Accordion defaultExpanded>
       <AccordionSummary
@@ -52,7 +50,7 @@ export default function ViewProperty({ property }) {
       >
         <Stack flexGrow={1}>
           <Stack alignItems="center" direction="row" spacing={1}>
-            <IconButton size="small" onClick={handleDelete}>
+            <IconButton size="small" onClick={() => handleDelete(property.id)}>
               <DeleteRounded fontSize="small" color="error" />
             </IconButton>
             <Typography variant="subtitle2" color="primary">
@@ -67,14 +65,18 @@ export default function ViewProperty({ property }) {
           </Typography>
         </Stack>
 
-        <Tooltip title="Current number of tenants">
-          <Badge badgeContent="1" color="secondary">
-            <PersonRounded />
-          </Badge>
-        </Tooltip>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <AButton
+            label="Associate Tenant"
+            onClick={() => {}}
+            size="small"
+            variant="outlined"
+            endIcon={<AddRounded />}
+          />
+        </Stack>
       </AccordionSummary>
       <AccordionDetails>
-        <ViewPropertyDetails tenants={tenants} />
+        <ViewPropertyAccordionDetails tenants={tenants} />
       </AccordionDetails>
     </Accordion>
   );
