@@ -7,6 +7,7 @@ export default function AddProperty({
   isDisabled,
   submit,
 }) {
+
   return (
     <Stack direction="column" spacing={1}>
       {/* Property Name */}
