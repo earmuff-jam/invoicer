@@ -1,3 +1,12 @@
+/**
+ * Enum Constants ...
+ */
+export const AddPropertyTextString = "ADD_PROPERTY";
+export const AssociatePropertyTextString = "ASSOCIATE_PROPERTY";
+
+/**
+ * Blank Property Details Form ...
+ */
 export const BLANK_PROPERTY_DETAILS = {
   name: {
     value: "",

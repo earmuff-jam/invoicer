@@ -24,7 +24,11 @@ import {
 import AButton from "common/AButton";
 import RowHeader from "common/RowHeader/RowHeader";
 import AddProperty from "features/Properties/AddProperty";
-import { BLANK_PROPERTY_DETAILS } from "features/Properties/constants";
+import {
+  AddPropertyTextString,
+  AssociatePropertyTextString,
+  BLANK_PROPERTY_DETAILS,
+} from "features/Properties/constants";
 import EmptyComponent from "common/EmptyComponent";
 import ViewPropertyAccordionDetails from "features/Properties/ViewPropertyAccordionDetails";
 import { v4 as uuidv4 } from "uuid";
@@ -52,6 +56,7 @@ const tenants = [
 const defaultDialog = {
   title: "",
   type: "",
+  propertyId: "",
   display: false,
 };
 
@@ -108,16 +113,17 @@ export default function Properties() {
   const toggleAddPropertyPopup = () => {
     setDialog({
       title: "Add Property",
-      type: "ADD_PROPERTY",
+      type: AddPropertyTextString,
       display: true,
     });
   };
 
-  const toggleAssociateTenantPopup = () => {
+  const toggleAssociateTenantPopup = (propertyId) => {
     setDialog({
       title: "Associate Tenants",
-      type: "ASSOCIATE_TENANT",
+      type: AssociatePropertyTextString,
       display: true,
+      propertyId,
     });
   };
 
@@ -137,6 +143,13 @@ export default function Properties() {
     localStorage.setItem("properties", JSON.stringify(draftPropertiesList));
     resetFormData();
     closeDialog();
+  };
+
+  const submitAssociateTenantForm = (selectedUsers = []) => {
+    closeDialog();
+    // TODO: fix this later on
+    /* eslint-disable no-console */
+    console.log(selectedUsers);
   };
 
   useEffect(() => {
@@ -174,9 +187,9 @@ export default function Properties() {
         ) : (
           currentProperties.map((property) => (
             <Accordion
+              elevation={0}
               key={property.id}
               expanded={expanded === property.id}
-              sx={{ border: "1px solid #eee" }}
             >
               <AccordionSummary
                 onClick={(e) => e.stopPropagation()}
@@ -220,7 +233,7 @@ export default function Properties() {
                     label="Associate Tenant"
                     onClick={(e) => {
                       e.stopPropagation(); // prevent row from toggling
-                      toggleAssociateTenantPopup();
+                      toggleAssociateTenantPopup(property.id);
                     }}
                     size="small"
                     variant="outlined"
@@ -253,10 +266,10 @@ export default function Properties() {
         )}
       </Stack>
 
-      {/* Add Property Dialog */}
       <Dialog
         open={
-          dialog.type === "ADD_PROPERTY" || dialog.type === "ASSOCIATE_TENANT"
+          dialog.type === AddPropertyTextString ||
+          dialog.type === AssociatePropertyTextString
         }
         TransitionComponent={Transition}
         keepMounted
@@ -265,7 +278,7 @@ export default function Properties() {
       >
         <DialogTitle>{dialog.title}</DialogTitle>
         <DialogContent>
-          {dialog.type === "ADD_PROPERTY" ? (
+          {dialog.type === AddPropertyTextString ? (
             <AddProperty
               formData={formData}
               handleChange={handleChange}
@@ -273,7 +286,11 @@ export default function Properties() {
               submit={submit}
             />
           ) : (
-            <AssociateTenantPopup />
+            <AssociateTenantPopup
+              open={dialog.type === AssociatePropertyTextString}
+              onClose={closeDialog}
+              onSubmit={submitAssociateTenantForm}
+            />
           )}
         </DialogContent>
         <DialogActions>
