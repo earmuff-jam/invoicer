@@ -289,7 +289,7 @@ export default function Properties() {
             <AssociateTenantPopup
               open={dialog.type === AssociatePropertyTextString}
               onClose={closeDialog}
-              onSubmit={submitAssociateTenantForm}
+              handleSubmit={submitAssociateTenantForm}
             />
           )}
         </DialogContent>
