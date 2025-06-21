@@ -56,7 +56,7 @@ const tenants = [
 const defaultDialog = {
   title: "",
   type: "",
-  propertyId: "",
+  data: "",
   display: false,
 };
 
@@ -115,15 +115,16 @@ export default function Properties() {
       title: "Add Property",
       type: AddPropertyTextString,
       display: true,
+      property: null,
     });
   };
 
-  const toggleAssociateTenantPopup = (propertyId) => {
+  const toggleAssociateTenantPopup = (property) => {
     setDialog({
       title: "Associate Tenants",
       type: AssociatePropertyTextString,
       display: true,
-      propertyId,
+      property,
     });
   };
 
@@ -158,6 +159,8 @@ export default function Properties() {
       setCurrentProperties(draftPropertiesList);
     }
   }, []);
+
+  console.log(dialog);
 
   return (
     <Stack>
@@ -233,7 +236,7 @@ export default function Properties() {
                     label="Associate Tenant"
                     onClick={(e) => {
                       e.stopPropagation(); // prevent row from toggling
-                      toggleAssociateTenantPopup(property.id);
+                      toggleAssociateTenantPopup(property);
                     }}
                     size="small"
                     variant="outlined"
@@ -276,7 +279,9 @@ export default function Properties() {
         fullWidth
         aria-describedby="alert-dialog-slide-box"
       >
-        <DialogTitle>{dialog.title}</DialogTitle>
+        <DialogTitle sx={{ color: "text.secondary", textTransform: "initial" }}>
+          {dialog?.title} for {dialog?.property?.name}
+        </DialogTitle>
         <DialogContent>
           {dialog.type === AddPropertyTextString ? (
             <AddProperty
@@ -287,9 +292,10 @@ export default function Properties() {
             />
           ) : (
             <AssociateTenantPopup
-              open={dialog.type === AssociatePropertyTextString}
               onClose={closeDialog}
               handleSubmit={submitAssociateTenantForm}
+              open={dialog.type === AssociatePropertyTextString}
+              data={dialog.property}
             />
           )}
         </DialogContent>

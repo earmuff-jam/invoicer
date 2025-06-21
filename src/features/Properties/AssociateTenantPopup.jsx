@@ -16,11 +16,12 @@ export default function AssociateTenantPopup({
   handleSubmit,
   existingGroups,
   creatorId,
+  data,
 }) {
   const profiles = [
     {
       id: uuidv4(),
-      emailAddress: "janeDoe@gmail.com",
+      emailAddress: "emily22@invoicer.gmail.com",
     },
   ];
   const loading = false;
@@ -73,7 +74,7 @@ export default function AssociateTenantPopup({
     isNew: true,
   });
 
-  console.log(tenants);
+  console.log(tenants, data);
 
   return (
     <Stack spacing="0.2rem">
@@ -167,6 +168,7 @@ export default function AssociateTenantPopup({
             {...params}
             variant="standard"
             placeholder="Associate tenants"
+            sx={{ textTransform: "initial" }}
           />
         )}
         renderOption={(props, option) => (
@@ -176,7 +178,11 @@ export default function AssociateTenantPopup({
                 <strong>Add:</strong> {option.display}
               </Typography>
             ) : (
-              option.display
+              <Typography
+                sx={{ textTransform: "initial", fontSize: "0.875rem" }}
+              >
+                {option.display}
+              </Typography>
             )}
           </li>
         )}
@@ -186,6 +192,7 @@ export default function AssociateTenantPopup({
             return (
               <Chip
                 key={key}
+                size="small"
                 label={option.display}
                 {...tagProps}
                 disabled={option.value === creatorId}
