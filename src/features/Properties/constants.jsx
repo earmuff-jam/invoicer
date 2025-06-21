@@ -41,6 +41,73 @@ export const LEASE_TERM_MENU_OPTIONS = [
 ];
 
 /**
+ * BLANK_ASSOCIATE_TENANT_DETAILS ...
+ */
+export const BLANK_ASSOCIATE_TENANT_DETAILS = {
+  email: {
+    value: "",
+    isRequired: true,
+    errorMsg: "",
+    validators: [
+      {
+        validate: (value) => value.trim().length <= 0,
+        message: "Value is required",
+      },
+      {
+        validate: (value) => value.trim().length >= 150,
+        message: "Value should be less than 150 characters",
+      },
+      {
+        validate: (value) => !/^[\w-.]+@([\w-]+\.)+[\w-]{2,}$/.test(value),
+        message: "Value is not valid",
+      },
+    ],
+  },
+  start_date: {
+    id: "start_date",
+    value: "",
+    errorMsg: "",
+    isRequired: true,
+    validators: [
+      {
+        validate: (value) => value.trim().length <= 0,
+        message: "Value is required",
+      },
+      {
+        validate: (value) => value.trim().length >= 15,
+        message: "Value should be less than 15 characters",
+      },
+    ],
+  },
+  term: {
+    id: "term",
+    value: "",
+    errorMsg: "",
+    isRequired: true,
+    validators: [
+      {
+        validate: (value) => value.trim().length <= 0,
+        message: "Value is required",
+      },
+    ],
+  },
+  isSoR: {
+    id: "isSoR",
+    value: false,
+    errorMsg: "",
+    isRequired: true, // required && default value is by default
+    validators: [],
+  },
+  assignedRoomName: {
+    id: "assignedRoomName",
+    value: "",
+    errorMsg: "",
+    isRequired: false,
+    validators: [],
+  },
+};
+
+/**
  * Blank Property Details Form ...
  */
 export const BLANK_PROPERTY_DETAILS = {
