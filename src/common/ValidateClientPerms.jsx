@@ -1,4 +1,5 @@
 import { Route } from "react-router-dom";
+import AuthenticationProvider from "features/Auth/AuthenticationProvider";
 
 /**
  * validateClientPermissions ...
@@ -67,11 +68,18 @@ export const filterValidRoutesForNavigationBar = (draftRoutes = []) => {
 export function buildAppRoutes(draftRoutes = []) {
   const validRouteFlags = validateClientPermissions();
   return draftRoutes
-    .map(({ path, element, requiredFlags }) => {
-      const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
+    .map(({ path, element, requiredFlags, config }) => {
+      const isRouteValid = isValidPermissions(validRouteFlags, requiredFlags);
+      if (!isRouteValid) return;
 
-      if (!isRequired) return;
-      return <Route key={path} exact path={path} element={element} />;
+      const requiresLogin = Boolean(config.isLoggedInFeature);
+      const wrappedEl = requiresLogin ? (
+        <AuthenticationProvider>{element}</AuthenticationProvider>
+      ) : (
+        element
+      );
+
+      return <Route key={path} path={path} element={wrappedEl} />;
     })
     .filter(Boolean);
 }

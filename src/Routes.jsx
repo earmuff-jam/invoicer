@@ -2,6 +2,7 @@ import { lazy } from "react";
 
 import {
   ContactSupportRounded,
+  CottageRounded,
   DashboardCustomizeRounded,
   DashboardRounded,
   EditRounded,
@@ -22,6 +23,8 @@ const SenderInfo = lazy(() => import("features/SenderInfo/SenderInfo"));
 const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
 const FaqSection = lazy(() => import("features/HelpAndSupport/FaqSection"));
 const ReleaseNotes = lazy(() => import("features/HelpAndSupport/ReleaseNotes"));
+
+const Properties = lazy(() => import("features/Properties/Properties"));
 
 /**
  * InvoicerRoutes
@@ -66,8 +69,26 @@ export const InvoicerRoutes = [
   },
   {
     id: 3,
+    label: "My Properties",
+    path: "/properties",
+    element: <Properties />,
+    icon: <CottageRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      breadcrumb: {
+        value: "My properties",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      isLoggedInFeature: true, // only display if logged in
+      displayInNavBar: true,
+      displayHelpSelector: false,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 4,
     label: "View Invoice",
-    path: "/view",
+    path: "/invoice/view",
     element: <PdfViewer />,
     icon: <PictureAsPdfRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -82,9 +103,9 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 4,
+    id: 5,
     label: "Edit Invoice",
-    path: "/edit",
+    path: "/invoice/edit",
     element: <EditPdf />,
     icon: <EditRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -99,9 +120,9 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 5,
+    id: 6,
     label: "Sender",
-    path: "/sender",
+    path: "/invoice/sender",
     element: <SenderInfo />,
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
@@ -116,9 +137,9 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 6,
+    id: 7,
     label: "Reciever",
-    path: "/reciever",
+    path: "/invoice/reciever",
     element: <RecieverInfo />,
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
@@ -133,7 +154,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 7,
+    id: 8,
     label: "Release Notes",
     path: "/notes",
     element: <ReleaseNotes />,
@@ -150,7 +171,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 8,
+    id: 9,
     label: "FAQ",
     path: "/faq",
     element: <FaqSection />,

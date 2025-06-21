@@ -1,7 +1,29 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-const firebaseConfig = {
+// -------------------------------------------
+// Util functions
+
+/**
+ * isFirebaseConfigOptionsValid ...
+ *
+ * function is used to check if the passed in configuration for the authenticator app
+ * is valid or not. Can be used to validate others.
+ *
+ * @param {Object} ConfigOptions - FirebaseConfig app
+ * @returns boolean - true or false
+ */
+const isFirebaseConfigOptionsValid = ({ options }) =>
+  options &&
+  !Object.values(options).some((option) => option.length === 0) &&
+  typeof options?.apiKey === "string" &&
+  typeof options?.authDomain === "string" &&
+  typeof options?.projectId === "string";
+
+// -------------------------------------------
+// Analytics App
+const analyticsFirebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -10,6 +32,49 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APPID,
 };
 
-const app = initializeApp(firebaseConfig);
+// Initialize only if not already initialized
+const analyticsConfig =
+  getApps().find((app) => app.name === "[DEFAULT]") ||
+  initializeApp(analyticsFirebaseConfig);
 
-export const firestore = getFirestore(app);
+export const analyticsFirestore = getFirestore(analyticsConfig);
+
+// -------------------------------------------
+// Authenticator App
+const authenticatorFirebaseConfig = {
+  apiKey: import.meta.env.VITE_AUTH_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_AUTH_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_AUTH_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_AUTH_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_AUTH_FIREBASE_APPID,
+  measurementId: import.meta.env.VITE_AUTH_FIREBASE_MEASUREMENTID,
+};
+
+export const authenticatorConfig =
+  getApps().find((app) => app.name === "AUTHENTICATOR") ||
+  initializeApp(authenticatorFirebaseConfig, "AUTHENTICATOR");
+
+// update user details only if auth config is valid based on auth state
+if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
+  const auth = getAuth(authenticatorConfig);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+    } else {
+      localStorage.removeItem("user");
+    }
+  });
+} else {
+  /* eslint-disable no-console */
+  console.error(
+    "Invalid Firebase config. Auth state listener not initialized."
+  );
+}
+
+export const authenticatorApp = isFirebaseConfigOptionsValid(
+  authenticatorConfig
+)
+  ? getAuth(authenticatorConfig)
+  : null;
+export const authenticatorFirestore = getFirestore(authenticatorConfig);

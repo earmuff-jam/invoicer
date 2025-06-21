@@ -18,6 +18,7 @@ import validateClientPermissions, {
   filterValidRoutesForNavigationBar,
   isValidPermissions,
 } from "common/ValidateClientPerms";
+import { isUserLoggedIn } from "src/common/utils";
 
 export default function NavBar({
   openDrawer,
@@ -43,23 +44,48 @@ export default function NavBar({
     const filteredNavigationRoutes =
       filterValidRoutesForNavigationBar(InvoicerRoutes);
     return filteredNavigationRoutes.map(
-      ({ id, path, label, icon, requiredFlags }) => {
+      ({ id, path, label, icon, requiredFlags, config }) => {
         const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
         if (!isRequired) return;
-        return (
-          <ListItemButton
-            key={id}
-            selected={pathname === path}
-            onClick={() => handleMenuItemClick(path)}
-          >
-            <ListItemIcon
-              sx={{ color: pathname === path && theme.palette.primary.main }}
+
+        // verify the user login status for specific routes
+        const requiresLogin = Boolean(config.isLoggedInFeature);
+        if (requiresLogin) {
+          const isLoggedIn = isUserLoggedIn();
+          if (isLoggedIn) {
+            return (
+              <ListItemButton
+                key={id}
+                selected={pathname === path}
+                onClick={() => handleMenuItemClick(path)}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: pathname === path && theme.palette.primary.main,
+                  }}
+                >
+                  {icon}
+                </ListItemIcon>
+                <ListItemText primary={label} />
+              </ListItemButton>
+            );
+          }
+        } else {
+          return (
+            <ListItemButton
+              key={id}
+              selected={pathname === path}
+              onClick={() => handleMenuItemClick(path)}
             >
-              {icon}
-            </ListItemIcon>
-            <ListItemText primary={label} />
-          </ListItemButton>
-        );
+              <ListItemIcon
+                sx={{ color: pathname === path && theme.palette.primary.main }}
+              >
+                {icon}
+              </ListItemIcon>
+              <ListItemText primary={label} />
+            </ListItemButton>
+          );
+        }
       }
     );
   };
