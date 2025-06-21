@@ -5,6 +5,42 @@ export const AddPropertyTextString = "ADD_PROPERTY";
 export const AssociatePropertyTextString = "ASSOCIATE_PROPERTY";
 
 /**
+ * LEASE_TERM_MENU_OPTIONS ...
+ */
+export const LEASE_TERM_MENU_OPTIONS = [
+  {
+    id: 1,
+    value: "1m",
+    label: "1 month",
+  },
+  {
+    id: 2,
+    value: "2m",
+    label: "2 months",
+  },
+  {
+    id: 3,
+    value: "3m",
+    label: "3 months",
+  },
+  {
+    id: 4,
+    value: "6m",
+    label: "6 months",
+  },
+  {
+    id: 5,
+    value: "1y",
+    label: "1 year",
+  },
+  {
+    id: 6,
+    value: "2y",
+    label: "2 years",
+  },
+];
+
+/**
  * Blank Property Details Form ...
  */
 export const BLANK_PROPERTY_DETAILS = {

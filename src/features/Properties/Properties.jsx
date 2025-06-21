@@ -160,8 +160,6 @@ export default function Properties() {
     }
   }, []);
 
-  console.log(dialog);
-
   return (
     <Stack>
       <Stack direction="row" spacing={1} justifyContent="space-between">

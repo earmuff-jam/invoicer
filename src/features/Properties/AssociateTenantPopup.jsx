@@ -3,14 +3,28 @@ import { useEffect, useState } from "react";
 import {
   Autocomplete,
   Button,
+  Checkbox,
   Chip,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 
+import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 import { isValid } from "features/Properties/utils";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { InfoRounded, KeyboardArrowDownRounded } from "@mui/icons-material";
+import TextFieldWithLabel from "src/common/UserInfo/TextFieldWithLabel";
+import { LEASE_TERM_MENU_OPTIONS } from "src/features/Properties/constants";
 
 export default function AssociateTenantPopup({
   handleSubmit,
@@ -18,6 +32,7 @@ export default function AssociateTenantPopup({
   creatorId,
   data,
 }) {
+  // dummy data
   const profiles = [
     {
       id: uuidv4(),
@@ -25,9 +40,42 @@ export default function AssociateTenantPopup({
     },
   ];
   const loading = false;
+  const isSor = true; // formfield of checkbox
 
   const [options, setOptions] = useState([]);
   const [tenants, setTenants] = useState([]);
+  const [formData, setFormData] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const open = Boolean(anchorEl);
+  const handleClose = () => setAnchorEl(null);
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+
+  const handleCheckbox = (event) => {
+    // setChecked(event.target.checked);
+  };
+
+  const handleChange = () => {};
+
+  const handleLeaseTerm = () => {};
+
+  const handleDateTime = (ev, id) => {
+    const value = dayjs(ev).format("MM-DD-YYYY");
+    const updatedFormData = { ...formData };
+    let errorMsg = "";
+    for (const validator of updatedFormData[id].validators) {
+      if (validator.validate(value)) {
+        errorMsg = validator.message;
+        break;
+      }
+    }
+    updatedFormData[id] = {
+      ...updatedFormData[id],
+      value,
+      errorMsg,
+    };
+    setFormData(updatedFormData);
+  };
 
   useEffect(() => {
     if (!loading && Array.isArray(profiles)) {
@@ -78,6 +126,9 @@ export default function AssociateTenantPopup({
 
   return (
     <Stack spacing="0.2rem">
+      <Typography variant="body2" fontWeight="medium">
+        Email Address *
+      </Typography>
       <Autocomplete
         id="tenant-options"
         multiple
@@ -202,6 +253,90 @@ export default function AssociateTenantPopup({
           })
         }
       />
+
+      {/* Partial Room rental checkbox */}
+      <Stack spacing={1} sx={{ padding: "1rem 0rem" }}>
+        <Typography variant="body2" fontWeight="medium">
+          Select the start date of the lease *
+        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Start Date *"
+            id="start_date"
+            name="start_date"
+            placeholder="Start Date"
+            value={dayjs("")}
+            onChange={(ev) => handleDateTime(ev, "start_date")}
+            errorMsg={formData?.start_date?.["errorMsg"]}
+            slotProps={{
+              textField: {
+                helperText: "Rental start date",
+                size: "small",
+                sx: { flexGrow: 1 },
+              },
+            }}
+          />
+        </LocalizationProvider>
+      </Stack>
+
+      {/* Lease Term */}
+      <Stack>
+        <FormControl fullWidth>
+          <InputLabel id="lease-term-label">Lease Term</InputLabel>
+          <Select
+            size="small"
+            variant="standard"
+            labelId="lease-term-label"
+            id="lease-term"
+            value={formData?.leaseTerm?.value}
+            label="Select Lease Term"
+            onChange={handleLeaseTerm}
+          >
+            {LEASE_TERM_MENU_OPTIONS.map((option) => (
+              <MenuItem key={option.id} value={option?.value}>
+                {option?.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
+
+      {/* SoR room / partial room rental checkbox */}
+      <Stack spacing={1}>
+        <Stack>
+          <FormGroup sx={{ flexDirection: "row", alignItems: "center" }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={formData?.isChecked?.value || false}
+                  onChange={handleCheckbox}
+                  slotProps={{
+                    input: {
+                      "aria-label": "controlled",
+                    },
+                  }}
+                />
+              }
+              label="Single Occupancy Room (SOR)?"
+            />
+            <Tooltip title="Single Occupancy Rooms are rooms that are rented out as an individual item">
+              <InfoRounded fontSize="small" color="secondary" />
+            </Tooltip>
+          </FormGroup>
+        </Stack>
+        {isSor && (
+          <TextFieldWithLabel
+            label="Room Name"
+            id="roomName"
+            name="roomName"
+            placeholder="Assign the above user a room"
+            value={formData?.roomName?.value || ""}
+            handleChange={handleChange}
+            errorMsg={formData?.roomName?.["errorMsg"] || ""}
+          />
+        )}
+      </Stack>
+
       <Button
         variant="text"
         onClick={() => {
