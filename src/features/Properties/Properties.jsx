@@ -21,18 +21,22 @@ import {
   Typography,
 } from "@mui/material";
 
-import AButton from "common/AButton";
-import RowHeader from "common/RowHeader/RowHeader";
-import AddProperty from "features/Properties/AddProperty";
 import {
   AddPropertyTextString,
   AssociatePropertyTextString,
   BLANK_PROPERTY_DETAILS,
 } from "features/Properties/constants";
-import EmptyComponent from "common/EmptyComponent";
-import ViewPropertyAccordionDetails from "features/Properties/ViewPropertyAccordionDetails";
+
 import { v4 as uuidv4 } from "uuid";
+import AButton from "common/AButton";
+import EmptyComponent from "common/EmptyComponent";
+import RowHeader from "common/RowHeader/RowHeader";
+
+import AddProperty from "features/Properties/AddProperty";
+import QuickConnectMenu from "features/Properties/QuickConnectMenu";
 import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
+import ViewPropertyAccordionDetails from "features/Properties/ViewPropertyAccordionDetails";
+import { useNavigate } from "react-router-dom";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -61,10 +65,17 @@ const defaultDialog = {
 };
 
 export default function Properties() {
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
   const [expanded, setExpanded] = useState(null);
+
   const [dialog, setDialog] = useState(defaultDialog);
   const [currentProperties, setCurrentProperties] = useState([]);
   const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
+
+  const isOpen = Boolean(anchorEl);
+  const handleCloseQuickConnect = () => setAnchorEl(null);
+  const handleOpenQuickConnect = (ev) => setAnchorEl(ev.currentTarget);
 
   const closeDialog = () => setDialog(defaultDialog);
 
@@ -95,9 +106,30 @@ export default function Properties() {
   const handleDelete = (propertyId) => {
     if (!propertyId) return;
     const draftCurrentProperties = currentProperties.filter(
-      (property) => property.id === propertyId
+      (property) => property.id !== propertyId
     );
     setCurrentProperties(draftCurrentProperties);
+    localStorage.setItem("properties", JSON.stringify(draftCurrentProperties));
+  };
+
+  const handleQuickConnectMenuItem = (action, property) => {
+    /* eslint-disable no-console */
+    console.log("Selected action:", action, "for property:", property);
+    // Handle the selected action here
+    switch (action) {
+      case "CREATE_INVOICE":
+        navigate("/invoice/edit");
+        break;
+      case "PAYMENT_REMINDER":
+        // Handle payment reminder
+        break;
+      case "MAINTENANCE_REQUEST":
+        // Handle maintenance request
+        break;
+      case "GENERAL_NOTICE":
+        // Handle general notice
+        break;
+    }
   };
 
   const isDisabled = () => {
@@ -224,9 +256,27 @@ export default function Properties() {
 
                 <Stack direction="row" spacing={1} alignItems="center">
                   <AButton
+                    label="Quick Connect"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenQuickConnect(e);
+                    }}
+                    size="small"
+                    variant="standard"
+                    endIcon={<ExpandMoreRounded />}
+                  />
+                  <QuickConnectMenu
+                    anchorEl={anchorEl}
+                    open={isOpen}
+                    onClose={handleCloseQuickConnect}
+                    property={property}
+                    onMenuItemClick={handleQuickConnectMenuItem}
+                  />
+
+                  <AButton
                     label="Associate Tenant"
                     onClick={(e) => {
-                      e.stopPropagation(); // prevent row from toggling
+                      e.stopPropagation();
                       toggleAssociateTenantPopup(property);
                     }}
                     size="small"
