@@ -268,6 +268,40 @@ export default function AssociateTenantPopup({
         </FormControl>
       </Stack>
 
+      {/* Tax and Rent Amount */}
+      <Stack direction="row" spacing={1}>
+        <TextFieldWithLabel
+          label={
+            <Stack direction="row" alignItems="center">
+              <Tooltip title="The tax rate applied in percentage.">
+                <InfoRounded
+                  color="secondary"
+                  fontSize="small"
+                  sx={{ fontSize: "1rem", margin: "0.2rem" }}
+                />
+              </Tooltip>
+              <Typography variant="subtitle2">Standard Tax rate</Typography>
+            </Stack>
+          }
+          id="tax_rate"
+          name="tax_rate"
+          placeholder="Standard tax rate. Eg, 1"
+          value={formData?.tax_rate?.value || ""}
+          handleChange={handleChange}
+          errorMsg={formData.tax_rate?.["errorMsg"]}
+        />
+
+        <TextFieldWithLabel
+          label="Monthly rent amount"
+          id="rent"
+          name="rent"
+          placeholder="Monthly rent amount. Eg, 2150.00"
+          value={formData?.rent?.value || ""}
+          handleChange={handleChange}
+          errorMsg={formData.rent?.["errorMsg"]}
+        />
+      </Stack>
+
       {/* SoR room / partial room rental checkbox */}
       <Stack spacing={1}>
         <Stack>
@@ -289,6 +323,7 @@ export default function AssociateTenantPopup({
             />
           </FormGroup>
         </Stack>
+
         <Stack>
           <FormGroup sx={{ flexDirection: "row", alignItems: "center" }}>
             <FormControlLabel
@@ -315,41 +350,6 @@ export default function AssociateTenantPopup({
             </Tooltip>
           </FormGroup>
         </Stack>
-
-        <Stack>
-          {/* Tax Rate */}
-          <TextFieldWithLabel
-            label={
-              <Stack direction="row" alignItems="center">
-                <Tooltip title="Single Occupancy Rooms are rooms that are rented out to a single individual">
-                  <InfoRounded
-                    color="secondary"
-                    fontSize="small"
-                    sx={{ fontSize: "1rem", margin: "0.2rem" }}
-                  />
-                </Tooltip>
-                <Typography variant="subtitle2"> Standard Tax rate</Typography>
-              </Stack>
-            }
-            id="tax_rate"
-            name="tax_rate"
-            placeholder="Standard tax rate. Leave 1 for no tax."
-            value={formData?.tax_rate?.value || ""}
-            handleChange={handleChange}
-            errorMsg={formData.tax_rate?.["errorMsg"]}
-          />
-        </Stack>
-
-        {/* Rent Amount */}
-        <TextFieldWithLabel
-          label="Monthly rent amount"
-          id="rent"
-          name="rent"
-          placeholder="Monthly rent amount. Eg, 2150.00"
-          value={formData?.rent?.value || ""}
-          handleChange={handleChange}
-          errorMsg={formData.rent?.["errorMsg"]}
-        />
 
         {isSoR && (
           <TextFieldWithLabel
