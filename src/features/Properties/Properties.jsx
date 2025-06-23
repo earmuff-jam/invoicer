@@ -37,6 +37,7 @@ import QuickConnectMenu from "features/Properties/QuickConnectMenu";
 import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
 import ViewPropertyAccordionDetails from "features/Properties/ViewPropertyAccordionDetails";
 import { useNavigate } from "react-router-dom";
+import { useAppTitle } from "hooks/useAppTitle";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -65,6 +66,8 @@ const defaultDialog = {
 };
 
 export default function Properties() {
+  useAppTitle("View Properties");
+
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [expanded, setExpanded] = useState(null);

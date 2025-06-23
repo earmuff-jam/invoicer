@@ -80,9 +80,11 @@ export default function QuickConnectMenu({
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText
               primary={item.label}
-              primaryTypographyProps={{
-                fontSize: 14,
-                fontWeight: 500,
+              slotProps={{
+                primary: {
+                  fontSize: 14,
+                  fontWeight: 500,
+                },
               }}
             />
           </MenuItem>
