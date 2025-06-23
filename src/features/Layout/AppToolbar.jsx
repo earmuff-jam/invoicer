@@ -1,6 +1,17 @@
-import { MenuOutlined } from "@mui/icons-material";
+import {
+  LockOpenRounded,
+  LockRounded,
+  MenuOutlined,
+} from "@mui/icons-material";
 
-import { AppBar, IconButton, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  IconButton,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 
 import { DefaultTourStepsMapperObj } from "common/Tour/TourSteps";
 import useSendEmail, { generateInvoiceHTML } from "hooks/useSendEmail";
@@ -8,6 +19,10 @@ import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import validateClientPermissions from "common/ValidateClientPerms";
 import { useGenerateUserData } from "hooks/useGenerateUserData";
 import MenuOptions from "features/Layout/MenuOptions";
+import { isUserLoggedIn } from "src/common/utils";
+import { getAuth, signOut } from "firebase/auth";
+import { authenticatorConfig } from "src/firebaseConfig";
+import { useNavigate } from "react-router-dom";
 
 export default function AppToolbar({
   currentUri,
@@ -18,6 +33,7 @@ export default function AppToolbar({
   handleDrawerClose,
   setDialog,
 }) {
+  const navigate = useNavigate();
   const { sendEmail, reset, loading, error, success } = useSendEmail();
 
   const {
@@ -88,6 +104,18 @@ export default function AppToolbar({
     setCurrentThemeIdx(0);
   };
 
+  const logout = async () => {
+    const auth = getAuth(authenticatorConfig);
+    try {
+      await signOut(auth);
+      localStorage.removeItem("user");
+      navigate(`/?refresh=${Date.now()}`); // force refresh
+    } catch (error) {
+      /* eslint-disable no-console */
+      console.error("Error signing out:", error);
+    }
+  };
+
   return (
     <AppBar elevation={0} sx={{ padding: "0.25rem 0rem" }} className="no-print">
       <Toolbar>
@@ -97,18 +125,29 @@ export default function AppToolbar({
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Invoicer
         </Typography>
-        <MenuOptions
-          showPrint={showPrint}
-          handleHelp={handleHelp}
-          handlePrint={handlePrint}
-          handleSendEmail={handleSendEmail}
-          handleTheme={() => changeTheme("", currentThemeIdx)}
-          isSendEmailFeatureEnabled={isSendEmailFeatureEnabled} // email feature check
-          isDisabled={isDisabled} // valid data check
-          isLightTheme={Number(currentThemeIdx) === 1}
-          showHelpAndSupport={showHelp}
-          isSendEmailLoading={loading}
-        />
+        <Stack direction="row" spacing={1} alignItems="center">
+          {isUserLoggedIn() ? (
+            <Tooltip title="logout">
+              <IconButton onClick={logout}>
+                <LockRounded color="primary" fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <LockOpenRounded color="primary" fontSize="small" />
+          )}
+          <MenuOptions
+            showPrint={showPrint}
+            handleHelp={handleHelp}
+            handlePrint={handlePrint}
+            handleSendEmail={handleSendEmail}
+            handleTheme={() => changeTheme("", currentThemeIdx)}
+            isSendEmailFeatureEnabled={isSendEmailFeatureEnabled} // email feature check
+            isDisabled={isDisabled} // valid data check
+            isLightTheme={Number(currentThemeIdx) === 1}
+            showHelpAndSupport={showHelp}
+            isSendEmailLoading={loading}
+          />
+        </Stack>
       </Toolbar>
       <CustomSnackbar
         showSnackbar={success || error !== null}

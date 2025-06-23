@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 /**
  * Invoice Category Options
  *
@@ -60,7 +62,7 @@ export const BLANK_INVOICE_DETAILS_FORM = {
   },
   start_date: {
     id: "start_date",
-    value: "",
+    value: dayjs().toISOString(), // default value; prevents leak
     errorMsg: "",
     isRequired: true,
     validators: [
@@ -76,7 +78,7 @@ export const BLANK_INVOICE_DETAILS_FORM = {
   },
   end_date: {
     id: "end_date",
-    value: "",
+    value: dayjs().toISOString(), // default value; prevents leak
     errorMsg: "",
     isRequired: true,
     validators: [

@@ -5,6 +5,7 @@ import {
   Divider,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material";
 
 import {
@@ -17,11 +18,11 @@ import {
 } from "@mui/icons-material";
 
 export default function MenuOptions({
-  showPrint = false,
   handleHelp = () => {},
   handlePrint = () => {},
   handleTheme = () => {},
   handleSendEmail = () => {},
+  showPrint = false,
   isLightTheme = false,
   isSendEmailLoading = false,
   showHelpAndSupport = false,
@@ -56,13 +57,13 @@ export default function MenuOptions({
         open={open}
         onClose={handleClose}
         sx={{
+          "& .MuiList-root": {
+            padding: "0",
+          },
           "& .MuiPaper-root": {
             minWidth: 180,
             boxShadow:
               "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-            "& .MuiMenu-list": {
-              padding: "0.5rem 0",
-            },
             "& .MuiMenuItem-root": {
               "& .MuiSvgIcon-root": {
                 fontSize: 18,
@@ -83,7 +84,7 @@ export default function MenuOptions({
               sx={{ gap: "0.5rem" }}
             >
               <PrintRounded />
-              Print Invoice
+              <Typography variant="subtitle2">Print Invoice</Typography>
             </MenuItem>
             {isSendEmailFeatureEnabled ? (
               <MenuItem
@@ -117,7 +118,7 @@ export default function MenuOptions({
           sx={{ gap: "0.5rem" }}
         >
           {isLightTheme ? <LightModeRounded /> : <DarkModeRounded />}
-          Change theme
+          <Typography variant="subtitle2">Change theme</Typography>
         </MenuItem>
         {showHelpAndSupport ? (
           <MenuItem
@@ -129,7 +130,7 @@ export default function MenuOptions({
             sx={{ gap: "0.5rem" }}
           >
             <HelpOutlineRounded />
-            Help and Support
+            <Typography variant="subtitle2">Help and Support</Typography>
           </MenuItem>
         ) : null}
       </Menu>
