@@ -5,8 +5,8 @@ import dayjs from "dayjs";
 /**
  * authenticateViaGoogle...
  *
- * function used to login to google. saves user details into
- * local storage
+ * function used to login to google.
+ * @returns {Object} userDetails
  */
 export const authenticateViaGoogle = async () => {
   const provider = new GoogleAuthProvider();
@@ -14,14 +14,13 @@ export const authenticateViaGoogle = async () => {
   const user = result.user;
   const userDetails = {
     uid: user.uid,
-    email: user.email,
-    displayName: user.displayName,
-    photoURL: user.photoURL,
+    googleEmailAddress: user.email,
+    googleDisplayName: user.displayName,
+    googlePhotoURL: user.photoURL,
     provider: user.providerData[0]?.providerId,
-    createdAt: dayjs().toISOString(),
+    googleAccountLinkedAt: dayjs().toISOString(),
+    googleLastLoginAt: dayjs().toISOString(),
   };
 
-  localStorage.setItem("user", JSON.stringify(userDetails));
+  return userDetails;
 };
-
-

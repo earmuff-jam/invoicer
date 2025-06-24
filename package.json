@@ -19,6 +19,7 @@
     "@mui/material": "^6.4.11",
     "@mui/x-date-pickers": "^7.29.2",
     "@reactour/tour": "^3.7.0",
+    "@reduxjs/toolkit": "^2.8.2",
     "@sendgrid/mail": "^8.1.5",
     "chart.js": "^4.4.9",
     "dayjs": "^1.11.13",
@@ -28,7 +29,7 @@
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.3.1",
-    "react-redux": "^9.1.2",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.27.0",
     "uuid": "^11.1.0",
     "vite-plugin-pwa": "^1.0.0"

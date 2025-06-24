@@ -1,4 +1,4 @@
-import { Stack, TextField, Typography } from "@mui/material";
+import { Stack, TextField, Tooltip, Typography } from "@mui/material";
 
 export default function TextFieldWithLabel({
   label,
@@ -11,12 +11,18 @@ export default function TextFieldWithLabel({
   multiline = false,
   maxRows = 0,
   dataTour,
+  isDisabled = false,
+  labelIcon = null,
+  labelIconHelper = "",
 }) {
   return (
     <Stack spacing={0.5} width="100%" data-tour={dataTour}>
-      <Typography variant="body2" fontWeight="medium">
-        {label}
-      </Typography>
+      <Stack direction="row" spacing={1}>
+        <Typography variant="body2" fontWeight="medium">
+          {label}
+        </Typography>
+        {labelIcon && <Tooltip title={labelIconHelper}>{labelIcon}</Tooltip>}
+      </Stack>
       <TextField
         fullWidth
         id={id}
@@ -30,6 +36,7 @@ export default function TextFieldWithLabel({
         rows={maxRows}
         error={Boolean(errorMsg.length)}
         helperText={errorMsg}
+        disabled={isDisabled}
       />
     </Stack>
   );

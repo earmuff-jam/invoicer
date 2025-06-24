@@ -11,6 +11,7 @@ import {
   Person2Rounded,
   PictureAsPdfRounded,
   ReceiptRounded,
+  SettingsRounded,
   WhatshotRounded,
 } from "@mui/icons-material";
 
@@ -25,6 +26,7 @@ const FaqSection = lazy(() => import("features/HelpAndSupport/FaqSection"));
 const ReleaseNotes = lazy(() => import("features/HelpAndSupport/ReleaseNotes"));
 
 const Properties = lazy(() => import("features/Properties/Properties"));
+const Settings = lazy(() => import("features/Settings/Settings"));
 
 /**
  * InvoicerRoutes
@@ -155,6 +157,24 @@ export const InvoicerRoutes = [
   },
   {
     id: 8,
+    label: "Settings",
+    path: "/:userId/settings",
+    element: <Settings />,
+    icon: <SettingsRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      breadcrumb: {
+        value: "My settings",
+        icon: <SettingsRounded fontSize="small" />,
+      },
+      isLoggedInFeature: true, // only display if logged in
+      displayInNavBar: true,
+      displayHelpSelector: true,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 9,
     label: "Release Notes",
     path: "/notes",
     element: <ReleaseNotes />,
@@ -171,7 +191,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 9,
+    id: 10,
     label: "FAQ",
     path: "/faq",
     element: <FaqSection />,

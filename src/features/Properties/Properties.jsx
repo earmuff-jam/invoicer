@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
   AddRounded,
@@ -19,6 +19,7 @@ import {
   AccordionSummary,
   IconButton,
   Typography,
+  Skeleton,
 } from "@mui/material";
 
 import {
@@ -36,8 +37,16 @@ import AddProperty from "features/Properties/AddProperty";
 import QuickConnectMenu from "features/Properties/QuickConnectMenu";
 import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
 import ViewPropertyAccordionDetails from "features/Properties/ViewPropertyAccordionDetails";
-import { useNavigate } from "react-router-dom";
 import { useAppTitle } from "hooks/useAppTitle";
+import { handleQuickConnectAction } from "features/Settings/TemplateProcessor";
+import {
+  useCreatePropertyMutation,
+  useDeletePropertyByIdMutation,
+  useGetPropertiesByUserIdQuery,
+} from "features/Api/propertiesApi";
+import { fetchLoggedInUser } from "features/Properties/utils";
+import dayjs from "dayjs";
+import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -68,12 +77,19 @@ const defaultDialog = {
 export default function Properties() {
   useAppTitle("View Properties");
 
-  const navigate = useNavigate();
+  const user = fetchLoggedInUser();
+  const { data: properties, isLoading } = useGetPropertiesByUserIdQuery(
+    user.uid
+  );
+
+  const [createProperty] = useCreatePropertyMutation();
+  const [deleteProperty] = useDeletePropertyByIdMutation();
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [expanded, setExpanded] = useState(null);
 
   const [dialog, setDialog] = useState(defaultDialog);
-  const [currentProperties, setCurrentProperties] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
 
   const isOpen = Boolean(anchorEl);
@@ -108,31 +124,12 @@ export default function Properties() {
 
   const handleDelete = (propertyId) => {
     if (!propertyId) return;
-    const draftCurrentProperties = currentProperties.filter(
-      (property) => property.id !== propertyId
-    );
-    setCurrentProperties(draftCurrentProperties);
-    localStorage.setItem("properties", JSON.stringify(draftCurrentProperties));
+    setShowSnackbar(true);
+    deleteProperty(propertyId);
   };
 
   const handleQuickConnectMenuItem = (action, property) => {
-    /* eslint-disable no-console */
-    console.log("Selected action:", action, "for property:", property);
-    // Handle the selected action here
-    switch (action) {
-      case "CREATE_INVOICE":
-        navigate("/invoice/edit");
-        break;
-      case "PAYMENT_REMINDER":
-        // Handle payment reminder
-        break;
-      case "MAINTENANCE_REQUEST":
-        // Handle maintenance request
-        break;
-      case "GENERAL_NOTICE":
-        // Handle general notice
-        break;
-    }
+    handleQuickConnectAction(action, property);
   };
 
   const isDisabled = () => {
@@ -167,26 +164,32 @@ export default function Properties() {
     setFormData(BLANK_PROPERTY_DETAILS);
   };
 
-  const submit = (ev) => {
+  const submit = async (ev) => {
     ev.preventDefault();
     const result = Object.entries(formData).reduce((acc, [key, field]) => {
       acc[key] = field.value;
       return acc;
     }, {});
 
-    result.id = uuidv4(); // create a new property id
-    const draftPropertiesList = [...currentProperties, result];
-    localStorage.setItem("properties", JSON.stringify(draftPropertiesList));
+    result["id"] = uuidv4(); // create a new property id
+    const currentDateTime = dayjs().toISOString();
+    result["createdBy"] = user?.uid || "";
+    result["createdOn"] = currentDateTime; // 1st time created == updated
+    result["updatedOn"] = currentDateTime;
+
+    try {
+      await createProperty(result).unwrap();
+      setShowSnackbar(true);
+    } catch (error) {
+      /* eslint-disable no-console */
+      console.log(error);
+    }
+
     resetFormData();
     closeDialog();
   };
 
-  useEffect(() => {
-    const draftPropertiesList = JSON.parse(localStorage.getItem("properties"));
-    if (Array.isArray(draftPropertiesList) && draftPropertiesList.length >= 0) {
-      setCurrentProperties(draftPropertiesList);
-    }
-  }, []);
+  if (isLoading) return <Skeleton height="10rem" />;
 
   return (
     <Stack>
@@ -210,108 +213,112 @@ export default function Properties() {
       </Stack>
 
       {/* View list of properties */}
-      <Stack padding={1} spacing={1}>
-        {currentProperties.length === 0 ? (
-          <EmptyComponent caption="Add new property to begin." />
-        ) : (
-          currentProperties.map((property) => (
-            <Accordion
-              elevation={0}
-              key={property.id}
-              expanded={expanded === property.id}
-            >
-              <AccordionSummary
-                onClick={(e) => e.stopPropagation()}
-                aria-controls={`${property.id}-content`}
-                id={`${property.id}-header`}
-                sx={{
-                  "& .MuiAccordionSummary-content": {
-                    width: "100%",
-                    padding: "0rem 1rem 0rem 0rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  },
-                }}
+      {properties?.length <= 0 ? (
+        <EmptyComponent caption="Add properties to begin" />
+      ) : (
+        <Stack padding={1} spacing={1}>
+          {properties.length === 0 ? (
+            <EmptyComponent caption="Add new property to begin." />
+          ) : (
+            properties.map((property) => (
+              <Accordion
+                elevation={0}
+                key={property.id}
+                expanded={expanded === property.id}
               >
-                <Stack flexGrow={1}>
-                  <Stack alignItems="center" direction="row" spacing={1}>
+                <AccordionSummary
+                  onClick={(e) => e.stopPropagation()}
+                  aria-controls={`${property.id}-content`}
+                  id={`${property.id}-header`}
+                  sx={{
+                    "& .MuiAccordionSummary-content": {
+                      width: "100%",
+                      padding: "0rem 1rem 0rem 0rem",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  <Stack flexGrow={1}>
+                    <Stack alignItems="center" direction="row" spacing={1}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(property.id);
+                        }}
+                      >
+                        <DeleteRounded fontSize="small" color="error" />
+                      </IconButton>
+                      <Typography variant="subtitle2" color="primary">
+                        {property?.name || "Unknown Property Name"}
+                      </Typography>
+                    </Stack>
+                    <Typography variant="subtitle2" fontSize={12}>
+                      {property?.address}
+                    </Typography>
+                    <Typography variant="subtitle2" fontSize={12}>
+                      {property?.city} {property?.state}, {property?.zipcode}
+                    </Typography>
+                  </Stack>
+
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <AButton
+                      label="Quick Connect"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenQuickConnect(e);
+                      }}
+                      size="small"
+                      variant="standard"
+                      endIcon={<ExpandMoreRounded />}
+                    />
+                    <QuickConnectMenu
+                      anchorEl={anchorEl}
+                      open={isOpen}
+                      onClose={handleCloseQuickConnect}
+                      property={property}
+                      onMenuItemClick={handleQuickConnectMenuItem}
+                    />
+
+                    <AButton
+                      label="Associate Tenant"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleAssociateTenantPopup(property);
+                      }}
+                      size="small"
+                      variant="outlined"
+                      endIcon={<AddRounded />}
+                    />
                     <IconButton
                       size="small"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(property.id);
+                        handleExpand(property.id);
                       }}
                     >
-                      <DeleteRounded fontSize="small" color="error" />
+                      <ExpandMoreRounded
+                        sx={{
+                          transform:
+                            expanded === property.id
+                              ? "rotate(180deg)"
+                              : "rotate(0deg)",
+                          transition: "transform 0.2s",
+                        }}
+                      />
                     </IconButton>
-                    <Typography variant="subtitle2" color="primary">
-                      {property?.name || "Unknown Property Name"}
-                    </Typography>
                   </Stack>
-                  <Typography variant="subtitle2" fontSize={12}>
-                    {property?.address}
-                  </Typography>
-                  <Typography variant="subtitle2" fontSize={12}>
-                    {property?.city} {property?.state}, {property?.zipcode}
-                  </Typography>
-                </Stack>
-
-                <Stack direction="row" spacing={1} alignItems="center">
-                  <AButton
-                    label="Quick Connect"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenQuickConnect(e);
-                    }}
-                    size="small"
-                    variant="standard"
-                    endIcon={<ExpandMoreRounded />}
-                  />
-                  <QuickConnectMenu
-                    anchorEl={anchorEl}
-                    open={isOpen}
-                    onClose={handleCloseQuickConnect}
-                    property={property}
-                    onMenuItemClick={handleQuickConnectMenuItem}
-                  />
-
-                  <AButton
-                    label="Associate Tenant"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleAssociateTenantPopup(property);
-                    }}
-                    size="small"
-                    variant="outlined"
-                    endIcon={<AddRounded />}
-                  />
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleExpand(property.id);
-                    }}
-                  >
-                    <ExpandMoreRounded
-                      sx={{
-                        transform:
-                          expanded === property.id
-                            ? "rotate(180deg)"
-                            : "rotate(0deg)",
-                        transition: "transform 0.2s",
-                      }}
-                    />
-                  </IconButton>
-                </Stack>
-              </AccordionSummary>
-              <AccordionDetails>
-                <ViewPropertyAccordionDetails tenants={tenants} />
-              </AccordionDetails>
-            </Accordion>
-          ))
-        )}
-      </Stack>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <ViewPropertyAccordionDetails tenants={tenants} />
+                </AccordionDetails>
+              </Accordion>
+            ))
+          )}
+        </Stack>
+      )}
 
       <Dialog
         open={
@@ -352,6 +359,12 @@ export default function Properties() {
           />
         </DialogActions>
       </Dialog>
+
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Changes saved."
+      />
     </Stack>
   );
 }

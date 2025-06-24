@@ -32,3 +32,14 @@ export const isValid = (email) => {
   }
   return true;
 };
+
+/**
+ * fetchLoggedInUser ...
+ *
+ * used to retrieve the logged in userId.
+ *
+ * @returns string - the logged in userId
+ */
+export const fetchLoggedInUser = () => {
+  return JSON.parse(localStorage.getItem("user"));
+};

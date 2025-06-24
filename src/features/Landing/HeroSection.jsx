@@ -1,15 +1,30 @@
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
+
 import AButton from "common/AButton";
 import { isUserLoggedIn } from "common/utils";
 import { authenticateViaGoogle } from "features/Auth/AuthHelper";
+import { useCreateUserMutation } from "features/Api/firebaseUserApi";
 
 export default function HeroSection() {
   const navigate = useNavigate();
   const isLoggedIn = isUserLoggedIn();
+  const [createUser] = useCreateUserMutation();
+
+  // creates a user in the db
+  const handleCreateUser = async (user) => {
+    try {
+      await createUser(user).unwrap();
+    } catch (err) {
+      /* eslint-disable no-console */
+      console.error("Create failed:", err);
+    }
+  };
 
   const handleGoogleAuthentication = async () => {
-    await authenticateViaGoogle();
+    const userDetails = await authenticateViaGoogle();
+    await handleCreateUser(userDetails);
     navigate(`/properties?refresh=${Date.now()}`); // force refresh
   };
 
