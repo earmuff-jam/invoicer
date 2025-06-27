@@ -3,9 +3,10 @@ import {
   Button,
   CircularProgress,
   Divider,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
-  Typography,
 } from "@mui/material";
 
 import {
@@ -57,9 +58,6 @@ export default function MenuOptions({
         open={open}
         onClose={handleClose}
         sx={{
-          "& .MuiList-root": {
-            padding: "0",
-          },
           "& .MuiPaper-root": {
             minWidth: 180,
             boxShadow:
@@ -81,10 +79,20 @@ export default function MenuOptions({
                 handleClose();
               }}
               disableRipple
-              sx={{ gap: "0.5rem" }}
+              sx={{ gap: "0.5rem", py: 1 }}
             >
-              <PrintRounded />
-              <Typography variant="subtitle2">Print Invoice</Typography>
+              <ListItemIcon>
+                <PrintRounded />
+              </ListItemIcon>
+              <ListItemText
+                primary="Print Invoice"
+                slotProps={{
+                  primary: {
+                    fontSize: 14,
+                    fontWeight: 500,
+                  },
+                }}
+              />
             </MenuItem>
             {isSendEmailFeatureEnabled ? (
               <MenuItem
@@ -96,12 +104,22 @@ export default function MenuOptions({
                 disableRipple
                 sx={{ gap: "0.5rem" }}
               >
-                {isSendEmailLoading ? (
-                  <CircularProgress color="inherit" size="1rem" />
-                ) : (
-                  <EmailOutlined />
-                )}
-                Send Email
+                <ListItemIcon>
+                  {isSendEmailLoading ? (
+                    <CircularProgress color="inherit" size="1rem" />
+                  ) : (
+                    <EmailOutlined />
+                  )}
+                </ListItemIcon>
+                <ListItemText
+                  primary="Send Email"
+                  slotProps={{
+                    primary: {
+                      fontSize: 14,
+                      fontWeight: 500,
+                    },
+                  }}
+                />
               </MenuItem>
             ) : null}
           </>
@@ -117,8 +135,18 @@ export default function MenuOptions({
           disableRipple
           sx={{ gap: "0.5rem" }}
         >
-          {isLightTheme ? <LightModeRounded /> : <DarkModeRounded />}
-          <Typography variant="subtitle2">Change theme</Typography>
+          <ListItemIcon>
+            {isLightTheme ? <LightModeRounded /> : <DarkModeRounded />}
+          </ListItemIcon>
+          <ListItemText
+            primary="Change Theme"
+            slotProps={{
+              primary: {
+                fontSize: 14,
+                fontWeight: 500,
+              },
+            }}
+          />
         </MenuItem>
         {showHelpAndSupport ? (
           <MenuItem
@@ -129,8 +157,18 @@ export default function MenuOptions({
             disableRipple
             sx={{ gap: "0.5rem" }}
           >
-            <HelpOutlineRounded />
-            <Typography variant="subtitle2">Help and Support</Typography>
+            <ListItemIcon>
+              <HelpOutlineRounded />
+            </ListItemIcon>
+            <ListItemText
+              primary="Help and Support"
+              slotProps={{
+                primary: {
+                  fontSize: 14,
+                  fontWeight: 500,
+                },
+              }}
+            />
           </MenuItem>
         ) : null}
       </Menu>

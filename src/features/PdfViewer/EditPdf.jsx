@@ -20,7 +20,10 @@ import {
 import EditPdfLineItemAccordion from "src/features/PdfViewer/EditPdfLineItemAccordion";
 import dayjs from "dayjs";
 import { produce } from "immer";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import {
+  LocalizationProvider,
+  MobileDatePicker,
+} from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
@@ -371,7 +374,7 @@ export default function EditPdf({
         {/* Start and end dates */}
         <Stack direction="row" spacing={2} data-tour="edit-pdf-4">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            <MobileDatePicker
               label="Start Date *"
               id="start_date"
               name="start_date"
@@ -389,7 +392,7 @@ export default function EditPdf({
             />
           </LocalizationProvider>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
+            <MobileDatePicker
               label="End Date *"
               id="end_date"
               name="end_date"
