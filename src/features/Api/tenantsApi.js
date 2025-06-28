@@ -8,7 +8,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { authenticatorFirestore as db } from "src/firebaseConfig";
+import { authenticatorFirestore as db } from "src/config";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const tenantsApi = createApi({

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { addDoc, collection } from "firebase/firestore";
 import { useLocation } from "react-router-dom";
-import { analyticsFirestore } from "src/firebaseConfig";
+import { analyticsFirestore } from "src/config";
 import { useFetchUserIp } from "src/hooks/useFetchIp";
 
 /**

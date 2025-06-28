@@ -8,7 +8,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
-import { authenticatorFirestore as db } from "src/firebaseConfig";
+import { authenticatorFirestore as db } from "src/config";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const propertiesApi = createApi({
@@ -80,11 +80,11 @@ export const propertiesApi = createApi({
     }),
 
     updatePropertyById: builder.mutation({
-      async queryFn({ uid, newData }) {
+      async queryFn(data) {
         try {
-          const propertyRef = doc(db, "properties", uid);
-          await setDoc(propertyRef, newData, { merge: true });
-          return { data: newData };
+          const propertyRef = doc(db, "properties", data?.id);
+          await setDoc(propertyRef, data, { merge: true });
+          return { data };
         } catch (error) {
           return {
             error: {
@@ -112,7 +112,7 @@ export const propertiesApi = createApi({
           };
         }
       },
-      invalidatesTags: ["properties"]
+      invalidatesTags: ["properties"],
     }),
   }),
 });

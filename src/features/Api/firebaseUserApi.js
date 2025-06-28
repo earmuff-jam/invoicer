@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
-import { authenticatorFirestore as db } from "src/firebaseConfig";
+import { authenticatorFirestore as db } from "src/config";
 
 export const firebaseUserApi = createApi({
   reducerPath: "firebaseUserApi",

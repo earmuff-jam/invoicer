@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useFetchUserIp } from "src/hooks/useFetchIp";
 import { addDoc, collection } from "firebase/firestore";
-import { analyticsFirestore } from "src/firebaseConfig";
+import { analyticsFirestore } from "src/config";
 import dayjs from "dayjs";
 
 /**

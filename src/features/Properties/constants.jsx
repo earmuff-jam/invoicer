@@ -289,4 +289,23 @@ export const BLANK_PROPERTY_DETAILS = {
       },
     ],
   },
+  rent: {
+    value: "",
+    isRequired: true,
+    errorMsg: "",
+    validators: [
+      {
+        validate: (val) => val !== "" && isNaN(Number(val)),
+        message: "Value is required and must be a number",
+      },
+      {
+        validate: (val) => val !== "" && val < 0,
+        message: "Value cannot be less than zero.",
+      },
+      {
+        validate: (val) => Number(val) && val > Number.MAX_SAFE_INTEGER,
+        message: "Value limit reached",
+      },
+    ],
+  },
 };

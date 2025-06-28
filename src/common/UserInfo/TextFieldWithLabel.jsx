@@ -34,7 +34,7 @@ export default function TextFieldWithLabel({
         size="small"
         multiline={multiline}
         rows={maxRows}
-        error={Boolean(errorMsg.length)}
+        error={Boolean(errorMsg?.length)}
         helperText={errorMsg}
         disabled={isDisabled}
       />

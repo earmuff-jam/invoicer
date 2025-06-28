@@ -1,4 +1,4 @@
-import { authenticatorApp } from "src/firebaseConfig";
+import { authenticatorApp } from "src/config";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import dayjs from "dayjs";
 

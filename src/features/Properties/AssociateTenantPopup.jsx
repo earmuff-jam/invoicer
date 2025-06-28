@@ -116,6 +116,8 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
     setFormData(updatedFormData);
   };
 
+  const reset = () => setFormData(BLANK_ASSOCIATE_TENANT_DETAILS);
+
   const isSubmitAssociationDisabled = () => {
     const containsErr = Object.values(formData).reduce((acc, el) => {
       if (el.errorMsg) {
@@ -168,6 +170,7 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
       console.log(error);
     }
     closeDialog();
+    reset();
   };
 
   useEffect(() => {
@@ -182,6 +185,15 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
       setOptions(draftProfiles);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    // update form fields if present
+    if (property) {
+      const updatedFormData = { ...formData };
+      updatedFormData["rent"].value = property?.rent;
+      setFormData(updatedFormData);
+    }
+  }, [property?.id, isLoading]);
 
   return (
     <Stack spacing="0.2rem">
@@ -305,9 +317,21 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
         />
 
         <TextFieldWithLabel
-          label="Monthly rent amount"
+          label={
+            <Stack direction="row" alignItems="center">
+              <Tooltip title="Monthly rent amount is the populated from the property details">
+                <InfoRounded
+                  color="secondary"
+                  fontSize="small"
+                  sx={{ fontSize: "1rem", margin: "0.2rem" }}
+                />
+              </Tooltip>
+              <Typography variant="subtitle2">Monthly Rent Amount</Typography>
+            </Stack>
+          }
           id="rent"
           name="rent"
+          isDisabled={true}
           placeholder="Monthly rent amount. Eg, 2150.00"
           value={formData?.rent?.value || ""}
           handleChange={handleChange}
@@ -342,6 +366,7 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={true}
                   id={formData?.isSoR?.id}
                   checked={formData?.isSoR?.value || false}
                   onChange={handleCheckbox}

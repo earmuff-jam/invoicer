@@ -21,7 +21,7 @@ import { useGenerateUserData } from "hooks/useGenerateUserData";
 import MenuOptions from "features/Layout/MenuOptions";
 import { isUserLoggedIn } from "src/common/utils";
 import { getAuth, signOut } from "firebase/auth";
-import { authenticatorConfig } from "src/firebaseConfig";
+import { authenticatorConfig } from "src/config";
 import { useNavigate } from "react-router-dom";
 
 export default function AppToolbar({
