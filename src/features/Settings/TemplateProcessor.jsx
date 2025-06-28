@@ -14,22 +14,11 @@ export const processTemplate = (template, variables) => {
 export const handleQuickConnectAction = (
   action,
   property,
-  tenants,
+  primaryTenant,
   templates,
   openMaintenanceForm = () => {},
   openNoticeComposer = () => {}
 ) => {
-  // Get the first tenant (or primary contact)
-  const primaryTenant =
-    tenants.find((t) => t.propertyId === property.id && t.isPrimaryContact) ||
-    tenants.find((t) => t.propertyId === property.id);
-
-  if (!primaryTenant) {
-    alert("No tenant found for this property");
-    return;
-  }
-
-  // Create the variables object from your data
   const templateVariables = {
     tenantName: primaryTenant.name,
     propertyAddress: `${property.address}, ${property.city}, ${property.state} ${property.zipcode}`,
@@ -46,22 +35,22 @@ export const handleQuickConnectAction = (
 
   switch (action) {
     case "CREATE_INVOICE": {
-      const invoiceSubject = processTemplate(
-        templates.invoice.subject,
-        templateVariables
-      );
-      const invoiceBody = processTemplate(
-        templates.invoice.body,
-        templateVariables
-      );
+      // const invoiceSubject = processTemplate(
+      //   templates.invoice.subject,
+      //   templateVariables
+      // );
+      // const invoiceBody = processTemplate(
+      //   templates.invoice.body,
+      //   templateVariables
+      // );
 
-      // Open email client or send via your API
-      sendEmail({
-        to: primaryTenant.email,
-        subject: invoiceSubject,
-        body: invoiceBody,
-        attachments: ["invoice.pdf"], // Generate invoice PDF
-      });
+      // // Open email client or send via your API
+      // sendEmail({
+      //   to: primaryTenant.email,
+      //   subject: invoiceSubject,
+      //   body: invoiceBody,
+      //   attachments: ["invoice.pdf"], // Generate invoice PDF
+      // });
       break;
     }
 
@@ -119,34 +108,3 @@ const sendEmail = ({ to, subject, body, attachments = [] }) => {
   )}&body=${encodeURIComponent(body)}`;
   window.open(mailtoLink);
 };
-
-// Usage in your Properties component's QuickConnect handler:
-// const onMenuItemClick = (action, property) => {
-//   // Get templates from settings (you'd load these from localStorage or API)
-//   const savedTemplates = JSON.parse(
-//     localStorage.getItem("email_templates") || "{}"
-//   );
-
-//   // Merge with defaults
-//   const templates = {
-//     invoice: {
-//       subject:
-//         savedTemplates.invoice?.subject ||
-//         "Monthly Rent Invoice - {{propertyAddress}}",
-//       body:
-//         savedTemplates.invoice?.body ||
-//         "Dear {{tenantName}},\n\nPlease find attached your rent invoice for {{month}} {{year}}.\n\nAmount Due: ${{amount}}\nDue Date: {{dueDate}}\n\nThank you,\n{{ownerName}}",
-//     },
-//     reminder: {
-//       subject:
-//         savedTemplates.reminder?.subject ||
-//         "Payment Reminder - {{propertyAddress}}",
-//       body:
-//         savedTemplates.reminder?.body ||
-//         "Dear {{tenantName}},\n\nYour rent payment of ${{amount}} was due on {{dueDate}}.\n\nPlease submit payment promptly.\n\nBest regards,\n{{ownerName}}",
-//     },
-//     // ... other templates
-//   };
-
-//   handleQuickConnectAction(action, property, tenants, templates);
-// };

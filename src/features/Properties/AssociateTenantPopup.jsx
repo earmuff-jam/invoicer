@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 
 import {
@@ -21,27 +22,24 @@ import {
 } from "features/Properties/constants";
 
 import dayjs from "dayjs";
-import { v4 as uuidv4 } from "uuid";
 import { InfoRounded } from "@mui/icons-material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { useGetUserListQuery } from "features/Api/firebaseUserApi";
+import { fetchLoggedInUser } from "features/Properties/utils";
+import { useCreateTenantMutation } from "features/Api/tenantsApi";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 
-export default function AssociateTenantPopup({
-  closeDialog,
-  creatorId,
-  property,
-}) {
-  // dummy data
-  const profiles = [
-    {
-      id: uuidv4(),
-      emailAddress: "emily22@invoicer.gmail.com",
-    },
-  ];
-  const loading = false;
+export default function AssociateTenantPopup({ closeDialog, property }) {
+  const user = fetchLoggedInUser();
+  const currentUserId = user?.uid;
+
+  const [createTenant] = useCreateTenantMutation();
+  const { data: profiles, isLoading } = useGetUserListQuery();
 
   const [options, setOptions] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(BLANK_ASSOCIATE_TENANT_DETAILS);
 
   const isSoR = formData?.isSoR?.value || false;
@@ -145,25 +143,37 @@ export default function AssociateTenantPopup({
     );
   };
 
-  const handleSubmitAssociation = (ev) => {
+  const handleSubmitAssociation = async (ev) => {
     ev.preventDefault();
     const draftData = Object.entries(formData).reduce((acc, [key, field]) => {
       acc[key] = field.value;
       return acc;
     }, {});
 
+    if (!isSoR) delete draftData["assignedRoomName"];
+
+    draftData["id"] = uuidv4();
     draftData["propertyId"] = property.id;
+    draftData["createdBy"] = currentUserId;
+    draftData["created"] = dayjs().toISOString();
+
+    draftData["updatedBy"] = currentUserId;
     draftData["updated_on"] = dayjs().toISOString();
 
-    const draftTenantsList = [draftData];
-    localStorage.setItem("tenants", JSON.stringify(draftTenantsList));
+    try {
+      await createTenant(draftData).unwrap();
+      setShowSnackbar(true);
+    } catch (error) {
+      /* eslint-disable no-console */
+      console.log(error);
+    }
     closeDialog();
   };
 
   useEffect(() => {
-    if (!loading && Array.isArray(profiles)) {
+    if (!isLoading && Array.isArray(profiles)) {
       const draftProfiles = profiles
-        .filter((profile) => profile.id !== creatorId)
+        .filter((profile) => profile.id !== currentUserId)
         .map((v) => ({
           display: v.emailAddress,
           value: v.id,
@@ -171,7 +181,7 @@ export default function AssociateTenantPopup({
         }));
       setOptions(draftProfiles);
     }
-  }, []);
+  }, [isLoading]);
 
   return (
     <Stack spacing="0.2rem">
@@ -183,13 +193,16 @@ export default function AssociateTenantPopup({
         options={options}
         value={formData.email.value}
         onChange={(_, newValue) => {
-          const draftEvent = {
-            target: {
-              id: "email",
-              value: newValue?.display || newValue?.label || newValue || "",
-            },
-          };
-          handleChange(draftEvent);
+          const value =
+            typeof newValue === "string"
+              ? newValue
+              : newValue?.display || newValue?.label || "";
+          handleChange({ target: { id: "email", value } });
+        }}
+        onInputChange={(_, inputValue, reason) => {
+          if (reason === "input") {
+            handleChange({ target: { id: "email", value: inputValue } });
+          }
         }}
         getOptionLabel={(option) =>
           typeof option === "string"
@@ -199,13 +212,13 @@ export default function AssociateTenantPopup({
         isOptionEqualToValue={(option, value) =>
           (option.value || option) === (value.value || value)
         }
+        freeSolo
         renderInput={(params) => (
           <TextField
             {...params}
             variant="standard"
-            placeholder="Select tenant"
+            placeholder="Select or enter tenant email"
             label="Tenant Email"
-            value={formData.email.value}
             error={!!formData.email.errorMsg}
             helperText={formData.email.errorMsg}
           />
@@ -370,6 +383,11 @@ export default function AssociateTenantPopup({
       >
         Update Tenants
       </Button>
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Changes saved."
+      />
     </Stack>
   );
 }
