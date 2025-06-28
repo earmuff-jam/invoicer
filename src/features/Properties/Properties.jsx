@@ -47,7 +47,8 @@ import {
   useGetPropertiesByUserIdQuery,
 } from "features/Api/propertiesApi";
 
-import { useGetUserDataByIdQuery } from "src/features/Api/firebaseUserApi";
+import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -81,6 +82,7 @@ export default function Properties() {
 
   const [expanded, setExpanded] = useState(null);
   const [dialog, setDialog] = useState(defaultDialog);
+  const [showSnackbar, setShowSnackbar] = useState(false);
   const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
 
   const closeDialog = () => setDialog(defaultDialog);
@@ -103,6 +105,7 @@ export default function Properties() {
   const handleDelete = async (propertyId) => {
     if (!propertyId) return;
     await deleteProperty(propertyId);
+    setShowSnackbar(true);
   };
 
   const toggleAddPropertyPopup = () => {
@@ -147,6 +150,7 @@ export default function Properties() {
 
     await createProperty(result);
 
+    setShowSnackbar(true);
     resetFormData();
     closeDialog();
   };
@@ -182,21 +186,42 @@ export default function Properties() {
           <EmptyComponent caption="Add new property to begin." />
         ) : (
           properties.map((property) => (
-            <Accordion key={property.id} expanded={expanded === property.id}>
+            <Accordion
+              key={property.id}
+              expanded={expanded === property.id}
+              elevation={0}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreRounded />}
                 onClick={() => handleExpand(property.id)}
               >
                 <Stack flexGrow={1} spacing={0.5}>
-                  <Typography variant="subtitle2" color="primary">
-                    {property.name || "Unknown Property Name"}
-                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(property.id);
+                      }}
+                    >
+                      <DeleteRounded fontSize="small" color="error" />
+                    </IconButton>
+                    <Typography variant="subtitle2" color="primary">
+                      {property.name || "Unknown Property Name"}
+                    </Typography>
+                  </Stack>
+
                   <Typography variant="body2">{property.address}</Typography>
                   <Typography variant="body2">
                     {property.city} {property.state}, {property.zipcode}
                   </Typography>
                 </Stack>
-                <Stack direction="row" spacing={1} alignItems="center">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  padding="0rem 1rem"
+                >
                   <AButton
                     label="Associate Tenant"
                     onClick={(e) => {
@@ -207,15 +232,6 @@ export default function Properties() {
                     variant="outlined"
                     endIcon={<AddRounded />}
                   />
-                  <IconButton
-                    size="small"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(property.id);
-                    }}
-                  >
-                    <DeleteRounded fontSize="small" color="error" />
-                  </IconButton>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>
@@ -258,6 +274,12 @@ export default function Properties() {
           />
         </DialogActions>
       </Dialog>
+
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Changes saved."
+      />
     </Stack>
   );
 }
