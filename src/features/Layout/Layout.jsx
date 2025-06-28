@@ -16,20 +16,24 @@ import {
   useTheme,
 } from "@mui/material";
 
-import NavBar from "src/features/Layout/NavBar";
-import Footer from "src/features/Footer/Footer";
-import { Outlet, useLocation } from "react-router-dom";
-import AButton from "src/common/AButton";
-import { NavigationProvider } from "src/common/ANavigation";
+import { InfoRounded } from "@mui/icons-material";
+
+import { matchPath, Outlet, useLocation } from "react-router-dom";
+
+import { NavigationProvider } from "common/ANavigation";
+
+import AButton from "common/AButton";
 import { useTour } from "@reactour/tour";
+import NavBar from "features/Layout/NavBar";
+import Footer from "features/Footer/Footer";
 
 import {
   DefaultTourStepsMapperObj,
   GeneratedTourSteps,
-} from "src/common/Tour/TourSteps";
-import AppToolbar from "src/features/Layout/AppToolbar";
-import { InfoRounded } from "@mui/icons-material";
-import BreadCrumbs from "src/features/Layout/BreadCrumbs";
+} from "common/Tour/TourSteps";
+
+import AppToolbar from "features/Layout/AppToolbar";
+import BreadCrumbs from "features/Layout/BreadCrumbs";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -87,7 +91,7 @@ export default function Layout({
     <NavigationProvider>
       <AppToolbar
         currentUri={currentUri}
-        currentRoute={routes.find((route) => route.path === currentUri)}
+        currentRoute={routes.find((route) => matchPath(route.path, currentUri))}
         handleDrawerClose={() => setOpenDrawer(false)}
         handleDrawerOpen={() => setOpenDrawer(true)}
         currentThemeIdx={currentThemeIdx}

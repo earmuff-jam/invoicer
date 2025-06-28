@@ -20,6 +20,7 @@ import {
   IconButton,
   Typography,
   Skeleton,
+  Box,
 } from "@mui/material";
 
 import {
@@ -49,6 +50,7 @@ import {
 
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
+import { useNavigate } from "react-router-dom";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -63,6 +65,8 @@ const defaultDialog = {
 
 export default function Properties() {
   useAppTitle("View Properties");
+
+  const navigate = useNavigate();
   const user = fetchLoggedInUser();
 
   const { data: properties = [], isLoading } = useGetPropertiesByUserIdQuery(
@@ -206,9 +210,16 @@ export default function Properties() {
                     >
                       <DeleteRounded fontSize="small" color="error" />
                     </IconButton>
-                    <Typography variant="subtitle2" color="primary">
-                      {property.name || "Unknown Property Name"}
-                    </Typography>
+                    <Box
+                      onClick={(ev) => {
+                        ev.stopPropagation();
+                        navigate(`/property/${property?.id}`);
+                      }}
+                    >
+                      <Typography variant="subtitle2" color="primary">
+                        {property.name || "Unknown Property Name"}
+                      </Typography>
+                    </Box>
                   </Stack>
 
                   <Typography variant="body2">{property.address}</Typography>

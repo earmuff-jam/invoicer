@@ -14,6 +14,7 @@ import {
   SettingsRounded,
   WhatshotRounded,
 } from "@mui/icons-material";
+import Property from "src/features/Properties/Property";
 
 const Overview = lazy(() => import("features/Landing/Overview"));
 const Dashboard = lazy(() => import("features/Dashboard/Dashboard"));
@@ -205,6 +206,24 @@ export const InvoicerRoutes = [
       displayInNavBar: false,
       displayHelpSelector: false,
       displayPrintSelector: false,
+    },
+  },
+  {
+    id: 11,
+    label: "My Properties",
+    path: "/property/:id",
+    element: <Property />,
+    icon: <CottageRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      breadcrumb: {
+        value: "My properties",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      isLoggedInFeature: true, // only display if logged in
+      displayInNavBar: false,
+      displayHelpSelector: true,
+      displayPrintSelector: true,
     },
   },
 ];
