@@ -19,6 +19,7 @@ import {
   AccordionSummary,
   IconButton,
   Typography,
+  Skeleton,
 } from "@mui/material";
 
 import {
@@ -36,18 +37,17 @@ import RowHeader from "common/RowHeader/RowHeader";
 import AddProperty from "features/Properties/AddProperty";
 import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
 import ViewPropertyAccordionDetails from "features/Properties/ViewPropertyAccordionDetails";
-import { useNavigate } from "react-router-dom";
-import { useAppTitle } from "hooks/useAppTitle";
 
 import { useAppTitle } from "hooks/useAppTitle";
 import { fetchLoggedInUser } from "features/Properties/utils";
-import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
 
 import {
   useCreatePropertyMutation,
   useDeletePropertyByIdMutation,
   useGetPropertiesByUserIdQuery,
 } from "features/Api/propertiesApi";
+
+import { useGetUserDataByIdQuery } from "src/features/Api/firebaseUserApi";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -62,21 +62,25 @@ const defaultDialog = {
 
 export default function Properties() {
   useAppTitle("View Properties");
-  
-  const navigate = useNavigate();
   const user = fetchLoggedInUser();
 
-  const { data: properties, isLoading } = useGetPropertiesByUserIdQuery(
-    user.uid
+  const { data: properties = [], isLoading } = useGetPropertiesByUserIdQuery(
+    user.uid,
+    {
+      skip: !user?.uid,
+    }
   );
-  
+
+  const { data: userData, isLoading: isUserDataLoading } =
+    useGetUserDataByIdQuery(user?.uid, {
+      skip: !user?.uid,
+    });
+
   const [createProperty] = useCreatePropertyMutation();
   const [deleteProperty] = useDeletePropertyByIdMutation();
-  
-  const [anchorEl, setAnchorEl] = useState(null);
+
   const [expanded, setExpanded] = useState(null);
   const [dialog, setDialog] = useState(defaultDialog);
-  const [currentProperties, setCurrentProperties] = useState([]);
   const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
 
   const closeDialog = () => setDialog(defaultDialog);
@@ -86,59 +90,19 @@ export default function Properties() {
     const { id, value } = ev.target;
     const updatedFormData = { ...formData };
     let errorMsg = "";
-
     for (const validator of updatedFormData[id].validators) {
       if (validator.validate(value)) {
         errorMsg = validator.message;
         break;
       }
     }
-
-    updatedFormData[id] = {
-      ...updatedFormData[id],
-      value,
-      errorMsg,
-    };
+    updatedFormData[id] = { ...updatedFormData[id], value, errorMsg };
     setFormData(updatedFormData);
   };
 
-  const handleDelete = (propertyId) => {
+  const handleDelete = async (propertyId) => {
     if (!propertyId) return;
-    const draftCurrentProperties = currentProperties.filter(
-      (property) => property.id !== propertyId
-    );
-    setCurrentProperties(draftCurrentProperties);
-    localStorage.setItem("properties", JSON.stringify(draftCurrentProperties));
-  };
-
-  const handleQuickConnectMenuItem = (action, property) => {
-    /* eslint-disable no-console */
-    console.log("Selected action:", action, "for property:", property);
-    // Handle the selected action here
-    switch (action) {
-      case "CREATE_INVOICE":
-        navigate("/invoice/edit");
-        break;
-      case "PAYMENT_REMINDER":
-        // Handle payment reminder
-        break;
-      case "MAINTENANCE_REQUEST":
-        // Handle maintenance request
-        break;
-      case "GENERAL_NOTICE":
-        // Handle general notice
-        break;
-    }
-  };
-
-  const isDisabled = () => {
-    const containsErrors = Object.values(formData).some(
-      (field) => field.errorMsg
-    );
-    const requiredMissing = Object.values(formData).some(
-      (field) => field.isRequired && field.value.trim() === ""
-    );
-    return containsErrors || requiredMissing;
+    await deleteProperty(propertyId);
   };
 
   const toggleAddPropertyPopup = () => {
@@ -146,7 +110,6 @@ export default function Properties() {
       title: "Add Property",
       type: AddPropertyTextString,
       display: true,
-      property: null,
     });
   };
 
@@ -159,41 +122,50 @@ export default function Properties() {
     });
   };
 
-  const resetFormData = () => {
-    setFormData(BLANK_PROPERTY_DETAILS);
+  const isDisabled = () => {
+    return Object.values(formData).some(
+      (field) =>
+        field.errorMsg || (field.isRequired && field.value.trim() === "")
+    );
   };
 
-  const submit = (ev) => {
+  const resetFormData = () => setFormData(BLANK_PROPERTY_DETAILS);
+
+  const submit = async (ev) => {
     ev.preventDefault();
     const result = Object.entries(formData).reduce((acc, [key, field]) => {
       acc[key] = field.value;
       return acc;
     }, {});
 
-    result.id = uuidv4(); // create a new property id
-    const draftPropertiesList = [...currentProperties, result];
-    localStorage.setItem("properties", JSON.stringify(draftPropertiesList));
+    result.id = uuidv4();
+    result["createdBy"] = user?.uid;
+    result["createdOn"] = dayjs().toISOString();
+
+    result["updatedBy"] = user?.uid;
+    result["updatedOn"] = dayjs().toISOString();
+
+    await createProperty(result);
+
     resetFormData();
     closeDialog();
   };
 
   useEffect(() => {
-    const draftPropertiesList = JSON.parse(localStorage.getItem("properties"));
-    if (Array.isArray(draftPropertiesList) && draftPropertiesList.length >= 0) {
-      setCurrentProperties(draftPropertiesList);
+    // update form fields if present
+    if (userData) {
+      formData.owner_email.value = userData.googleEmailAddress;
     }
-  }, []);
+  }, [isUserDataLoading]);
+
+  if (isLoading) return <Skeleton height="10rem" />;
 
   return (
     <Stack>
-      <Stack direction="row" spacing={1} justifyContent="space-between">
+      <Stack direction="row" justifyContent="space-between">
         <RowHeader
           title="Properties"
-          sxProps={{
-            textAlign: "left",
-            fontWeight: "bold",
-            color: "text.secondary",
-          }}
+          sxProps={{ fontWeight: "bold", color: "text.secondary" }}
         />
         <Button
           size="small"
@@ -205,121 +177,26 @@ export default function Properties() {
         </Button>
       </Stack>
 
-      {/* View list of properties */}
       <Stack padding={1} spacing={1}>
-        {currentProperties.length === 0 ? (
+        {properties.length === 0 ? (
           <EmptyComponent caption="Add new property to begin." />
         ) : (
-          currentProperties.map((property) => (
-            <Accordion
-              elevation={0}
-              key={property.id}
-              expanded={expanded === property.id}
-            >
+          properties.map((property) => (
+            <Accordion key={property.id} expanded={expanded === property.id}>
               <AccordionSummary
-                onClick={(e) => e.stopPropagation()}
-                aria-controls={`${property.id}-content`}
-                id={`${property.id}-header`}
-                sx={{
-                  "& .MuiAccordionSummary-content": {
-                    width: "100%",
-                    padding: "0rem 1rem 0rem 0rem",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  },
-                }}
+                expandIcon={<ExpandMoreRounded />}
+                onClick={() => handleExpand(property.id)}
               >
-                <Stack flexGrow={1}>
-                  <Stack alignItems="center" direction="row" spacing={1}>
-                <AccordionSummary
-                  onClick={(e) => e.stopPropagation()}
-                  aria-controls={`${property.id}-content`}
-                  id={`${property.id}-header`}
-                  sx={{
-                    "& .MuiAccordionSummary-content": {
-                      width: "100%",
-                      padding: "0rem 1rem 0rem 0rem",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    },
-                  }}
-                >
-                  <Stack flexGrow={1}>
-                    <Stack alignItems="center" direction="row" spacing={1}>
-                      <IconButton
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(property.id);
-                        }}
-                      >
-                        <DeleteRounded fontSize="small" color="error" />
-                      </IconButton>
-                      <Typography variant="subtitle2" color="primary">
-                        {property?.name || "Unknown Property Name"}
-                      </Typography>
-                    </Stack>
-                    <Typography variant="subtitle2" fontSize={12}>
-                      {property?.address}
-                    </Typography>
-                    <Typography variant="subtitle2" fontSize={12}>
-                      {property?.city} {property?.state}, {property?.zipcode}
-                    </Typography>
-                  </Stack>
-
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <AButton
-                      label="Associate Tenant"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleAssociateTenantPopup(property);
-                      }}
-                      size="small"
-                      variant="outlined"
-                      endIcon={<AddRounded />}
-                    />
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(property.id);
-                      }}
-                    >
-                      <DeleteRounded fontSize="small" color="error" />
-                    </IconButton>
-                    <Typography variant="subtitle2" color="primary">
-                      {property?.name || "Unknown Property Name"}
-                    </Typography>
-                  </Stack>
-                  <Typography variant="subtitle2" fontSize={12}>
-                    {property?.address}
+                <Stack flexGrow={1} spacing={0.5}>
+                  <Typography variant="subtitle2" color="primary">
+                    {property.name || "Unknown Property Name"}
                   </Typography>
-                  <Typography variant="subtitle2" fontSize={12}>
-                    {property?.city} {property?.state}, {property?.zipcode}
+                  <Typography variant="body2">{property.address}</Typography>
+                  <Typography variant="body2">
+                    {property.city} {property.state}, {property.zipcode}
                   </Typography>
                 </Stack>
-
                 <Stack direction="row" spacing={1} alignItems="center">
-                  <AButton
-                    label="Quick Connect"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleOpenQuickConnect(e);
-                    }}
-                    size="small"
-                    variant="standard"
-                    endIcon={<ExpandMoreRounded />}
-                  />
-                  <QuickConnectMenu
-                    anchorEl={anchorEl}
-                    open={isOpen}
-                    onClose={handleCloseQuickConnect}
-                    property={property}
-                    onMenuItemClick={handleQuickConnectMenuItem}
-                  />
-
                   <AButton
                     label="Associate Tenant"
                     onClick={(e) => {
@@ -334,23 +211,15 @@ export default function Properties() {
                     size="small"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleExpand(property.id);
+                      handleDelete(property.id);
                     }}
                   >
-                    <ExpandMoreRounded
-                      sx={{
-                        transform:
-                          expanded === property.id
-                            ? "rotate(180deg)"
-                            : "rotate(0deg)",
-                        transition: "transform 0.2s",
-                      }}
-                    />
+                    <DeleteRounded fontSize="small" color="error" />
                   </IconButton>
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>
-                <ViewPropertyAccordionDetails tenants={tenants} />
+                <ViewPropertyAccordionDetails property={property} />
               </AccordionDetails>
             </Accordion>
           ))
@@ -358,20 +227,13 @@ export default function Properties() {
       </Stack>
 
       <Dialog
-        open={
-          dialog.type === AddPropertyTextString ||
-          dialog.type === AssociateTenantTextString
-        }
+        open={dialog.display}
         TransitionComponent={Transition}
         keepMounted
         fullWidth
-        aria-describedby="alert-dialog-slide-box"
+        aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle sx={{ color: "text.secondary", textTransform: "initial" }}>
-          {dialog.type === AssociateTenantTextString
-            ? `${dialog?.title} for ${dialog?.property?.name}`
-            : "Add Property"}
-        </DialogTitle>
+        <DialogTitle>{dialog.title}</DialogTitle>
         <DialogContent>
           {dialog.type === AddPropertyTextString ? (
             <AddProperty
@@ -382,9 +244,8 @@ export default function Properties() {
             />
           ) : (
             <AssociateTenantPopup
-              onClose={closeDialog}
-              property={dialog.property}
               closeDialog={closeDialog}
+              property={dialog.property}
             />
           )}
         </DialogContent>
