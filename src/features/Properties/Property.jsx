@@ -29,6 +29,8 @@ import {
 import { useAppTitle } from "src/hooks/useAppTitle";
 import { useGetPropertiesByPropertyIdQuery } from "src/features/Api/propertiesApi";
 import { useParams } from "react-router-dom";
+import { useGetTenantByPropertyIdQuery } from "src/features/Api/tenantsApi";
+import { useGetUserDataByIdQuery } from "src/features/Api/firebaseUserApi";
 
 const Property = () => {
   const params = useParams();
@@ -39,46 +41,32 @@ const Property = () => {
     }
   );
 
-  console.log(params?.id);
+  const { data: tenants = [], isLoading: isTenantsLoading } =
+    useGetTenantByPropertyIdQuery(params?.id, {
+      skip: !params?.id,
+    });
+
+  const { data: owner = {}, isLoading: isOwnerLoading } =
+    useGetUserDataByIdQuery(property?.createdBy, {
+      skip: !property?.createdBy,
+    });
 
   useAppTitle(property?.name || "Selected Property");
-  // Replace these with your RTK queries
-  // const { data: property } = useGetPropertyQuery(propertyId);
-  // const { data: tenants } = useGetTenantsByPropertyQuery(propertyId);
-  // const { data: owner } = useGetOwnerQuery(property?.createdBy);
 
-  const tenants = [
-    {
-      created: "2025-06-28T13:24:07.102Z",
-      createdBy: "qBTwfdX4jDZLhFxPKcXyCuFbYIt1",
-      email: "test@gmail.com",
-      id: "47f03536-8a63-439e-8529-705e237e97ae",
-      isPrimary: true,
-      isSoR: false,
-      propertyId: "f98124a0-2fa6-4e46-b51b-bca42a93f628",
-      rent: "3000",
-      start_date: "01-01-2025",
-      tax_rate: "1",
-      term: "1y",
-      updatedBy: "qBTwfdX4jDZLhFxPKcXyCuFbYIt1",
-      updated_on: "2025-06-28T13:24:07.102Z",
-    },
-  ];
-
-  const owner = {
-    city: "Bastrop",
-    company_name: "",
-    email: "mohit.paudyal@gmail.com",
-    first_name: "Mohit",
-    googleDisplayName: "Mohit Paudyal",
-    googlePhotoURL:
-      "https://lh3.googleusercontent.com/a/ACg8ocKX9MCjRqKGzd4pWzw6-ZI22hCD3Zv4IJNUqGiiw-JjUlA0sfGN-w=s96-c",
-    last_name: "Paudyal",
-    phone: "6018190596",
-    state: "TX",
-    street_address: "119 Charles Zanco Dr",
-    zipcode: "78602",
-  };
+  // const owner = {
+  //   city: "Bastrop",
+  //   company_name: "",
+  //   email: "mohit.paudyal@gmail.com",
+  //   first_name: "Mohit",
+  //   googleDisplayName: "Mohit Paudyal",
+  //   googlePhotoURL:
+  //     "https://lh3.googleusercontent.com/a/ACg8ocKX9MCjRqKGzd4pWzw6-ZI22hCD3Zv4IJNUqGiiw-JjUlA0sfGN-w=s96-c",
+  //   last_name: "Paudyal",
+  //   phone: "6018190596",
+  //   state: "TX",
+  //   street_address: "119 Charles Zanco Dr",
+  //   zipcode: "78602",
+  // };
 
   // Helper functions
   const formatDate = (dateString) => {
