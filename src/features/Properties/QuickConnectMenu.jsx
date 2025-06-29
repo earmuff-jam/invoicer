@@ -71,7 +71,7 @@ export default function QuickConnectMenu({
         },
       }}
     >
-      {menuItems.map((item, index) => (
+      {menuItems?.map((item, index) => (
         <React.Fragment key={item.id}>
           <MenuItem
             onClick={() => handleMenuItemClick(item.action)}

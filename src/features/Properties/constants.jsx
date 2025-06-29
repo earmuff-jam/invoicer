@@ -4,7 +4,7 @@ import dayjs from "dayjs";
  * Enum Constants ...
  */
 export const AddPropertyTextString = "ADD_PROPERTY";
-export const AssociatePropertyTextString = "ASSOCIATE_PROPERTY";
+export const AssociateTenantTextString = "ASSOCIATE_TENANT";
 
 /**
  * LEASE_TERM_MENU_OPTIONS ...

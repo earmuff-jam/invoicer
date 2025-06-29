@@ -1,3 +1,4 @@
+import { InfoRounded } from "@mui/icons-material";
 import { Stack, Button } from "@mui/material";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 
@@ -7,7 +8,6 @@ export default function AddProperty({
   isDisabled,
   submit,
 }) {
-
   return (
     <Stack direction="column" spacing={1}>
       {/* Property Name */}
@@ -89,7 +89,10 @@ export default function AddProperty({
           placeholder="owner@example.com"
           value={formData.owner_email.value}
           handleChange={handleChange}
+          isDisabled={true} // email form fields are disabled by default
           errorMsg={formData.owner_email.errorMsg}
+          labelIcon={<InfoRounded fontSize="small" color="secondary" />}
+          labelIconHelper="Editing an email address is disabled by default."
         />
       </Stack>
 

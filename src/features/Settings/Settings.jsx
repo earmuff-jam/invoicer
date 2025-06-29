@@ -324,7 +324,7 @@ export default function OwnerSettingsPage() {
                   handleChange={handleChange}
                   isDisabled
                   errorMsg={profileFormData.email["errorMsg"]}
-                  labelIcon={<InfoRounded fontSize="small" />}
+                  labelIcon={<InfoRounded fontSize="small" color="secondary" />}
                   labelIconHelper="Editing an email address is disabled by default."
                 />
                 <TextFieldWithLabel

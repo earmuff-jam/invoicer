@@ -26,7 +26,7 @@ export default function EmptyComponent({
     >
       <Typography {...sxProps}>{title}</Typography>
       <Stack>
-        <Typography variant="caption">
+        <Typography variant="caption" sx={{ textTransform: "initial" }}>
           {caption} {children}
         </Typography>
       </Stack>

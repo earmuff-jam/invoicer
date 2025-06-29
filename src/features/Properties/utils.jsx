@@ -1,4 +1,10 @@
 /**
+ * Utility file for properties
+ */
+
+import dayjs from "dayjs";
+
+/**
  * Email Validators
  */
 const emailValidators = [
@@ -42,4 +48,11 @@ export const isValid = (email) => {
  */
 export const fetchLoggedInUser = () => {
   return JSON.parse(localStorage.getItem("user"));
+};
+
+export const updateDateTime = (startDate) => {
+  const today = dayjs();
+  const monthsSinceStart = today.diff(startDate, "month");
+  const nextDueDate = startDate.add(monthsSinceStart + 1, "month");
+  return dayjs(nextDueDate).toISOString();
 };

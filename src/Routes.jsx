@@ -158,7 +158,7 @@ export const InvoicerRoutes = [
   {
     id: 8,
     label: "Settings",
-    path: "/:userId/settings",
+    path: "/settings",
     element: <Settings />,
     icon: <SettingsRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],

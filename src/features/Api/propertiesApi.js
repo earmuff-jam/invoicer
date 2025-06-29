@@ -112,9 +112,7 @@ export const propertiesApi = createApi({
           };
         }
       },
-      invalidatesTags: (result, error, uid) => [
-        { type: "properties", id: uid },
-      ],
+      invalidatesTags: ["properties"]
     }),
   }),
 });
