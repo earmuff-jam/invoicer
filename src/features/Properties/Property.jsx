@@ -40,6 +40,7 @@ import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
 import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useGetPropertiesByPropertyIdQuery } from "features/Api/propertiesApi";
+import ViewDocuments from "src/features/Properties/ViewDocuments";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -238,7 +239,9 @@ const Property = () => {
                 caption="View list of your documents assoicated with this property"
                 sxProps={{ textAlign: "left", color: "text.secondary" }}
               />
-              <Stack spacing={2}>// table</Stack>
+              <Stack spacing={2}>
+                <ViewDocuments />
+              </Stack>
             </CardContent>
           </Card>
 
