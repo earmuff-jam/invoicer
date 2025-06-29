@@ -15,22 +15,26 @@ import {
   Divider,
   Stack,
   Paper,
+  Badge,
+  Tooltip,
 } from "@mui/material";
 import {
   Home,
   LocationOn,
   Person,
-  Email,
   Phone,
   AttachMoney,
-  CalendarToday,
   Business,
+  GroupOutlined,
 } from "@mui/icons-material";
 import { useAppTitle } from "src/hooks/useAppTitle";
 import { useGetPropertiesByPropertyIdQuery } from "src/features/Api/propertiesApi";
 import { useParams } from "react-router-dom";
 import { useGetTenantByPropertyIdQuery } from "src/features/Api/tenantsApi";
 import { useGetUserDataByIdQuery } from "src/features/Api/firebaseUserApi";
+import RowHeader from "src/common/RowHeader/RowHeader";
+import EmptyComponent from "src/common/EmptyComponent";
+import Tenants from "src/features/Properties/Tenants";
 
 const Property = () => {
   const params = useParams();
@@ -53,22 +57,9 @@ const Property = () => {
 
   useAppTitle(property?.name || "Selected Property");
 
-  // const owner = {
-  //   city: "Bastrop",
-  //   company_name: "",
-  //   email: "mohit.paudyal@gmail.com",
-  //   first_name: "Mohit",
-  //   googleDisplayName: "Mohit Paudyal",
-  //   googlePhotoURL:
-  //     "https://lh3.googleusercontent.com/a/ACg8ocKX9MCjRqKGzd4pWzw6-ZI22hCD3Zv4IJNUqGiiw-JjUlA0sfGN-w=s96-c",
-  //   last_name: "Paudyal",
-  //   phone: "6018190596",
-  //   state: "TX",
-  //   street_address: "119 Charles Zanco Dr",
-  //   zipcode: "78602",
-  // };
+  // if home is SoR, then only each bedroom is counted as a unit
+  const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
 
-  // Helper functions
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();
   };
@@ -84,19 +75,25 @@ const Property = () => {
     );
   };
 
-  const getOccupancyRate = () => {
-    const totalUnits = parseInt(property?.units || 0);
-    const occupiedUnits = tenants.length;
-    return totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
+  const getOccupancyRate = (isAnyTenantSoR) => {
+    if (isAnyTenantSoR) {
+      const totalUnits = parseInt(property?.units || 0);
+      const occupiedUnits = tenants.length;
+      return totalUnits > 0
+        ? Math.round((occupiedUnits / totalUnits) * 100)
+        : 0;
+    } else {
+      return 100;
+    }
   };
 
   return (
     <Stack>
       {/* Property Header */}
-      <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
+      <Paper elevation={0} sx={{ padding: 3, margin: "1rem 0rem" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Home color="primary" sx={{ fontSize: 40 }} />
-          <Box>
+          <Stack>
             <Typography variant="h4" gutterBottom>
               {property?.name}
             </Typography>
@@ -109,7 +106,7 @@ const Property = () => {
               {property?.address}, {property?.city}, {property?.state}{" "}
               {property?.zipcode}
             </Typography>
-          </Box>
+          </Stack>
         </Box>
 
         {/* Property Stats */}
@@ -121,7 +118,7 @@ const Property = () => {
                   {property?.units}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Total Units
+                  {isAnyTenantSoR ? "Total Units" : "Total Bedrooms"}
                 </Typography>
               </CardContent>
             </Card>
@@ -133,7 +130,7 @@ const Property = () => {
                   {tenants.length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Occupied Units
+                  {isAnyTenantSoR ? "Occupied Units" : "Occupied Home"}
                 </Typography>
               </CardContent>
             </Card>
@@ -171,87 +168,31 @@ const Property = () => {
           {/* Tenants Section */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 2,
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                >
-                  <Person color="primary" />
-                  Tenants ({tenants.length})
-                </Typography>
-                <Button variant="outlined" size="small">
-                  Add Tenant
-                </Button>
-              </Box>
+              <Stack direction="row" justifyContent="space-between" sx={{margin: '0rem 0rem 1rem 0rem'}}>
+                <RowHeader
+                  title="Tenants"
+                  caption="Tenant details"
+                  sxProps={{
+                    alignItems: "flex-start",
+                    color: "text.secondary",
+                  }}
+                />
+                <Tooltip title="total tenants">
+                  <Badge badgeContent={tenants.length} color="textSecondary">
+                    <Typography
+                      variant="h6"
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      <GroupOutlined color="info" />
+                    </Typography>
+                  </Badge>
+                </Tooltip>
+              </Stack>
 
               {tenants.length === 0 ? (
-                <Typography
-                  color="text.secondary"
-                  sx={{ textAlign: "center", py: 3 }}
-                >
-                  No tenants found for this property
-                </Typography>
+                <EmptyComponent caption="Associate tenants to begin." />
               ) : (
-                <List>
-                  {tenants.map((tenant, index) => (
-                    <React.Fragment key={tenant.id}>
-                      {index > 0 && <Divider />}
-                      <ListItem>
-                        <ListItemAvatar>
-                          <Avatar sx={{ bgcolor: "primary.main" }}>
-                            {tenant.email.charAt(0).toUpperCase()}
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText
-                          primary={
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 1,
-                              }}
-                            >
-                              <Typography variant="subtitle1">
-                                {tenant.email}
-                              </Typography>
-                              {tenant.isPrimary && (
-                                <Chip
-                                  label="Primary"
-                                  size="small"
-                                  color="primary"
-                                />
-                              )}
-                            </Box>
-                          }
-                          secondary={
-                            <Box>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                Rent: {formatCurrency(tenant.rent)} • Term:{" "}
-                                {tenant.term}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                              >
-                                Started: {formatDate(tenant.start_date)}
-                              </Typography>
-                            </Box>
-                          }
-                        />
-                      </ListItem>
-                    </React.Fragment>
-                  ))}
-                </List>
+                <Tenants tenants={tenants || []} />
               )}
             </CardContent>
           </Card>
