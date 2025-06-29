@@ -28,6 +28,8 @@ export default function Tenants({ tenants = [] }) {
     return [...arr].sort((a, b) => b.isPrimary - a.isPrimary);
   };
 
+  console.log(tenants);
+
   return (
     <Stack spacing={1} maxHeight="22rem" overflow="auto">
       {sortedByPrimaryStatus(tenants)?.map((tenant) => (

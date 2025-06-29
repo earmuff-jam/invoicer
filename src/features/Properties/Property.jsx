@@ -152,7 +152,8 @@ const Property = () => {
             <Card variant="outlined">
               <CardContent sx={{ textAlign: "center" }}>
                 <Typography variant="h4" color="primary">
-                  {isAnyTenantSoR ? tenants?.length : 1}
+                  {/* {isAnyTenantSoR ? tenants?.length : (tentan1} */}
+                  {tenants?.length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {isAnyTenantSoR ? "Occupied Units" : "Occupied Home"}
@@ -190,6 +191,57 @@ const Property = () => {
       <Grid container spacing={3}>
         {/* Main Content */}
         <Grid item xs={12} md={8}>
+          {/* Financial Overview */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <RowHeader
+                title="Financial Overview"
+                caption="View your financial details about your property"
+                sxProps={{ textAlign: "left", color: "text.secondary" }}
+              />
+              <Stack spacing={2}>
+                <Stack direction="row">
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography
+                      variant="subtitle2"
+                      color="success"
+                      sx={{ fontSize: "2rem" }}
+                    >
+                      {formatCurrency(derieveTotalRent(isAnyTenantSoR))}
+                    </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Monthly Revenue
+                    </Typography>
+                  </Stack>
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography
+                      variant="subtitle2"
+                      color="success"
+                      sx={{ fontSize: "2rem" }}
+                    >
+                      {formatCurrency(derieveTotalRent(isAnyTenantSoR) * 12)}
+                    </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Projected Annual Revenue
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
+            </CardContent>
+          </Card>
+
+          {/* Documents Overview */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <RowHeader
+                title="Documents Overview"
+                caption="View list of your documents assoicated with this property"
+                sxProps={{ textAlign: "left", color: "text.secondary" }}
+              />
+              <Stack spacing={2}>// table</Stack>
+            </CardContent>
+          </Card>
+
           {/* Tenants Section */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
@@ -264,46 +316,6 @@ const Property = () => {
               ) : (
                 <Tenants tenants={tenants || []} />
               )}
-            </CardContent>
-          </Card>
-
-          {/* Financial Overview */}
-          <Card>
-            <CardContent>
-              <RowHeader
-                title="Financial Overview"
-                caption="View your financial details about your property"
-                sxProps={{ textAlign: "left", color: "text.secondary" }}
-              />
-
-              <Stack spacing={2}>
-                <Stack direction="row">
-                  <Stack textAlign="center" flexGrow={1}>
-                    <Typography
-                      variant="subtitle2"
-                      color="success"
-                      sx={{ fontSize: "2rem" }}
-                    >
-                      {formatCurrency(derieveTotalRent(isAnyTenantSoR))}
-                    </Typography>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Monthly Revenue
-                    </Typography>
-                  </Stack>
-                  <Stack textAlign="center" flexGrow={1}>
-                    <Typography
-                      variant="subtitle2"
-                      color="success"
-                      sx={{ fontSize: "2rem" }}
-                    >
-                      {formatCurrency(derieveTotalRent(isAnyTenantSoR) * 12)}
-                    </Typography>
-                    <Typography variant="subtitle2" color="text.secondary">
-                      Projected Annual Revenue
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Stack>
             </CardContent>
           </Card>
         </Grid>
@@ -420,9 +432,14 @@ const Property = () => {
           {/* Quick Actions */}
           <Card>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Quick Actions
-              </Typography>
+              <RowHeader
+                title="Quick Actions"
+                sxProps={{
+                  textAlign: "left",
+                  variant: "subtitle2",
+                  fontWeight: "bold",
+                }}
+              />
               <Stack spacing={1}>
                 <Button variant="outlined" fullWidth>
                   Edit Property
