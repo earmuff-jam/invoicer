@@ -24,9 +24,13 @@ export default function Tenants({ tenants = [] }) {
     return new Date(dateString).toLocaleDateString();
   };
 
+  const sortedByPrimaryStatus = (arr) => {
+    return [...arr].sort((a, b) => b.isPrimary - a.isPrimary);
+  };
+
   return (
-    <Stack>
-      {tenants?.map((tenant) => (
+    <Stack spacing={1} maxHeight="22rem" overflow="auto">
+      {sortedByPrimaryStatus(tenants)?.map((tenant) => (
         <Stack>
           <Card sx={{ width: "100%" }}>
             <CardContent sx={{ p: 3 }}>
@@ -68,7 +72,7 @@ export default function Tenants({ tenants = [] }) {
                 elevation={0}
                 sx={{
                   padding: "1rem",
-                  bgcolor: "background.paper",
+                  bgcolor: "background.default",
                 }}
               >
                 <Box
@@ -79,52 +83,40 @@ export default function Tenants({ tenants = [] }) {
                     justifyContent: "space-around",
                   }}
                 >
-                  <Stack>
-                    <Typography
-                      variant="subtitle2"
-                      sx={{ fontSize: "2rem" }}
-                      color="textSecondary"
-                    >
-                      {formatCurrency(tenant.rent)}
-                    </Typography>
+                  {tenant?.isPrimary ? (
+                    <Stack>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontSize: "2rem" }}
+                        color="textSecondary"
+                      >
+                        {formatCurrency(tenant.rent)}
+                      </Typography>
 
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Monthly Rent
-                    </Typography>
-                  </Stack>
+                      <Typography variant="subtitle2" color="textSecondary">
+                        Monthly Rent
+                      </Typography>
+                    </Stack>
+                  ) : null}
                   <Stack>
-                    <CalendarTodayRounded
-                      sx={{ color: "#6b7280", mr: 1, fontSize: 16 }}
-                    />
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ fontWeight: 500 }}
-                    >
+                    <Box>
+                      <CalendarTodayRounded fontSize="small" />
+                    </Box>
+                    <Typography variant="caption" color="text.secondary">
                       LEASE TERM
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ fontWeight: 600, color: "#374151" }}
-                    >
+                    <Typography variant="subtitle2" color="text.secondary">
                       {tenant.term}
                     </Typography>
                   </Stack>
                   <Stack>
-                    <PersonRounded
-                      sx={{ color: "#6b7280", mr: 1, fontSize: 16 }}
-                    />
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ fontWeight: 500 }}
-                    >
+                    <Box>
+                      <PersonRounded fontSize="small" />
+                    </Box>
+                    <Typography variant="caption" color="text.secondary">
                       START DATE
                     </Typography>
-                    <Typography
-                      variant="body2"
-                      sx={{ fontWeight: 600, color: "#374151" }}
-                    >
+                    <Typography variant="subtitle2" color="text.secondary">
                       {formatDate(tenant.start_date)}
                     </Typography>
                   </Stack>

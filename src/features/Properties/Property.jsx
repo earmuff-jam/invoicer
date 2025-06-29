@@ -1,40 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
+
 import {
   Box,
   Card,
   CardContent,
   Typography,
   Grid,
-  Chip,
   Avatar,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
   Button,
-  Divider,
   Stack,
   Paper,
   Badge,
   Tooltip,
+  Dialog,
+  Slide,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
+
 import {
   Home,
   LocationOn,
-  Person,
   Phone,
   AttachMoney,
   Business,
   GroupOutlined,
 } from "@mui/icons-material";
-import { useAppTitle } from "src/hooks/useAppTitle";
-import { useGetPropertiesByPropertyIdQuery } from "src/features/Api/propertiesApi";
+
+import AButton from "common/AButton";
 import { useParams } from "react-router-dom";
-import { useGetTenantByPropertyIdQuery } from "src/features/Api/tenantsApi";
-import { useGetUserDataByIdQuery } from "src/features/Api/firebaseUserApi";
-import RowHeader from "src/common/RowHeader/RowHeader";
-import EmptyComponent from "src/common/EmptyComponent";
-import Tenants from "src/features/Properties/Tenants";
+import { useAppTitle } from "hooks/useAppTitle";
+
+import Tenants from "features/Properties/Tenants";
+import EmptyComponent from "common/EmptyComponent";
+import RowHeader from "common/RowHeader/RowHeader";
+import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
+
+import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
+import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
+import { useGetPropertiesByPropertyIdQuery } from "features/Api/propertiesApi";
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Property = () => {
   const params = useParams();
@@ -57,6 +66,10 @@ const Property = () => {
 
   useAppTitle(property?.name || "Selected Property");
 
+  const [dialog, setDialog] = useState(false);
+
+  const toggleAddPropertyPopup = () => setDialog(!dialog);
+
   // if home is SoR, then only each bedroom is counted as a unit
   const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
 
@@ -68,11 +81,23 @@ const Property = () => {
     return `$${parseInt(amount).toLocaleString()}`;
   };
 
-  const getTotalRent = () => {
-    return tenants.reduce(
-      (total, tenant) => total + parseInt(tenant.rent || 0),
-      0
-    );
+  /**
+   * derieveTotalRent
+   *
+   * function used to retrieve the total rent of any given property. For homes
+   * with a SoR, rent are calculated per room.
+   * @param {boolean} isAnyTenantSoR - default false, denotes if any tenants are single occupants
+   * @returns {float} - amount of rent in US Dollars
+   */
+  const derieveTotalRent = (isAnyTenantSoR) => {
+    if (isAnyTenantSoR) {
+      return tenants.reduce(
+        (total, tenant) => total + parseInt(tenant.rent || 0),
+        0
+      );
+    } else {
+      return property?.rent || 0;
+    }
   };
 
   const getOccupancyRate = (isAnyTenantSoR) => {
@@ -127,7 +152,7 @@ const Property = () => {
             <Card variant="outlined">
               <CardContent sx={{ textAlign: "center" }}>
                 <Typography variant="h4" color="primary">
-                  {tenants.length}
+                  {isAnyTenantSoR ? tenants?.length : 1}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {isAnyTenantSoR ? "Occupied Units" : "Occupied Home"}
@@ -151,7 +176,7 @@ const Property = () => {
             <Card variant="outlined">
               <CardContent sx={{ textAlign: "center" }}>
                 <Typography variant="h4" color="success.main">
-                  {formatCurrency(getTotalRent())}
+                  {formatCurrency(derieveTotalRent(isAnyTenantSoR))}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Monthly Revenue
@@ -168,7 +193,11 @@ const Property = () => {
           {/* Tenants Section */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
-              <Stack direction="row" justifyContent="space-between" sx={{margin: '0rem 0rem 1rem 0rem'}}>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                sx={{ margin: "0rem 0rem 1rem 0rem" }}
+              >
                 <RowHeader
                   title="Tenants"
                   caption="Tenant details"
@@ -177,17 +206,58 @@ const Property = () => {
                     color: "text.secondary",
                   }}
                 />
-                <Tooltip title="total tenants">
-                  <Badge badgeContent={tenants.length} color="textSecondary">
-                    <Typography
-                      variant="h6"
-                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                    >
-                      <GroupOutlined color="info" />
-                    </Typography>
-                  </Badge>
-                </Tooltip>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {tenants.length !== 0 ? (
+                    <Tooltip title="total tenants">
+                      <Badge
+                        badgeContent={tenants.length}
+                        color="textSecondary"
+                      >
+                        <Typography
+                          variant="h6"
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
+                          <GroupOutlined color="info" />
+                        </Typography>
+                      </Badge>
+                    </Tooltip>
+                  ) : null}
+                  <Box>
+                    <Tooltip title="Associate tenants">
+                      <AButton
+                        size="small"
+                        variant="outlined"
+                        onClick={() => toggleAddPropertyPopup()}
+                        label="Associate tenants"
+                      />
+                    </Tooltip>
+                  </Box>
+                </Stack>
               </Stack>
+
+              <Dialog
+                open={dialog}
+                TransitionComponent={Transition}
+                keepMounted
+                fullWidth
+                aria-describedby="alert-dialog-slide-description"
+              >
+                <DialogTitle>Associate Tenants </DialogTitle>
+                <DialogContent>
+                  <AssociateTenantPopup
+                    closeDialog={toggleAddPropertyPopup}
+                    property={property}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <AButton
+                    size="small"
+                    variant="outlined"
+                    onClick={toggleAddPropertyPopup}
+                    label="Close"
+                  />
+                </DialogActions>
+              </Dialog>
 
               {tenants.length === 0 ? (
                 <EmptyComponent caption="Associate tenants to begin." />
@@ -200,32 +270,40 @@ const Property = () => {
           {/* Financial Overview */}
           <Card>
             <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
-                <AttachMoney color="primary" />
-                Financial Overview
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Monthly Revenue
-                  </Typography>
-                  <Typography variant="h5" color="success.main">
-                    {formatCurrency(getTotalRent())}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Typography variant="body2" color="text.secondary">
-                    Annual Revenue (Projected)
-                  </Typography>
-                  <Typography variant="h5" color="success.main">
-                    {formatCurrency(getTotalRent() * 12)}
-                  </Typography>
-                </Grid>
-              </Grid>
+              <RowHeader
+                title="Financial Overview"
+                caption="View your financial details about your property"
+                sxProps={{ textAlign: "left", color: "text.secondary" }}
+              />
+
+              <Stack spacing={2}>
+                <Stack direction="row">
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography
+                      variant="subtitle2"
+                      color="success"
+                      sx={{ fontSize: "2rem" }}
+                    >
+                      {formatCurrency(derieveTotalRent(isAnyTenantSoR))}
+                    </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Monthly Revenue
+                    </Typography>
+                  </Stack>
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography
+                      variant="subtitle2"
+                      color="success"
+                      sx={{ fontSize: "2rem" }}
+                    >
+                      {formatCurrency(derieveTotalRent(isAnyTenantSoR) * 12)}
+                    </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Projected Annual Revenue
+                    </Typography>
+                  </Stack>
+                </Stack>
+              </Stack>
             </CardContent>
           </Card>
         </Grid>
@@ -235,14 +313,19 @@ const Property = () => {
           {/* Owner Information */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
-              <Typography
-                variant="h6"
-                gutterBottom
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
-                <Business color="primary" />
-                Property Owner
-              </Typography>
+              <RowHeader
+                title="Property Owner"
+                sxProps={{
+                  display: "flex",
+                  flexDirection: "row-reverse",
+                  justifyContent: "flex-end",
+                  gap: 1,
+                  textAlign: "left",
+                  variant: "subtitle2",
+                  fontWeight: "bold",
+                }}
+                caption={<Business color="primary" />}
+              />
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}
               >
@@ -254,13 +337,16 @@ const Property = () => {
                   {owner.last_name?.charAt(0)}
                 </Avatar>
                 <Box>
-                  <Typography variant="subtitle1">
-                    {owner.googleDisplayName ||
-                      `${owner.first_name} ${owner.last_name}`}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {owner.email}
-                  </Typography>
+                  <RowHeader
+                    title={
+                      owner.googleDisplayName ||
+                      `${owner.first_name || ""} ${owner.last_name || ""}`
+                    }
+                    caption={owner.email}
+                    sxProps={{
+                      textAlign: "left",
+                    }}
+                  />
                 </Box>
               </Box>
 
@@ -282,32 +368,51 @@ const Property = () => {
           {/* Property Details */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Property Details
-              </Typography>
+              <RowHeader
+                title="Property Details"
+                sxProps={{
+                  textAlign: "left",
+                  variant: "subtitle2",
+                  fontWeight: "bold",
+                }}
+              />
               <Stack spacing={2}>
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Bathrooms
-                  </Typography>
-                  <Typography variant="body1">{property?.bathrooms}</Typography>
-                </Box>
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Created
-                  </Typography>
-                  <Typography variant="body1">
-                    {formatDate(property?.createdOn)}
-                  </Typography>
-                </Box>
-                <Box>
-                  <Typography variant="body2" color="text.secondary">
-                    Last Updated
-                  </Typography>
-                  <Typography variant="body1">
-                    {formatDate(property?.updatedOn)}
-                  </Typography>
-                </Box>
+                <Stack direction="row">
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography variant="subtitle2">
+                      {property?.units}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Bedrooms
+                    </Typography>
+                  </Stack>
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography variant="subtitle2">
+                      {property?.bathrooms}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Bathrooms
+                    </Typography>
+                  </Stack>
+                </Stack>
+                <Stack direction="row">
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography variant="subtitle2">
+                      {formatDate(property?.createdOn)}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Created
+                    </Typography>
+                  </Stack>
+                  <Stack textAlign="center" flexGrow={1}>
+                    <Typography variant="subtitle2">
+                      {formatDate(property?.updatedOn)}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Last Updated
+                    </Typography>
+                  </Stack>
+                </Stack>
               </Stack>
             </CardContent>
           </Card>
