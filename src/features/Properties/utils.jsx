@@ -50,9 +50,20 @@ export const fetchLoggedInUser = () => {
   return JSON.parse(localStorage.getItem("user"));
 };
 
+/**
+ * updateDateTime function
+ *
+ * util function used to updateDateTime. used to update the
+ * next projected rent due date
+ *
+ * @param {string} startDate - the start date of the event
+ * @returns updatedDateTime with a month added.
+ */
 export const updateDateTime = (startDate) => {
   const today = dayjs();
   const monthsSinceStart = today.diff(startDate, "month");
   const nextDueDate = startDate.add(monthsSinceStart + 1, "month");
   return dayjs(nextDueDate).toISOString();
 };
+
+

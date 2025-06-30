@@ -21,6 +21,7 @@ import {
   EmailRounded,
   EditRounded,
   InfoRounded,
+  PaymentRounded,
 } from "@mui/icons-material";
 
 import {
@@ -43,22 +44,10 @@ import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 import AButton from "common/AButton";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import { useAppTitle } from "hooks/useAppTitle";
+import StripeConnect from "features/Settings/StripeConnect";
+import { TabPanel } from "features/Settings/common";
 
 dayjs.extend(relativeTime);
-
-function TabPanel({ children, value, index, ...other }) {
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`settings-tabpanel-${index}`}
-      aria-labelledby={`settings-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
-    </div>
-  );
-}
 
 export default function OwnerSettingsPage() {
   useAppTitle("View Settings");
@@ -223,6 +212,15 @@ export default function OwnerSettingsPage() {
               </Typography>
             }
             icon={<EmailRounded fontSize="small" />}
+            iconPosition="start"
+          />
+          <Tab
+            label={
+              <Typography variant="subtitle2" sx={{ textTransform: "initial" }}>
+                Manage Payments
+              </Typography>
+            }
+            icon={<PaymentRounded fontSize="small" />}
             iconPosition="start"
           />
         </Tabs>
@@ -457,6 +455,10 @@ export default function OwnerSettingsPage() {
             </Grid>
           ))}
         </Grid>
+      </TabPanel>
+
+      <TabPanel value={activeTab} index={2}>
+        <StripeConnect />
       </TabPanel>
 
       <CustomSnackbar

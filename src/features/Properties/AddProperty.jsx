@@ -118,6 +118,18 @@ export default function AddProperty({
         />
       </Stack>
 
+      <Stack direction="row" spacing={2}>
+        <TextFieldWithLabel
+          label="Monthly Rent Amount *"
+          id="rent"
+          name="rent"
+          placeholder="Rent in dollar amount. e.g. 2750.00"
+          value={formData.rent.value}
+          handleChange={handleChange}
+          errorMsg={formData.rent.errorMsg}
+        />
+      </Stack>
+
       <Button variant="contained" disabled={isDisabled()} onClick={submit}>
         Add Property
       </Button>
