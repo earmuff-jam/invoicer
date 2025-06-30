@@ -45,7 +45,7 @@ const ViewDocuments = ({ label, caption }) => {
     () => [
       {
         accessorKey: "id",
-        header: "Id",
+        header: "ID",
         size: 40,
         Cell: ({ cell }) => (cell.getValue() ? cell.getValue() : "-"),
       },
@@ -58,7 +58,7 @@ const ViewDocuments = ({ label, caption }) => {
 
       {
         accessorKey: "updated_on",
-        header: "Updated on",
+        header: "Last updated",
         size: 150,
         Cell: ({ cell }) => dayjs(cell.getValue()).fromNow(),
       },
@@ -75,7 +75,7 @@ const ViewDocuments = ({ label, caption }) => {
       density: "comfortable",
     },
     renderEmptyRowsFallback: () => (
-      <EmptyComponent sxProps={{ fontSize: "small" }} />
+      <EmptyComponent sxProps={{ textTransform: "initial" }} />
     ),
     mrtTheme: (theme) => ({
       baseBackgroundColor: theme.palette.transparent.main,
