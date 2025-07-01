@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 import {
   Box,
   Card,
@@ -9,76 +7,65 @@ import {
   Avatar,
   Stack,
   Paper,
-  Badge,
   Tooltip,
-  Dialog,
-  Slide,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Skeleton,
 } from "@mui/material";
 
-import {
-  Home,
-  LocationOn,
-  Phone,
-  Business,
-  GroupOutlined,
-} from "@mui/icons-material";
+import { Home, LocationOn, Phone, Business } from "@mui/icons-material";
 
 import dayjs from "dayjs";
-import AButton from "common/AButton";
-import { useParams } from "react-router-dom";
 import { useAppTitle } from "hooks/useAppTitle";
-
-import Tenants from "features/Properties/Tenants";
-import EmptyComponent from "common/EmptyComponent";
 import RowHeader from "common/RowHeader/RowHeader";
-
-import QuickActions from "features/Properties/QuickActions";
 import ViewDocuments from "features/Properties/ViewDocuments";
-import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
 
-import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
+import {
+  useGetTenantByEmailIdQuery,
+  useGetTenantByPropertyIdQuery,
+} from "features/Api/tenantsApi";
+
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useGetPropertiesByPropertyIdQuery } from "features/Api/propertiesApi";
 
 import {
   derieveTotalRent,
+  fetchLoggedInUser,
   formatCurrency,
   getOccupancyRate,
 } from "features/Properties/utils";
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+// TODO : handle un-identified tenants route gracefully
+// TODO : https://github.com/earmuff-jam/invoicer/issues/79
 
-const Property = () => {
-  const params = useParams();
+const MyRental = () => {
+  const user = fetchLoggedInUser();
+
+  const { data: renter, isLoading } = useGetTenantByEmailIdQuery(
+    user?.googleEmailAddress,
+    {
+      skip: !user?.googleEmailAddress,
+    }
+  );
   const { data: property, isLoading: isPropertyLoading } =
-    useGetPropertiesByPropertyIdQuery(params?.id, {
-      skip: !params?.id,
-    });
-
-  const { data: tenants = [], isLoading: isTenantsLoading } =
-    useGetTenantByPropertyIdQuery(params?.id, {
-      skip: !params?.id,
+    useGetPropertiesByPropertyIdQuery(renter?.propertyId, {
+      skip: !renter?.propertyId,
     });
 
   const { data: owner = {} } = useGetUserDataByIdQuery(property?.createdBy, {
     skip: !property?.createdBy,
   });
 
-  useAppTitle(property?.name || "Selected Property");
+  const { data: tenants, isLoading: isTenantsLoading } =
+    useGetTenantByPropertyIdQuery(property?.id, {
+      skip: !property?.id,
+    });
 
-  const [dialog, setDialog] = useState(false);
-
-  const toggleAddPropertyPopup = () => setDialog(!dialog);
+  useAppTitle(property?.name || "My Rental Unit");
 
   // if home is SoR, then only each bedroom is counted as a unit
   const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
 
+  if (isLoading) return <Skeleton height="10rem" />;
+  
   return (
     <Stack>
       {/* Property Header */}
@@ -243,83 +230,6 @@ const Property = () => {
               </Stack>
             </CardContent>
           </Card>
-
-          {/* Tenants Section */}
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                sx={{ margin: "0rem 0rem 1rem 0rem" }}
-              >
-                <RowHeader
-                  title="Tenants"
-                  caption="Tenant details"
-                  sxProps={{
-                    alignItems: "flex-start",
-                    color: "text.secondary",
-                  }}
-                />
-                <Stack direction="row" spacing={1} alignItems="center">
-                  {tenants.length !== 0 ? (
-                    <Tooltip title="total tenants">
-                      <Badge
-                        badgeContent={tenants.length}
-                        color="textSecondary"
-                      >
-                        <Typography
-                          variant="h6"
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
-                          <GroupOutlined color="info" />
-                        </Typography>
-                      </Badge>
-                    </Tooltip>
-                  ) : null}
-                  <Box>
-                    <Tooltip title="Associate tenants">
-                      <AButton
-                        size="small"
-                        variant="outlined"
-                        onClick={() => toggleAddPropertyPopup()}
-                        label="Associate tenants"
-                      />
-                    </Tooltip>
-                  </Box>
-                </Stack>
-              </Stack>
-              {isTenantsLoading ? (
-                <Skeleton height="5rem" />
-              ) : tenants.length === 0 ? (
-                <EmptyComponent caption="Associate tenants to begin." />
-              ) : (
-                <Tenants tenants={tenants || []} property={property} />
-              )}
-            </CardContent>
-          </Card>
-          <Dialog
-            open={dialog}
-            TransitionComponent={Transition}
-            keepMounted
-            fullWidth
-            aria-describedby="alert-dialog-slide-description"
-          >
-            <DialogTitle>Associate Tenants </DialogTitle>
-            <DialogContent>
-              <AssociateTenantPopup
-                closeDialog={toggleAddPropertyPopup}
-                property={property}
-              />
-            </DialogContent>
-            <DialogActions>
-              <AButton
-                size="small"
-                variant="outlined"
-                onClick={toggleAddPropertyPopup}
-                label="Close"
-              />
-            </DialogActions>
-          </Dialog>
         </Grid>
 
         {/* Sidebar */}
@@ -461,25 +371,10 @@ const Property = () => {
               )}
             </CardContent>
           </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <CardContent>
-              <RowHeader
-                title="Quick Actions"
-                sxProps={{
-                  textAlign: "left",
-                  variant: "subtitle2",
-                  fontWeight: "bold",
-                }}
-              />
-              <QuickActions property={property} />
-            </CardContent>
-          </Card>
         </Grid>
       </Grid>
     </Stack>
   );
 };
 
-export default Property;
+export default MyRental;

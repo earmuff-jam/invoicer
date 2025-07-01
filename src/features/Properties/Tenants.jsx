@@ -1,8 +1,4 @@
 import {
-  CalendarTodayRounded,
-  PersonRounded,
-} from "@mui/icons-material";
-import {
   Box,
   Avatar,
   Typography,
@@ -13,15 +9,12 @@ import {
   Stack,
 } from "@mui/material";
 
-export default function Tenants({ tenants = [] }) {
-  const formatCurrency = (amount) => {
-    return `$${parseInt(amount).toLocaleString()}`;
-  };
+import { CalendarTodayRounded, PersonRounded } from "@mui/icons-material";
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
-  };
+import { formatCurrency } from "src/features/Properties/utils";
+import dayjs from "dayjs";
 
+export default function Tenants({ tenants = [], property }) {
   const sortedByPrimaryStatus = (arr) => {
     return [...arr].sort((a, b) => b.isPrimary - a.isPrimary);
   };
@@ -88,7 +81,10 @@ export default function Tenants({ tenants = [] }) {
                         sx={{ fontSize: "2rem" }}
                         color="textSecondary"
                       >
-                        {formatCurrency(tenant.rent)}
+                        {formatCurrency(
+                          Number(tenant?.rent || 0) +
+                            Number(property?.additional_rent || 0)
+                        )}
                       </Typography>
 
                       <Typography variant="subtitle2" color="textSecondary">
@@ -115,7 +111,7 @@ export default function Tenants({ tenants = [] }) {
                       START DATE
                     </Typography>
                     <Typography variant="subtitle2" color="text.secondary">
-                      {formatDate(tenant.start_date)}
+                      {dayjs(tenant?.start_date).format("MMM DD, YYYY")}
                     </Typography>
                   </Stack>
                 </Box>

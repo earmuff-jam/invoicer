@@ -42,16 +42,20 @@ import { fetchLoggedInUser } from "features/Properties/utils";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 
 import AButton from "common/AButton";
-import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
-import { useAppTitle } from "hooks/useAppTitle";
 import StripeConnect from "features/Settings/StripeConnect";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
+
+import { useAppTitle } from "hooks/useAppTitle";
 import { TabPanel } from "features/Settings/common";
+import { OwnerRole } from "features/Landing/constants";
 
 dayjs.extend(relativeTime);
 
 export default function OwnerSettingsPage() {
   useAppTitle("View Settings");
+
   const user = fetchLoggedInUser();
+  const isPropertyOwner = user?.role === OwnerRole;
 
   const [createUser] = useCreateUserMutation();
 
@@ -132,7 +136,7 @@ export default function OwnerSettingsPage() {
     );
 
     draftData["uid"] = user?.uid;
-    draftData["updated_on"] = dayjs().toISOString();
+    draftData["updatedOn"] = dayjs().toISOString();
 
     try {
       await createUser(draftData).unwrap();
@@ -205,15 +209,20 @@ export default function OwnerSettingsPage() {
             icon={<PersonRounded fontSize="small" />}
             iconPosition="start"
           />
-          <Tab
-            label={
-              <Typography variant="subtitle2" sx={{ textTransform: "initial" }}>
-                Templates
-              </Typography>
-            }
-            icon={<EmailRounded fontSize="small" />}
-            iconPosition="start"
-          />
+          {isPropertyOwner && (
+            <Tab
+              label={
+                <Typography
+                  variant="subtitle2"
+                  sx={{ textTransform: "initial" }}
+                >
+                  Templates
+                </Typography>
+              }
+              icon={<EmailRounded fontSize="small" />}
+              iconPosition="start"
+            />
+          )}
           <Tab
             label={
               <Typography variant="subtitle2" sx={{ textTransform: "initial" }}>
@@ -259,7 +268,7 @@ export default function OwnerSettingsPage() {
                 {profileFormData.googleEmailAddress}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                Property Owner
+                {user?.role}
               </Typography>
               <Chip
                 label="Verified"
@@ -400,64 +409,67 @@ export default function OwnerSettingsPage() {
       </TabPanel>
 
       {/* Templates Tab */}
-      <TabPanel value={activeTab} index={1}>
-        <Grid container spacing={3}>
-          {Object.entries(templates).map(([key, template]) => (
-            <Grid item xs={12} md={6} key={key}>
-              <Card elevation={0} sx={{ p: 3, height: "100%" }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  <Typography
-                    variant="h6"
-                    fontWeight={600}
-                    sx={{ textTransform: "capitalize" }}
-                  >
-                    {key} Template
-                  </Typography>
-                  <IconButton size="small" sx={{ ml: "auto" }}>
-                    <EditRounded fontSize="small" />
-                  </IconButton>
-                </Box>
-                <Stack spacing={2}>
-                  <TextField
-                    label="Subject"
-                    value={template.subject}
-                    onChange={handleTemplateChange(key, "subject")}
-                    fullWidth
-                    size="small"
-                  />
-                  <TextField
-                    label={
-                      key === "maintenance" ? "Description" : "Message Body"
-                    }
-                    value={template.body || template.description}
-                    onChange={handleTemplateChange(
-                      key,
-                      template.body ? "body" : "description"
-                    )}
-                    fullWidth
-                    multiline
-                    rows={4}
-                    size="small"
-                  />
-                  <Typography variant="caption" color="text.secondary">
-                    Available variables are - tenantName, propertyAddress,
-                    amount, dueDate
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    // onClick={() => handleSave(`template_${key}`)}
-                  >
-                    Save Template
-                  </Button>
-                </Stack>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </TabPanel>
+      {isPropertyOwner && (
+        <TabPanel value={activeTab} index={1}>
+          <Grid container spacing={3}>
+            {Object.entries(templates).map(([key, template]) => (
+              <Grid item xs={12} md={6} key={key}>
+                <Card elevation={0} sx={{ p: 3, height: "100%" }}>
+                  <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                    <Typography
+                      variant="h6"
+                      fontWeight={600}
+                      sx={{ textTransform: "capitalize" }}
+                    >
+                      {key} Template
+                    </Typography>
+                    <IconButton size="small" sx={{ ml: "auto" }}>
+                      <EditRounded fontSize="small" />
+                    </IconButton>
+                  </Box>
+                  <Stack spacing={2}>
+                    <TextField
+                      label="Subject"
+                      value={template.subject}
+                      onChange={handleTemplateChange(key, "subject")}
+                      fullWidth
+                      size="small"
+                    />
+                    <TextField
+                      label={
+                        key === "maintenance" ? "Description" : "Message Body"
+                      }
+                      value={template.body || template.description}
+                      onChange={handleTemplateChange(
+                        key,
+                        template.body ? "body" : "description"
+                      )}
+                      fullWidth
+                      multiline
+                      rows={4}
+                      size="small"
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      Available variables are - tenantName, propertyAddress,
+                      amount, dueDate
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      // onClick={() => handleSave(`template_${key}`)}
+                    >
+                      Save Template
+                    </Button>
+                  </Stack>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </TabPanel>
+      )}
 
-      <TabPanel value={activeTab} index={2}>
+      {/* Adjust panels based on isPropertyOwner variable */}
+      <TabPanel value={activeTab} index={isPropertyOwner ? 2 : 1}>
         <StripeConnect />
       </TabPanel>
 

@@ -1,19 +1,33 @@
+import { useEffect, useState } from "react";
+
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { TourProvider } from "@reactour/tour";
-import { useState } from "react";
+
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import ScrollTopProvider from "src/common/ScrollTop/ScrollTopProvider";
-import { darkTheme, lightTheme } from "src/common/Theme";
-import { GeneratedTourSteps } from "src/common/Tour/TourSteps";
-import { buildAppRoutes } from "src/common/ValidateClientPerms";
-import Layout from "src/features/Layout/Layout";
+
+import Layout from "features/Layout/Layout";
+import { darkTheme, lightTheme } from "common/Theme";
+import { GeneratedTourSteps } from "common/Tour/TourSteps";
+import { buildAppRoutes } from "common/ValidateClientPerms";
+import ScrollTopProvider from "common/ScrollTop/ScrollTopProvider";
+
 import { InvoicerRoutes } from "src/Routes";
+import { fetchLoggedInUser } from "features/Properties/utils";
 
 function App() {
+  const user = fetchLoggedInUser();
+
   const [currentThemeIdx, setCurrentThemeIdx] = useState(
     localStorage.getItem("theme") || 0
   );
+
+  const [appRoutes, setAppRoutes] = useState([]);
+
+  useEffect(() => {
+    const draftAppRoutes = buildAppRoutes(InvoicerRoutes, user?.role);
+    setAppRoutes(draftAppRoutes);
+  }, [user?.uid]);
 
   return (
     <ThemeProvider
@@ -34,10 +48,12 @@ function App() {
                   />
                 }
               >
-                {buildAppRoutes(InvoicerRoutes)}
+                {appRoutes}
               </Route>
-              {/* force navigate to main page when routes are not found */}
-              <Route path="/*" element={<Navigate to="/" replace />} />
+              {/* force navigate to main page when routes are not found but wait until we have routes built first; prevents redirect in refresh */}
+              {appRoutes.length > 0 && (
+                <Route path="/*" element={<Navigate to="/" replace />} />
+              )}
             </Routes>
           </BrowserRouter>
         </ScrollTopProvider>

@@ -23,10 +23,7 @@ import {
   ButtonBase,
 } from "@mui/material";
 
-import {
-  AddPropertyTextString,
-  BLANK_PROPERTY_DETAILS,
-} from "features/Properties/constants";
+import { AddPropertyTextString } from "features/Properties/constants";
 
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
@@ -49,7 +46,7 @@ import {
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import { useNavigate } from "react-router-dom";
-import { produce } from "immer";
+import { useForm } from "react-hook-form";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -74,42 +71,30 @@ export default function Properties() {
     }
   );
 
-  const { data: userData, isLoading: isUserDataLoading } =
-    useGetUserDataByIdQuery(user?.uid, {
-      skip: !user?.uid,
-    });
+  const { data: userData } = useGetUserDataByIdQuery(user?.uid, {
+    skip: !user?.uid,
+  });
 
   const [createProperty] = useCreatePropertyMutation();
   const [deleteProperty] = useDeletePropertyByIdMutation();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+    setValue,
+  } = useForm({ mode: "onChange" });
+
   const [expanded, setExpanded] = useState(null);
   const [dialog, setDialog] = useState(defaultDialog);
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const [formData, setFormData] = useState(BLANK_PROPERTY_DETAILS);
 
   const closeDialog = () => {
     setDialog(defaultDialog);
-    setFormData(BLANK_PROPERTY_DETAILS);
+    reset();
   };
   const handleExpand = (id) => setExpanded((prev) => (prev === id ? null : id));
-
-  const handleChange = (ev) => {
-    const { id, value } = ev.target;
-
-    const updatedFormData = produce(formData, (draft) => {
-      let errorMsg = "";
-      for (const validator of updatedFormData[id].validators) {
-        if (validator.validate(value)) {
-          errorMsg = validator.message;
-          break;
-        }
-      }
-      draft[id].value = value;
-      draft[id].errorMsg = errorMsg;
-    });
-
-    setFormData(updatedFormData);
-  };
 
   const handleDelete = async (propertyId) => {
     if (!propertyId) return;
@@ -125,39 +110,27 @@ export default function Properties() {
     });
   };
 
-  const isDisabled = () => {
-    return Object.values(formData).some(
-      (field) =>
-        field.errorMsg || (field.isRequired && field.value.trim() === "")
-    );
-  };
-
-  const submit = async (ev) => {
-    ev.preventDefault();
-    const result = Object.entries(formData).reduce((acc, [key, field]) => {
-      acc[key] = field.value;
-      return acc;
-    }, {});
-
-    result.id = uuidv4();
-    result["createdBy"] = user?.uid;
-    result["createdOn"] = dayjs().toISOString();
-
-    result["updatedBy"] = user?.uid;
-    result["updatedOn"] = dayjs().toISOString();
+  const onSubmit = async (data) => {
+    const result = {
+      ...data,
+      id: uuidv4(),
+      createdBy: user?.uid,
+      createdOn: dayjs().toISOString(),
+      updatedBy: user?.uid,
+      updatedOn: dayjs().toISOString(),
+    };
 
     await createProperty(result);
-
     setShowSnackbar(true);
     closeDialog();
   };
 
   useEffect(() => {
     // update form fields if present
-    if (userData) {
-      formData.owner_email.value = userData.googleEmailAddress;
+    if (userData?.googleEmailAddress) {
+      setValue("owner_email", userData.googleEmailAddress);
     }
-  }, [isUserDataLoading]);
+  }, [userData, setValue]);
 
   if (isLoading) return <Skeleton height="10rem" />;
 
@@ -274,10 +247,10 @@ export default function Properties() {
         <DialogContent>
           {dialog.type === AddPropertyTextString && (
             <AddProperty
-              formData={formData}
-              handleChange={handleChange}
-              isDisabled={isDisabled}
-              submit={submit}
+              register={register}
+              errors={errors}
+              onSubmit={handleSubmit(onSubmit)}
+              isDisabled={!isValid}
             />
           )}
         </DialogContent>

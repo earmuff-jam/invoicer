@@ -43,7 +43,8 @@ const ViewPropertyAccordionDetails = ({ property }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const isOpen = Boolean(anchorEl);
-  const primaryTenantDetails = tenants.find((tenant) => tenant.isPrimary);
+  const primaryTenantDetails =
+    tenants?.find((tenant) => tenant.isPrimary) || tenants[0];
 
   const handleCloseQuickConnect = () => setAnchorEl(null);
   const handleOpenQuickConnect = (ev) => setAnchorEl(ev.currentTarget);

@@ -26,16 +26,21 @@ import { InfoRounded } from "@mui/icons-material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useGetUserListQuery } from "features/Api/firebaseUserApi";
+
 import { fetchLoggedInUser } from "features/Properties/utils";
-import { useCreateTenantMutation } from "features/Api/tenantsApi";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
+
+import { useGetUserListQuery } from "features/Api/firebaseUserApi";
+import { useCreateTenantMutation } from "features/Api/tenantsApi";
+import { useUpdatePropertyByIdMutation } from "features/Api/propertiesApi";
 
 export default function AssociateTenantPopup({ closeDialog, property }) {
   const user = fetchLoggedInUser();
   const currentUserId = user?.uid;
 
   const [createTenant] = useCreateTenantMutation();
+  const [updateProperty] = useUpdatePropertyByIdMutation();
+
   const { data: profiles, isLoading } = useGetUserListQuery();
 
   const [options, setOptions] = useState([]);
@@ -157,13 +162,20 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
     draftData["id"] = uuidv4();
     draftData["propertyId"] = property.id;
     draftData["createdBy"] = currentUserId;
-    draftData["created"] = dayjs().toISOString();
+    draftData["createdOn"] = dayjs().toISOString();
 
     draftData["updatedBy"] = currentUserId;
-    draftData["updated_on"] = dayjs().toISOString();
+    draftData["updatedOn"] = dayjs().toISOString();
 
     try {
       await createTenant(draftData).unwrap();
+      await updateProperty({
+        id: property?.id,
+        rentees: [draftData?.email],
+        updatedBy: user?.uid,
+        updatedOn: dayjs().toISOString(),
+      }).unwrap();
+
       setShowSnackbar(true);
     } catch (error) {
       /* eslint-disable no-console */
@@ -176,11 +188,11 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
   useEffect(() => {
     if (!isLoading && Array.isArray(profiles)) {
       const draftProfiles = profiles
-        .filter((profile) => profile.id !== currentUserId)
+        .filter((profile) => profile?.uid !== currentUserId)
         .map((v) => ({
-          display: v.emailAddress,
+          display: v.googleEmailAddress,
           value: v.id,
-          label: v.emailAddress,
+          label: v.googleEmailAddress,
         }));
       setOptions(draftProfiles);
     }
@@ -203,7 +215,13 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
       <Autocomplete
         id="email"
         options={options}
-        value={formData.email.value}
+        value={
+          options.find(
+            (opt) =>
+              (typeof opt === "string" ? opt : opt.value) ===
+              (formData.email.value?.value || formData.email.value)
+          ) || formData.email.value
+        }
         onChange={(_, newValue) => {
           const value =
             typeof newValue === "string"
@@ -222,9 +240,11 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             : option.display || option.label || ""
         }
         isOptionEqualToValue={(option, value) =>
-          (option.value || option) === (value.value || value)
+          (typeof option === "string" ? option : option.value) ===
+          (typeof value === "string" ? value : value.value)
         }
         freeSolo
+        noOptionsText="Sorry no matching records found."
         renderInput={(params) => (
           <TextField
             {...params}
@@ -238,7 +258,9 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
         renderOption={(props, option) => (
           <li {...props}>
             <Typography sx={{ textTransform: "initial" }}>
-              {option.display || option.label || option}
+              {option.display ||
+                option.label ||
+                (typeof option === "string" ? option : "")}
             </Typography>
           </li>
         )}
@@ -333,7 +355,7 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
           name="rent"
           isDisabled={true}
           placeholder="Monthly rent amount. Eg, 2150.00"
-          value={formData?.rent?.value || ""}
+          value={formData?.rent?.value || ""} // todo : convert this form to react hook forms and update this to accomodate rent + additional_rent
           handleChange={handleChange}
           errorMsg={formData.rent?.["errorMsg"]}
         />

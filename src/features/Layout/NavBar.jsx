@@ -19,6 +19,7 @@ import validateClientPermissions, {
   isValidPermissions,
 } from "common/ValidateClientPerms";
 import { isUserLoggedIn } from "src/common/utils";
+import { fetchLoggedInUser } from "src/features/Properties/utils";
 
 export default function NavBar({
   openDrawer,
@@ -28,6 +29,8 @@ export default function NavBar({
 }) {
   const theme = useTheme();
   const navigate = useNavigate();
+
+  const user = fetchLoggedInUser();
   const { pathname } = useLocation();
 
   // the timeout allows to close the drawer first before navigation occurs.
@@ -39,55 +42,46 @@ export default function NavBar({
     }, 200);
   };
 
-  const formattedInvoicerRoutes = (InvoicerRoutes = []) => {
+  const formattedInvoicerRoutes = (InvoicerRoutes = [], roleType = "") => {
     const validRouteFlags = validateClientPermissions();
     const filteredNavigationRoutes =
       filterValidRoutesForNavigationBar(InvoicerRoutes);
-    return filteredNavigationRoutes.map(
-      ({ id, path, label, icon, requiredFlags, config }) => {
-        const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
-        if (!isRequired) return;
 
-        // verify the user login status for specific routes
+    return filteredNavigationRoutes
+      .map(({ id, path, label, icon, requiredFlags, config }) => {
+        const isRequired = isValidPermissions(validRouteFlags, requiredFlags);
+        if (!isRequired) return null;
+
+        // Check role access here
+        const validRoles = config.enabledForRoles || [];
+        if (validRoles.length > 0 && !validRoles.includes(roleType))
+          return null;
+
         const requiresLogin = Boolean(config.isLoggedInFeature);
+
+        // only if login is required
+        // AND user is logged in
+        // OR if login not required
         if (requiresLogin) {
-          const isLoggedIn = isUserLoggedIn();
-          if (isLoggedIn) {
-            return (
-              <ListItemButton
-                key={id}
-                selected={pathname === path}
-                onClick={() => handleMenuItemClick(path)}
-              >
-                <ListItemIcon
-                  sx={{
-                    color: pathname === path && theme.palette.primary.main,
-                  }}
-                >
-                  {icon}
-                </ListItemIcon>
-                <ListItemText primary={label} />
-              </ListItemButton>
-            );
-          }
-        } else {
-          return (
-            <ListItemButton
-              key={id}
-              selected={pathname === path}
-              onClick={() => handleMenuItemClick(path)}
-            >
-              <ListItemIcon
-                sx={{ color: pathname === path && theme.palette.primary.main }}
-              >
-                {icon}
-              </ListItemIcon>
-              <ListItemText primary={label} />
-            </ListItemButton>
-          );
+          if (!isUserLoggedIn()) return null;
         }
-      }
-    );
+
+        return (
+          <ListItemButton
+            key={id}
+            selected={pathname === path}
+            onClick={() => handleMenuItemClick(path)}
+          >
+            <ListItemIcon
+              sx={{ color: pathname === path && theme.palette.primary.main }}
+            >
+              {icon}
+            </ListItemIcon>
+            <ListItemText primary={label} />
+          </ListItemButton>
+        );
+      })
+      .filter(Boolean);
   };
 
   return (
@@ -139,7 +133,7 @@ export default function NavBar({
           component="nav"
           aria-labelledby="nested-list-subheader"
         >
-          {formattedInvoicerRoutes(InvoicerRoutes)}
+          {formattedInvoicerRoutes(InvoicerRoutes, user?.role)}
         </List>
       </Drawer>
     </Stack>

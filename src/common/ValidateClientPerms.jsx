@@ -65,12 +65,24 @@ export const filterValidRoutesForNavigationBar = (draftRoutes = []) => {
  * @param {Array} draftRoutes - array of draft routes that are within the application
  * @returns Array of Routes with the route element from react router dom.
  */
+
+/**
+ * buildAppRoutes
+ *
+ * Used to build application-level routes based on the passed-in available routes.
+ * If all required orgs/flags are met, the route is created. Does not take user role
+ * into account while building routes.
+ *
+ * @param {Array} draftRoutes - Array of draft routes within the application
+ * @returns Array of <Route> elements
+ */
 export function buildAppRoutes(draftRoutes = []) {
   const validRouteFlags = validateClientPermissions();
+
   return draftRoutes
-    .map(({ path, element, requiredFlags, config }) => {
+    .map(({ path, element, requiredFlags = [], config = {} }) => {
       const isRouteValid = isValidPermissions(validRouteFlags, requiredFlags);
-      if (!isRouteValid) return;
+      if (!isRouteValid) return null;
 
       const requiresLogin = Boolean(config.isLoggedInFeature);
       const wrappedEl = requiresLogin ? (

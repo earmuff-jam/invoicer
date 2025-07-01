@@ -5,6 +5,19 @@ import {
   SecurityRounded,
 } from "@mui/icons-material";
 
+/**
+ * Authorized Roles
+ *
+ * Owner - the person who owns the property
+ * Tenant - the person who is renting the property
+ */
+export const OwnerRole = "Owner";
+export const TenantRole = "Tenant";
+
+/**
+ * Landing Page Details ...
+ *
+ */
 export const LANDING_PAGE_DETAILS = {
   features: [
     {

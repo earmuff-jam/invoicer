@@ -1,6 +1,6 @@
+import { getFirestore } from "firebase/firestore";
 import { initializeApp, getApps } from "firebase/app";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 
 // -------------------------------------------
 // Util functions
@@ -86,7 +86,22 @@ if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
   const auth = getAuth(authenticatorConfig);
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+      // during refresh, we persist the role and attach it back
+      const draftUser = JSON.parse(localStorage.getItem("user"));
+      if (draftUser) {
+        localStorage.setItem(
+          "user",
+
+          JSON.stringify({
+            uid: user.uid,
+            role: draftUser?.role,
+            googleEmailAddress: draftUser?.googleEmailAddress,
+          })
+        );
+      } else {
+        // if the role is not found yet, do nothing
+        localStorage.setItem("user", JSON.stringify({ uid: user?.uid }));
+      }
     } else {
       localStorage.removeItem("user");
     }

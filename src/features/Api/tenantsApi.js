@@ -16,6 +16,7 @@ export const tenantsApi = createApi({
   baseQuery: fakeBaseQuery(),
   tagTypes: ["tenants"],
   endpoints: (builder) => ({
+    // fetch tenants where tenantId matches the passed in tenantId from tenants db
     getTenantById: builder.query({
       async queryFn(tenantId) {
         try {
@@ -36,7 +37,33 @@ export const tenantsApi = createApi({
       },
       providesTags: ["tenants"],
     }),
+    // fetch tenants where email matches the passed in email from tenants db
+    getTenantByEmailId: builder.query({
+      async queryFn(email) {
+        try {
+          const tenantsRef = collection(db, "tenants");
+          const q = query(tenantsRef, where("email", "==", email));
 
+          const querySnapshot = await getDocs(q);
+          const tenants = [];
+          querySnapshot.forEach((doc) => {
+            tenants.push({ id: doc.id, ...doc.data() });
+          });
+
+          const tenant = tenants.find(tenant => tenant.email === email);
+          return { data: tenant };
+        } catch (error) {
+          return {
+            error: {
+              message: error.message,
+              code: error.code,
+            },
+          };
+        }
+      },
+      providesTags: ["tenants"],
+    }),
+    // fetch tenants where createdBy matches the passed in userId from tenants db
     getTenantsByUserId: builder.query({
       async queryFn(userId) {
         try {
@@ -61,7 +88,7 @@ export const tenantsApi = createApi({
       },
       providesTags: ["tenants"],
     }),
-
+    // fetch tenants where propertyId matches the passed in propertyId from tenants db
     getTenantByPropertyId: builder.query({
       async queryFn(propertyId) {
         try {
@@ -86,7 +113,7 @@ export const tenantsApi = createApi({
       },
       providesTags: ["tenants"],
     }),
-
+    // create tenant in tenants db
     createTenant: builder.mutation({
       async queryFn(tenant) {
         try {
@@ -104,7 +131,7 @@ export const tenantsApi = createApi({
       },
       invalidatesTags: ["tenants"],
     }),
-
+    // update tenant in tenants db
     updateTenantById: builder.mutation({
       async queryFn({ id, newData }) {
         try {
@@ -122,7 +149,7 @@ export const tenantsApi = createApi({
       },
       invalidatesTags: ["tenants"],
     }),
-
+    // deletes tenants where tenantId matches the passed in tenantId from tenants db
     deleteTenantById: builder.mutation({
       async queryFn(id) {
         try {
@@ -146,6 +173,7 @@ export const tenantsApi = createApi({
 export const {
   useGetTenantByIdQuery,
   useGetTenantsByUserIdQuery,
+  useGetTenantByEmailIdQuery,
   useGetTenantByPropertyIdQuery,
   useCreateTenantMutation,
   useUpdateTenantByIdMutation,

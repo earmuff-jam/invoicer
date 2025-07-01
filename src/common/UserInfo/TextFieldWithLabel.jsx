@@ -14,6 +14,7 @@ export default function TextFieldWithLabel({
   isDisabled = false,
   labelIcon = null,
   labelIconHelper = "",
+  inputProps = {},
 }) {
   return (
     <Stack spacing={0.5} width="100%" data-tour={dataTour}>
@@ -28,8 +29,8 @@ export default function TextFieldWithLabel({
         id={id}
         name={name}
         placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
+        value={value} // optional: only if you want controlled
+        onChange={handleChange} // optional
         variant="outlined"
         size="small"
         multiline={multiline}
@@ -37,6 +38,7 @@ export default function TextFieldWithLabel({
         error={Boolean(errorMsg?.length)}
         helperText={errorMsg}
         disabled={isDisabled}
+        {...inputProps} // spread register props here to support react hook forms
       />
     </Stack>
   );
