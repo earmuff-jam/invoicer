@@ -9,9 +9,15 @@ import {
   Paper,
   Tooltip,
   Skeleton,
+  Chip,
 } from "@mui/material";
 
-import { Home, LocationOn, Phone, Business } from "@mui/icons-material";
+import {
+  Home,
+  LocationOn,
+  Phone,
+  Business,
+} from "@mui/icons-material";
 
 import dayjs from "dayjs";
 import { useAppTitle } from "hooks/useAppTitle";
@@ -65,7 +71,7 @@ const MyRental = () => {
   const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
 
   if (isLoading) return <Skeleton height="10rem" />;
-  
+
   return (
     <Stack>
       {/* Property Header */}
@@ -73,23 +79,32 @@ const MyRental = () => {
         {isPropertyLoading ? (
           <Skeleton height="5rem" />
         ) : (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Home color="primary" sx={{ fontSize: 40 }} />
-            <Stack>
-              <Typography variant="h4" gutterBottom>
-                {property?.name}
-              </Typography>
-              <Typography
-                variant="h6"
-                color="text.secondary"
-                sx={{ display: "flex", alignItems: "center", gap: 1 }}
-              >
-                <LocationOn />
-                {property?.address}, {property?.city}, {property?.state}{" "}
-                {property?.zipcode}
-              </Typography>
-            </Stack>
-          </Box>
+          <Stack spacing={1}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Home color="primary" sx={{ fontSize: 40 }} />
+              <Stack>
+                <Typography variant="h4" gutterBottom>
+                  {property?.name}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <LocationOn />
+                  {property?.address}, {property?.city}, {property?.state}{" "}
+                  {property?.zipcode}
+                </Typography>
+              </Stack>
+            </Box>
+            <Box>
+              {renter?.isPrimary ? (
+                <Chip label="Primary Renter" />
+              ) : (
+                <Chip label="Secondary Renter" />
+              )}
+            </Box>
+          </Stack>
         )}
         {/* Property Stats */}
         <Grid container spacing={3} sx={{ mt: 2 }}>

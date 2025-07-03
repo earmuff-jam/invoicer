@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   Box,
   Avatar,
@@ -7,16 +9,52 @@ import {
   CardContent,
   Paper,
   Stack,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
 
-import { CalendarTodayRounded, PersonRounded } from "@mui/icons-material";
+import {
+  CalendarTodayRounded,
+  PersonRounded,
+  RemoveCircleOutlineRounded,
+} from "@mui/icons-material";
 
-import { formatCurrency } from "src/features/Properties/utils";
 import dayjs from "dayjs";
+import { fetchLoggedInUser, formatCurrency } from "features/Properties/utils";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
+
+import { useDeleteTenantByIdMutation } from "features/Api/tenantsApi";
+import { useUpdatePropertyByIdMutation } from "src/features/Api/propertiesApi";
 
 export default function Tenants({ tenants = [], property }) {
+  const user = fetchLoggedInUser();
+  const [deleteTenant] = useDeleteTenantByIdMutation();
+  const [updateProperty] = useUpdatePropertyByIdMutation();
+
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
   const sortedByPrimaryStatus = (arr) => {
     return [...arr].sort((a, b) => b.isPrimary - a.isPrimary);
+  };
+
+  const handleRemoveAssociatedTenant = async (ev, tenant) => {
+    ev.preventDefault();
+
+    if (!tenant?.id) return;
+
+    const filteredRentees = property?.rentees.filter(
+      (rentee) => rentee !== tenant.email
+    );
+
+    await deleteTenant(tenant?.id);
+    await updateProperty({
+      id: property?.id,
+      rentees: filteredRentees,
+      updatedBy: user?.uid,
+      updatedOn: dayjs().toISOString(),
+    });
+
+    setShowSnackbar(true);
   };
 
   return (
@@ -56,6 +94,17 @@ export default function Tenants({ tenants = [], property }) {
                     />
                   )}
                 </Box>
+                <Tooltip title="Remove tenant from property">
+                  <IconButton
+                    size="small"
+                    onClick={(ev) => handleRemoveAssociatedTenant(ev, tenant)}
+                  >
+                    <RemoveCircleOutlineRounded
+                      fontSize="small"
+                      color="error"
+                    />
+                  </IconButton>
+                </Tooltip>
               </Box>
 
               {/* Rent Highlight */}
@@ -120,6 +169,12 @@ export default function Tenants({ tenants = [], property }) {
           </Card>
         </Stack>
       ))}
+
+      <CustomSnackbar
+        showSnackbar={showSnackbar}
+        setShowSnackbar={setShowSnackbar}
+        title="Changes saved."
+      />
     </Stack>
   );
 }
