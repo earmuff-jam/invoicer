@@ -4,6 +4,8 @@ import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 
 import AButton from "common/AButton";
 import { isUserLoggedIn } from "common/utils";
+import { OwnerRole, TenantRole } from "features/Landing/constants";
+
 import { authenticateViaGoogle } from "features/Auth/AuthHelper";
 import { useCreateUserMutation } from "features/Api/firebaseUserApi";
 
@@ -13,19 +15,64 @@ export default function HeroSection() {
   const [createUser] = useCreateUserMutation();
 
   // creates a user in the db
-  const handleCreateUser = async (user) => {
+  const handleCreateUser = async (user, roleType = TenantRole) => {
     try {
-      await createUser(user).unwrap();
+      const createdUser = await createUser({
+        ...user,
+        role: roleType,
+      }).unwrap();
+
+      // after we create the user, we update our role to keep app in sync
+      if (createdUser?.uid) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            uid: createdUser.uid,
+            role: createdUser.role,
+            googleEmailAddress: createdUser?.googleEmailAddress,
+          })
+        );
+      }
+      return createdUser;
     } catch (err) {
       /* eslint-disable no-console */
       console.error("Create failed:", err);
+      throw err;
     }
   };
 
-  const handleGoogleAuthentication = async () => {
-    const userDetails = await authenticateViaGoogle();
-    await handleCreateUser(userDetails);
-    navigate(`/properties?refresh=${Date.now()}`); // force refresh
+  const handlePropertyOwnerLogin = async () => {
+    try {
+      const userDetails = await authenticateViaGoogle();
+      const createdUser = await handleCreateUser(userDetails, OwnerRole);
+
+      if (createdUser) {
+        // force refresh
+        createdUser?.role === OwnerRole
+          ? navigate(`/properties?refresh=${Date.now()}`)
+          : navigate(`/rental?refresh=${Date.now()}`);
+      }
+    } catch (error) {
+      /* eslint-disable no-console */
+      console.error("Unable to login. Error: ", error);
+    }
+  };
+
+  const handleTenantLogin = async () => {
+    try {
+      const userDetails = await authenticateViaGoogle();
+      const createdUser = await handleCreateUser(userDetails, TenantRole);
+
+      if (createdUser) {
+        // force refresh
+        createdUser?.role === OwnerRole
+          ? navigate(`/properties?refresh=${Date.now()}`)
+          : navigate(`/rental?refresh=${Date.now()}`);
+      }
+    } catch (error) {
+      /* eslint-disable no-console */
+      console.error("Unable to login. Error: ", error);
+    }
   };
 
   return (
@@ -54,21 +101,41 @@ export default function HeroSection() {
               Create and manage assets in seconds. No complexity, just results.
             </Typography>
 
-            <Stack direction="row" spacing={1} margin="4rem 0rem">
-              {!isLoggedIn && (
+            <Stack>
+              <Stack direction="row" spacing={1} margin="4rem 0rem 1rem 0rem">
+                {!isLoggedIn && (
+                  <AButton
+                    label="Manage Properties"
+                    variant="contained"
+                    size="large"
+                    onClick={handlePropertyOwnerLogin}
+                  />
+                )}
                 <AButton
-                  label="Manage Properties"
+                  label="Manage Invoices"
                   variant="contained"
                   size="large"
-                  onClick={handleGoogleAuthentication}
+                  onClick={() => navigate("invoice/view")}
                 />
+              </Stack>
+              {!isLoggedIn && (
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer", textTransform: "initial" }}
+                  onClick={handleTenantLogin}
+                >
+                  <Typography variant="h6">
+                    Are you a Renter?
+                    <Box
+                      component="span"
+                      color="secondary.main"
+                      sx={{ margin: "0rem 0.5rem", textTransform: "initial" }}
+                    >
+                      Login here
+                    </Box>
+                  </Typography>
+                </Stack>
               )}
-              <AButton
-                label="Manage Invoices"
-                variant="contained"
-                size="large"
-                onClick={() => navigate("invoice/view")}
-              />
             </Stack>
           </Grid>
           <Grid item xs={12} md={6} sx={{ position: "relative" }}>

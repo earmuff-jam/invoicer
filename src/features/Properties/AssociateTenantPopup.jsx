@@ -26,16 +26,25 @@ import { InfoRounded } from "@mui/icons-material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { useGetUserListQuery } from "features/Api/firebaseUserApi";
+
 import { fetchLoggedInUser } from "features/Properties/utils";
-import { useCreateTenantMutation } from "features/Api/tenantsApi";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 
-export default function AssociateTenantPopup({ closeDialog, property }) {
+import { useGetUserListQuery } from "features/Api/firebaseUserApi";
+import { useCreateTenantMutation } from "features/Api/tenantsApi";
+import { useUpdatePropertyByIdMutation } from "features/Api/propertiesApi";
+
+export default function AssociateTenantPopup({
+  closeDialog,
+  property,
+  tenants,
+}) {
   const user = fetchLoggedInUser();
   const currentUserId = user?.uid;
 
   const [createTenant] = useCreateTenantMutation();
+  const [updateProperty] = useUpdatePropertyByIdMutation();
+
   const { data: profiles, isLoading } = useGetUserListQuery();
 
   const [options, setOptions] = useState([]);
@@ -116,6 +125,8 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
     setFormData(updatedFormData);
   };
 
+  const reset = () => setFormData(BLANK_ASSOCIATE_TENANT_DETAILS);
+
   const isSubmitAssociationDisabled = () => {
     const containsErr = Object.values(formData).reduce((acc, el) => {
       if (el.errorMsg) {
@@ -155,33 +166,50 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
     draftData["id"] = uuidv4();
     draftData["propertyId"] = property.id;
     draftData["createdBy"] = currentUserId;
-    draftData["created"] = dayjs().toISOString();
+    draftData["createdOn"] = dayjs().toISOString();
 
     draftData["updatedBy"] = currentUserId;
-    draftData["updated_on"] = dayjs().toISOString();
+    draftData["updatedOn"] = dayjs().toISOString();
 
     try {
       await createTenant(draftData).unwrap();
+      await updateProperty({
+        id: property?.id,
+        rentees: [...(property?.rentees || []), draftData?.email],
+        updatedBy: user?.uid,
+        updatedOn: dayjs().toISOString(),
+      }).unwrap();
+
       setShowSnackbar(true);
     } catch (error) {
       /* eslint-disable no-console */
       console.log(error);
     }
     closeDialog();
+    reset();
   };
 
   useEffect(() => {
     if (!isLoading && Array.isArray(profiles)) {
       const draftProfiles = profiles
-        .filter((profile) => profile.id !== currentUserId)
+        .filter((profile) => profile?.uid !== currentUserId)
         .map((v) => ({
-          display: v.emailAddress,
+          display: v.googleEmailAddress,
           value: v.id,
-          label: v.emailAddress,
+          label: v.googleEmailAddress,
         }));
       setOptions(draftProfiles);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    // update form fields if present
+    if (property) {
+      const updatedFormData = { ...formData };
+      updatedFormData["rent"].value = property?.rent;
+      setFormData(updatedFormData);
+    }
+  }, [property?.id, isLoading]);
 
   return (
     <Stack spacing="0.2rem">
@@ -191,7 +219,13 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
       <Autocomplete
         id="email"
         options={options}
-        value={formData.email.value}
+        value={
+          options.find(
+            (opt) =>
+              (typeof opt === "string" ? opt : opt.value) ===
+              (formData.email.value?.value || formData.email.value)
+          ) || formData.email.value
+        }
         onChange={(_, newValue) => {
           const value =
             typeof newValue === "string"
@@ -210,9 +244,11 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             : option.display || option.label || ""
         }
         isOptionEqualToValue={(option, value) =>
-          (option.value || option) === (value.value || value)
+          (typeof option === "string" ? option : option.value) ===
+          (typeof value === "string" ? value : value.value)
         }
         freeSolo
+        noOptionsText="Sorry no matching records found."
         renderInput={(params) => (
           <TextField
             {...params}
@@ -226,7 +262,9 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
         renderOption={(props, option) => (
           <li {...props}>
             <Typography sx={{ textTransform: "initial" }}>
-              {option.display || option.label || option}
+              {option.display ||
+                option.label ||
+                (typeof option === "string" ? option : "")}
             </Typography>
           </li>
         )}
@@ -305,11 +343,23 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
         />
 
         <TextFieldWithLabel
-          label="Monthly rent amount"
+          label={
+            <Stack direction="row" alignItems="center">
+              <Tooltip title="Monthly rent amount is the populated from the property details">
+                <InfoRounded
+                  color="secondary"
+                  fontSize="small"
+                  sx={{ fontSize: "1rem", margin: "0.2rem" }}
+                />
+              </Tooltip>
+              <Typography variant="subtitle2">Monthly Rent Amount</Typography>
+            </Stack>
+          }
           id="rent"
           name="rent"
+          isDisabled={true}
           placeholder="Monthly rent amount. Eg, 2150.00"
-          value={formData?.rent?.value || ""}
+          value={formData?.rent?.value || ""} // todo : convert this form to react hook forms and update this to accomodate rent + additional_rent
           handleChange={handleChange}
           errorMsg={formData.rent?.["errorMsg"]}
         />
@@ -322,6 +372,9 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={
+                    tenants?.filter((tenant) => tenant.isPrimary).length > 0
+                  }
                   id={formData?.isPrimary?.id}
                   checked={formData?.isPrimary?.value || false}
                   onChange={handleCheckbox}
@@ -332,8 +385,15 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
                   }}
                 />
               }
-              label="Primary point of contact"
+              label="Primary point of contact (PoC)"
             />
+            <Tooltip title="Primary point of contact. If current property already contains existing tenant as a primary contact, PoC is disabled.">
+              <InfoRounded
+                fontSize="small"
+                color="secondary"
+                sx={{ fontSize: "1rem" }}
+              />
+            </Tooltip>
           </FormGroup>
         </Stack>
 
@@ -342,6 +402,7 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={property?.rentees?.length > 0} // cannot assign SoR if tenants already exists
                   id={formData?.isSoR?.id}
                   checked={formData?.isSoR?.value || false}
                   onChange={handleCheckbox}
@@ -352,9 +413,9 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
                   }}
                 />
               }
-              label="Single Occupancy Room (SOR)?"
+              label="Single Occupancy Room (SoR)?"
             />
-            <Tooltip title="Single Occupancy Rooms are rooms that are rented out to a single individual">
+            <Tooltip title="Rooms occupied by single individual. If current property already contains existing tenant, SoR is disabled.">
               <InfoRounded
                 fontSize="small"
                 color="secondary"

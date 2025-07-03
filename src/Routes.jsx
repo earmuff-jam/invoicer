@@ -15,6 +15,8 @@ import {
   WhatshotRounded,
 } from "@mui/icons-material";
 
+import { OwnerRole, TenantRole } from "features/Landing/constants";
+
 const Overview = lazy(() => import("features/Landing/Overview"));
 const Dashboard = lazy(() => import("features/Dashboard/Dashboard"));
 const PdfViewer = lazy(() => import("features/PdfViewer/PdfViewer"));
@@ -26,6 +28,8 @@ const FaqSection = lazy(() => import("features/HelpAndSupport/FaqSection"));
 const ReleaseNotes = lazy(() => import("features/HelpAndSupport/ReleaseNotes"));
 
 const Properties = lazy(() => import("features/Properties/Properties"));
+const Property = lazy(() => import("features/Properties/Property"));
+const MyRental = lazy(() => import("features/Properties/MyRental"));
 const Settings = lazy(() => import("features/Settings/Settings"));
 
 /**
@@ -82,6 +86,7 @@ export const InvoicerRoutes = [
         icon: <CottageRounded fontSize="small" />,
       },
       isLoggedInFeature: true, // only display if logged in
+      enabledForRoles: [OwnerRole],
       displayInNavBar: true,
       displayHelpSelector: false,
       displayPrintSelector: false,
@@ -89,6 +94,25 @@ export const InvoicerRoutes = [
   },
   {
     id: 4,
+    label: "My Rental Unit",
+    path: "/rental",
+    element: <MyRental />,
+    icon: <CottageRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      breadcrumb: {
+        value: "My rental unit",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      isLoggedInFeature: true, // only display if logged in
+      enabledForRoles: [TenantRole],
+      displayInNavBar: true,
+      displayHelpSelector: false,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 5,
     label: "View Invoice",
     path: "/invoice/view",
     element: <PdfViewer />,
@@ -105,7 +129,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 5,
+    id: 6,
     label: "Edit Invoice",
     path: "/invoice/edit",
     element: <EditPdf />,
@@ -122,7 +146,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 6,
+    id: 7,
     label: "Sender",
     path: "/invoice/sender",
     element: <SenderInfo />,
@@ -139,7 +163,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 7,
+    id: 8,
     label: "Reciever",
     path: "/invoice/reciever",
     element: <RecieverInfo />,
@@ -156,7 +180,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 8,
+    id: 9,
     label: "Settings",
     path: "/settings",
     element: <Settings />,
@@ -174,7 +198,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 9,
+    id: 10,
     label: "Release Notes",
     path: "/notes",
     element: <ReleaseNotes />,
@@ -191,7 +215,7 @@ export const InvoicerRoutes = [
     },
   },
   {
-    id: 10,
+    id: 11,
     label: "FAQ",
     path: "/faq",
     element: <FaqSection />,
@@ -204,6 +228,25 @@ export const InvoicerRoutes = [
       },
       displayInNavBar: false,
       displayHelpSelector: false,
+      displayPrintSelector: false,
+    },
+  },
+  {
+    id: 12,
+    label: "My Properties",
+    path: "/property/:id",
+    element: <Property />,
+    icon: <CottageRounded fontSize="small" />,
+    requiredFlags: ["invoicer", "invoicerPro"],
+    config: {
+      breadcrumb: {
+        value: "My properties",
+        icon: <CottageRounded fontSize="small" />,
+      },
+      isLoggedInFeature: true, // only display if logged in
+      enabledForRoles: [OwnerRole],
+      displayInNavBar: false,
+      displayHelpSelector: true,
       displayPrintSelector: false,
     },
   },

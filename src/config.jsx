@@ -1,6 +1,6 @@
+import { getFirestore } from "firebase/firestore";
 import { initializeApp, getApps } from "firebase/app";
 import { onAuthStateChanged, getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 
 // -------------------------------------------
 // Util functions
@@ -37,6 +37,11 @@ const analyticsConfig =
   getApps().find((app) => app.name === "[DEFAULT]") ||
   initializeApp(analyticsFirebaseConfig);
 
+/**
+ * analyticsFirestore ...
+ *
+ * the db used to store analytics events for the application
+ */
 export const analyticsFirestore = getFirestore(analyticsConfig);
 
 // -------------------------------------------
@@ -51,6 +56,27 @@ const authenticatorFirebaseConfig = {
   measurementId: import.meta.env.VITE_AUTH_FIREBASE_MEASUREMENTID,
 };
 
+/**
+ * GeneralUserConfigValues ...
+ *
+ * these are general configuration values that can be used in the application.
+ */
+export const GeneralUserConfigValues = {
+  StripeConnectionInstructionsLink: import.meta.env
+    .VITE_AUTH_STRIPE_CONNECTION_INSTRUCTIONS,
+  StripeConnectionIssuesInstructionLink: import.meta.env
+    .VITE_AUTH_STRIPE_CONNECTION_ISSUES_INSTRUCTIONS,
+  StripSecurityAndComplianceInstructionLink: import.meta.env
+    .VITE_AUTH_STRIPE_SECURITY_AND_COMPLIANCE,
+};
+
+/**
+ * authenticatorConfig ...
+ *
+ * authenticatorConfig is the configuration manager used to authenticate
+ * users into the backend system.
+ *
+ */
 export const authenticatorConfig =
   getApps().find((app) => app.name === "AUTHENTICATOR") ||
   initializeApp(authenticatorFirebaseConfig, "AUTHENTICATOR");
@@ -60,7 +86,22 @@ if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
   const auth = getAuth(authenticatorConfig);
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify({ uid: user.uid }));
+      // during refresh, we persist the role and attach it back
+      const draftUser = JSON.parse(localStorage.getItem("user"));
+      if (draftUser) {
+        localStorage.setItem(
+          "user",
+
+          JSON.stringify({
+            uid: user.uid,
+            role: draftUser?.role,
+            googleEmailAddress: draftUser?.googleEmailAddress,
+          })
+        );
+      } else {
+        // if the role is not found yet, do nothing
+        localStorage.setItem("user", JSON.stringify({ uid: user?.uid }));
+      }
     } else {
       localStorage.removeItem("user");
     }
@@ -72,9 +113,20 @@ if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
   );
 }
 
+/**
+ * authenticatorApp ...
+ *
+ * the authenticator for the db
+ */
 export const authenticatorApp = isFirebaseConfigOptionsValid(
   authenticatorConfig
 )
   ? getAuth(authenticatorConfig)
   : null;
+
+/**
+ * authenticatedFirestore ...
+ *
+ * the db for all authenticated users
+ */
 export const authenticatorFirestore = getFirestore(authenticatorConfig);

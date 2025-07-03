@@ -29,9 +29,11 @@ export default function RowHeader({
         <Typography variant="h5" fontWeight="medium" {...sxProps}>
           {title}
         </Typography>
-        <Typography variant="subtitle2" sx={{ textTransform: "initial" }}>
-          {caption}
-        </Typography>
+        {caption ? (
+          <Typography variant="subtitle2" sx={{ textTransform: "initial" }}>
+            {caption}
+          </Typography>
+        ) : null}
         <Box sx={{ alignSelf: "flex-end" }}>{children}</Box>
       </Stack>
       {showDate && (
