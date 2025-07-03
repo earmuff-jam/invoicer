@@ -171,7 +171,7 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
       await createTenant(draftData).unwrap();
       await updateProperty({
         id: property?.id,
-        rentees: [draftData?.email],
+        rentees: [...(property?.rentees || []), draftData?.email],
         updatedBy: user?.uid,
         updatedOn: dayjs().toISOString(),
       }).unwrap();
