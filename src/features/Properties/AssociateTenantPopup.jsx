@@ -34,7 +34,11 @@ import { useGetUserListQuery } from "features/Api/firebaseUserApi";
 import { useCreateTenantMutation } from "features/Api/tenantsApi";
 import { useUpdatePropertyByIdMutation } from "features/Api/propertiesApi";
 
-export default function AssociateTenantPopup({ closeDialog, property }) {
+export default function AssociateTenantPopup({
+  closeDialog,
+  property,
+  tenants,
+}) {
   const user = fetchLoggedInUser();
   const currentUserId = user?.uid;
 
@@ -368,6 +372,9 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             <FormControlLabel
               control={
                 <Checkbox
+                  disabled={
+                    tenants?.filter((tenant) => tenant.isPrimary).length > 0
+                  }
                   id={formData?.isPrimary?.id}
                   checked={formData?.isPrimary?.value || false}
                   onChange={handleCheckbox}
@@ -378,8 +385,15 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
                   }}
                 />
               }
-              label="Primary point of contact"
+              label="Primary point of contact (PoC)"
             />
+            <Tooltip title="Primary point of contact. If current property already contains existing tenant as a primary contact, PoC is disabled.">
+              <InfoRounded
+                fontSize="small"
+                color="secondary"
+                sx={{ fontSize: "1rem" }}
+              />
+            </Tooltip>
           </FormGroup>
         </Stack>
 
@@ -388,7 +402,7 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
             <FormControlLabel
               control={
                 <Checkbox
-                  disabled={true}
+                  disabled={property?.rentees?.length > 0} // cannot assign SoR if tenants already exists
                   id={formData?.isSoR?.id}
                   checked={formData?.isSoR?.value || false}
                   onChange={handleCheckbox}
@@ -399,9 +413,9 @@ export default function AssociateTenantPopup({ closeDialog, property }) {
                   }}
                 />
               }
-              label="Single Occupancy Room (SOR)?"
+              label="Single Occupancy Room (SoR)?"
             />
-            <Tooltip title="Single Occupancy Rooms are rooms that are rented out to a single individual">
+            <Tooltip title="Rooms occupied by single individual. If current property already contains existing tenant, SoR is disabled.">
               <InfoRounded
                 fontSize="small"
                 color="secondary"

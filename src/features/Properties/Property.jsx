@@ -252,30 +252,39 @@ const Property = () => {
                 justifyContent="space-between"
                 sx={{ margin: "0rem 0rem 1rem 0rem" }}
               >
-                <RowHeader
-                  title="Tenants"
-                  caption="Tenant details"
-                  sxProps={{
-                    alignItems: "flex-start",
-                    color: "text.secondary",
-                  }}
-                />
-                <Stack direction="row" spacing={1} alignItems="center">
-                  {tenants.length !== 0 ? (
-                    <Tooltip title="total tenants">
-                      <Badge
-                        badgeContent={tenants.length}
-                        color="textSecondary"
-                      >
-                        <Typography
-                          variant="h6"
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Box>
+                    {tenants.length !== 0 ? (
+                      <Tooltip title="total tenants">
+                        <Badge
+                          badgeContent={tenants.length}
+                          color="textSecondary"
                         >
-                          <GroupOutlined color="info" />
-                        </Typography>
-                      </Badge>
-                    </Tooltip>
-                  ) : null}
+                          <Typography
+                            variant="h6"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            <GroupOutlined color="info" />
+                          </Typography>
+                        </Badge>
+                      </Tooltip>
+                    ) : null}
+                  </Box>
+                  <RowHeader
+                    title="Tenants"
+                    caption="Tenant details"
+                    sxProps={{
+                      alignItems: "flex-start",
+                      color: "text.secondary",
+                    }}
+                  />
+                </Stack>
+
+                <Stack direction="row" spacing={1} alignItems="center">
                   <Box>
                     <Tooltip title="Associate tenants">
                       <AButton
@@ -309,6 +318,7 @@ const Property = () => {
               <AssociateTenantPopup
                 closeDialog={toggleAddPropertyPopup}
                 property={property}
+                tenants={tenants}
               />
             </DialogContent>
             <DialogActions>

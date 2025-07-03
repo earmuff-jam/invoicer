@@ -12,12 +12,7 @@ import {
   Chip,
 } from "@mui/material";
 
-import {
-  Home,
-  LocationOn,
-  Phone,
-  Business,
-} from "@mui/icons-material";
+import { Home, LocationOn, Phone, Business } from "@mui/icons-material";
 
 import dayjs from "dayjs";
 import { useAppTitle } from "hooks/useAppTitle";
@@ -38,6 +33,7 @@ import {
   formatCurrency,
   getOccupancyRate,
 } from "features/Properties/utils";
+import EmptyComponent from "src/common/EmptyComponent";
 
 // TODO : handle un-identified tenants route gracefully
 // TODO : https://github.com/earmuff-jam/invoicer/issues/79
@@ -71,6 +67,11 @@ const MyRental = () => {
   const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
 
   if (isLoading) return <Skeleton height="10rem" />;
+
+  if (!property)
+    return (
+      <EmptyComponent caption="No properties have been assigned to you as a tenant. Contact your admin for more details." />
+    );
 
   return (
     <Stack>
