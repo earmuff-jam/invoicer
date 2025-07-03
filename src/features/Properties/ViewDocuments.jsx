@@ -19,28 +19,6 @@ dayjs.extend(relativeTime);
 const ViewDocuments = ({ label, caption }) => {
   const [tableData] = useState([]);
 
-  //   useEffect(() => {
-  //     const draftData = JSON.parse(localStorage.getItem("pdfDetails"));
-  //     const draftInvoiceStatus = JSON.parse(
-  //       localStorage.getItem("invoiceStatus")
-  //     );
-
-  //     let formattedData;
-  //     formattedData = { ...draftData };
-
-  //     if (draftInvoiceStatus) {
-  //       formattedData = {
-  //         ...formattedData,
-  //         invoice_status: draftInvoiceStatus?.label,
-  //       };
-  //     }
-
-  //     if (draftData) {
-  //       const data = noramlizeDetailsTableData([formattedData]);
-  //       setTableData(data);
-  //     }
-  //   }, []);
-
   const columns = useMemo(
     () => [
       {

@@ -27,7 +27,7 @@ function App() {
   useEffect(() => {
     const draftAppRoutes = buildAppRoutes(InvoicerRoutes, user?.role);
     setAppRoutes(draftAppRoutes);
-  }, [user?.uid]);
+  }, [user?.role]);
 
   return (
     <ThemeProvider

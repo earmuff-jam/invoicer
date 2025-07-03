@@ -29,8 +29,8 @@ export default function TextFieldWithLabel({
         id={id}
         name={name}
         placeholder={placeholder}
-        value={value} // optional: only if you want controlled
-        onChange={handleChange} // optional
+        value={value}
+        onChange={handleChange}
         variant="outlined"
         size="small"
         multiline={multiline}
