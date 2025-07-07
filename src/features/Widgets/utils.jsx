@@ -42,7 +42,7 @@ export function noramlizeDetailsTableData(draftInvoiceList = []) {
       end_date: invoice?.end_date,
       total,
       payment_method: Array.from(uniquePaymentMethods.keys()).join(" / "),
-      updated_on: invoice?.updated_on,
+      updatedOn: invoice?.updatedOn,
     };
   });
 

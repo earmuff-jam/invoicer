@@ -35,7 +35,7 @@ const ViewDocuments = ({ label, caption }) => {
       },
 
       {
-        accessorKey: "updated_on",
+        accessorKey: "updatedOn",
         header: "Last updated",
         size: 150,
         Cell: ({ cell }) => dayjs(cell.getValue()).fromNow(),

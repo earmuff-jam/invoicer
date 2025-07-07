@@ -218,7 +218,7 @@ export default function EditPdf({
     });
 
     draftData["items"] = draftLineItemData;
-    draftData["updated_on"] = dayjs().toISOString();
+    draftData["updatedOn"] = dayjs().toISOString();
 
     const invoiceStatus = options.find((option) => option.selected);
 

@@ -51,7 +51,7 @@ export function generateInvoiceHTML(recieverInfo, data, invoiceStatus = "") {
       </tbody>
     </table>
 
-    <p><em>Invoice last updated on: ${data.updated_on}</em></p>
+    <p><em>Invoice last updated on: ${data.updatedOn}</em></p>
   `;
 }
 

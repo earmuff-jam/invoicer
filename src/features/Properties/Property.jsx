@@ -6,7 +6,6 @@ import {
   CardContent,
   Typography,
   Grid,
-  Avatar,
   Stack,
   Paper,
   Badge,
@@ -19,13 +18,7 @@ import {
   Skeleton,
 } from "@mui/material";
 
-import {
-  Home,
-  LocationOn,
-  Phone,
-  Business,
-  GroupOutlined,
-} from "@mui/icons-material";
+import { Home, LocationOn, Business, GroupOutlined } from "@mui/icons-material";
 
 import dayjs from "dayjs";
 import AButton from "common/AButton";
@@ -41,7 +34,6 @@ import ViewDocuments from "features/Properties/ViewDocuments";
 import AssociateTenantPopup from "features/Properties/AssociateTenantPopup";
 
 import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
-import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useGetPropertiesByPropertyIdQuery } from "features/Api/propertiesApi";
 
 import {
@@ -49,6 +41,10 @@ import {
   formatCurrency,
   getOccupancyRate,
 } from "features/Properties/utils";
+
+import PropertyOwnerInfoCard from "features/Properties/PropertyOwnerInfoCard";
+import ViewRentalPaymentSummary from "src/features/Properties/ViewRentalPaymentSummary";
+import { useGetRentsByPropertyIdQuery } from "src/features/Api/rentApi";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -66,9 +62,10 @@ const Property = () => {
       skip: !params?.id,
     });
 
-  const { data: owner = {} } = useGetUserDataByIdQuery(property?.createdBy, {
-    skip: !property?.createdBy,
-  });
+  const { data: rentList = [], isLoading: isRentListForPropertyLoading } =
+    useGetRentsByPropertyIdQuery(property?.id, {
+      skip: !property?.id,
+    });
 
   useAppTitle(property?.name || "Selected Property");
 
@@ -306,6 +303,25 @@ const Property = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Rental Payment Overview */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <RowHeader
+                title="Payments Overview"
+                caption="View list of all payment summaries for this property"
+                sxProps={{ textAlign: "left", color: "text.secondary" }}
+              />
+              <Stack spacing={2}>
+                {isRentListForPropertyLoading ? (
+                  <Skeleton height="5rem" />
+                ) : (
+                  <ViewRentalPaymentSummary rentData={rentList} />
+                )}
+              </Stack>
+            </CardContent>
+          </Card>
+
           <Dialog
             open={dialog}
             TransitionComponent={Transition}
@@ -334,70 +350,10 @@ const Property = () => {
 
         {/* Sidebar */}
         <Grid item xs={12} md={4}>
-          {/* Owner Information */}
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <RowHeader
-                title="Property Owner"
-                sxProps={{
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                  justifyContent: "flex-end",
-                  gap: 1,
-                  textAlign: "left",
-                  variant: "subtitle2",
-                  fontWeight: "bold",
-                }}
-                caption={<Business color="primary" />}
-              />
-              {isPropertyLoading ? (
-                <Skeleton height="10rem" />
-              ) : (
-                <>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                      mb: 2,
-                    }}
-                  >
-                    <Avatar
-                      src={owner.googlePhotoURL}
-                      sx={{ width: 56, height: 56 }}
-                    >
-                      {owner.first_name?.charAt(0)}
-                      {owner.last_name?.charAt(0)}
-                    </Avatar>
-                    <Box>
-                      <RowHeader
-                        title={
-                          owner.googleDisplayName ||
-                          `${owner.first_name || ""} ${owner.last_name || ""}`
-                        }
-                        caption={owner.email}
-                        sxProps={{
-                          textAlign: "left",
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                  <Stack spacing={1}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Phone fontSize="small" color="action" />
-                      <Typography variant="body2">{owner.phone}</Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <LocationOn fontSize="small" color="action" />
-                      <Typography variant="body2">
-                        {owner.city}, {owner.state} {owner.zipcode}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </>
-              )}
-            </CardContent>
-          </Card>
+          <PropertyOwnerInfoCard
+            property={property}
+            isPropertyLoading={isPropertyLoading}
+          />
 
           {/* Property Details */}
           <Card sx={{ mb: 3 }}>

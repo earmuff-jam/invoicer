@@ -13,16 +13,18 @@ import {
   Typography,
 } from "@mui/material";
 
-import { DefaultTourStepsMapperObj } from "common/Tour/TourSteps";
-import useSendEmail, { generateInvoiceHTML } from "hooks/useSendEmail";
+import { useNavigate } from "react-router-dom";
+
+import { isUserLoggedIn } from "common/utils";
+import { logoutUser } from "features/Properties/utils";
+import MenuOptions from "features/Layout/MenuOptions";
+
+import { useGenerateUserData } from "hooks/useGenerateUserData";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import validateClientPermissions from "common/ValidateClientPerms";
-import { useGenerateUserData } from "hooks/useGenerateUserData";
-import MenuOptions from "features/Layout/MenuOptions";
-import { isUserLoggedIn } from "src/common/utils";
-import { getAuth, signOut } from "firebase/auth";
-import { authenticatorConfig } from "src/config";
-import { useNavigate } from "react-router-dom";
+
+import { DefaultTourStepsMapperObj } from "common/Tour/TourSteps";
+import useSendEmail, { generateInvoiceHTML } from "hooks/useSendEmail";
 
 export default function AppToolbar({
   currentUri,
@@ -105,15 +107,8 @@ export default function AppToolbar({
   };
 
   const logout = async () => {
-    const auth = getAuth(authenticatorConfig);
-    try {
-      await signOut(auth);
-      localStorage.removeItem("user");
-      navigate(`/?refresh=${Date.now()}`); // force refresh
-    } catch (error) {
-      /* eslint-disable no-console */
-      console.error("Error signing out:", error);
-    }
+    await logoutUser();
+    navigate(`/?refresh=${Date.now()}`); // force refresh
   };
 
   return (

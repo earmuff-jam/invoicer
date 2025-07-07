@@ -74,7 +74,7 @@ const DetailsTableView = ({ label, caption }) => {
         Cell: ({ cell }) => (cell.getValue() ? cell.getValue() : "-"),
       },
       {
-        accessorKey: "updated_on",
+        accessorKey: "updatedOn",
         header: "Updated on",
         size: 150,
         Cell: ({ cell }) => dayjs(cell.getValue()).fromNow(),

@@ -50,7 +50,7 @@ export const tenantsApi = createApi({
             tenants.push({ id: doc.id, ...doc.data() });
           });
 
-          const tenant = tenants.find(tenant => tenant.email === email);
+          const tenant = tenants.find((tenant) => tenant.email === email);
           return { data: tenant };
         } catch (error) {
           return {

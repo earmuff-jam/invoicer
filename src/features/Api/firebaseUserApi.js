@@ -52,7 +52,7 @@ export const firebaseUserApi = createApi({
           };
         }
       },
-      providesTags: (result, error, uid) => [{ type: "User", id: uid }],
+      providesTags: ["User"],
     }),
     // create user in users db
     createUser: builder.mutation({
@@ -72,6 +72,7 @@ export const firebaseUserApi = createApi({
           };
         }
       },
+      invalidatesTags: ["User"],
     }),
 
     // update user in users db
@@ -90,7 +91,7 @@ export const firebaseUserApi = createApi({
           };
         }
       },
-      invalidatesTags: (result, error, { uid }) => [{ type: "User", id: uid }],
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -100,4 +101,5 @@ export const {
   useGetUserDataByIdQuery,
   useCreateUserMutation,
   useUpdateUserByUidMutation,
+  useLazyGetUserDataByIdQuery,
 } = firebaseUserApi;

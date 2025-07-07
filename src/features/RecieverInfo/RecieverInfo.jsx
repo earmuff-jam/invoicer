@@ -43,7 +43,7 @@ export default function RecieverInfo() {
       },
       {}
     );
-    draftData["updated_on"] = dayjs();
+    draftData["updatedOn"] = dayjs();
     localStorage.setItem("recieverInfo", JSON.stringify(draftData));
     setShowSnackbar(true);
   };
@@ -79,7 +79,7 @@ export default function RecieverInfo() {
       draftProfileDetails.city.value = parsedValues.city;
       draftProfileDetails.state.value = parsedValues.state;
       draftProfileDetails.zipcode.value = parsedValues.zipcode;
-      draftProfileDetails.updated_on = parsedValues.updated_on;
+      draftProfileDetails.updatedOn = parsedValues.updatedOn;
       setFormData(draftProfileDetails);
     }
   }, []);

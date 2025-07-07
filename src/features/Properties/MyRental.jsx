@@ -4,7 +4,6 @@ import {
   CardContent,
   Typography,
   Grid,
-  Avatar,
   Stack,
   Paper,
   Tooltip,
@@ -12,7 +11,7 @@ import {
   Chip,
 } from "@mui/material";
 
-import { Home, LocationOn, Phone, Business } from "@mui/icons-material";
+import { Home, LocationOn, Business } from "@mui/icons-material";
 
 import dayjs from "dayjs";
 import { useAppTitle } from "hooks/useAppTitle";
@@ -24,7 +23,6 @@ import {
   useGetTenantByPropertyIdQuery,
 } from "features/Api/tenantsApi";
 
-import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useGetPropertiesByPropertyIdQuery } from "features/Api/propertiesApi";
 
 import {
@@ -33,13 +31,25 @@ import {
   formatCurrency,
   getOccupancyRate,
 } from "features/Properties/utils";
-import EmptyComponent from "src/common/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
+import PropertyOwnerInfoCard from "features/Properties/PropertyOwnerInfoCard";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useConfirmStripePayment } from "src/hooks/useStripe";
+import { useGetUserDataByIdQuery } from "src/features/Api/firebaseUserApi";
+import { useGetRentsByPropertyIdQuery } from "src/features/Api/rentApi";
+import ViewRentalPaymentSummary from "src/features/Properties/ViewRentalPaymentSummary";
 
 // TODO : handle un-identified tenants route gracefully
 // TODO : https://github.com/earmuff-jam/invoicer/issues/79
 
 const MyRental = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const user = fetchLoggedInUser();
+
+  const { confirmPayment } = useConfirmStripePayment();
 
   const { data: renter, isLoading } = useGetTenantByEmailIdQuery(
     user?.googleEmailAddress,
@@ -47,17 +57,24 @@ const MyRental = () => {
       skip: !user?.googleEmailAddress,
     }
   );
+
   const { data: property, isLoading: isPropertyLoading } =
     useGetPropertiesByPropertyIdQuery(renter?.propertyId, {
       skip: !renter?.propertyId,
     });
 
-  const { data: owner = {} } = useGetUserDataByIdQuery(property?.createdBy, {
-    skip: !property?.createdBy,
-  });
-
   const { data: tenants, isLoading: isTenantsLoading } =
     useGetTenantByPropertyIdQuery(property?.id, {
+      skip: !property?.id,
+    });
+
+  const { data: owner = {}, isLoading: isOwnerDataLoading } =
+    useGetUserDataByIdQuery(property?.createdBy, {
+      skip: !property?.createdBy,
+    });
+
+  const { data: rentList = [], isLoading: isRentListForPropertyLoading } =
+    useGetRentsByPropertyIdQuery(property?.id, {
       skip: !property?.id,
     });
 
@@ -65,6 +82,16 @@ const MyRental = () => {
 
   // if home is SoR, then only each bedroom is counted as a unit
   const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location?.search);
+    const success = params.get("success");
+    const sessionId = params.get("session_id");
+    if (Number(success) === 1 && sessionId && owner?.stripeAccountId) {
+      confirmPayment(user?.uid, sessionId, owner?.stripeAccountId);
+      navigate(location?.pathname, { replace: true });
+    }
+  }, [location, isOwnerDataLoading]);
 
   if (isLoading) return <Skeleton height="10rem" />;
 
@@ -246,74 +273,33 @@ const MyRental = () => {
               </Stack>
             </CardContent>
           </Card>
+
+          {/* Rental Payment Overview */}
+          <Card sx={{ mb: 3 }}>
+            <CardContent>
+              <RowHeader
+                title="Payments Overview"
+                caption="View list of all payment summaries for this property"
+                sxProps={{ textAlign: "left", color: "text.secondary" }}
+              />
+              <Stack spacing={2}>
+                {isRentListForPropertyLoading ? (
+                  <Skeleton height="5rem" />
+                ) : (
+                  <ViewRentalPaymentSummary rentData={rentList} />
+                )}
+              </Stack>
+            </CardContent>
+          </Card>
         </Grid>
 
         {/* Sidebar */}
         <Grid item xs={12} md={4}>
-          {/* Owner Information */}
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
-              <RowHeader
-                title="Property Owner"
-                sxProps={{
-                  display: "flex",
-                  flexDirection: "row-reverse",
-                  justifyContent: "flex-end",
-                  gap: 1,
-                  textAlign: "left",
-                  variant: "subtitle2",
-                  fontWeight: "bold",
-                }}
-                caption={<Business color="primary" />}
-              />
-              {isPropertyLoading ? (
-                <Skeleton height="10rem" />
-              ) : (
-                <>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                      mb: 2,
-                    }}
-                  >
-                    <Avatar
-                      src={owner.googlePhotoURL}
-                      sx={{ width: 56, height: 56 }}
-                    >
-                      {owner.first_name?.charAt(0)}
-                      {owner.last_name?.charAt(0)}
-                    </Avatar>
-                    <Box>
-                      <RowHeader
-                        title={
-                          owner.googleDisplayName ||
-                          `${owner.first_name || ""} ${owner.last_name || ""}`
-                        }
-                        caption={owner.email}
-                        sxProps={{
-                          textAlign: "left",
-                        }}
-                      />
-                    </Box>
-                  </Box>
-                  <Stack spacing={1}>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <Phone fontSize="small" color="action" />
-                      <Typography variant="body2">{owner.phone}</Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <LocationOn fontSize="small" color="action" />
-                      <Typography variant="body2">
-                        {owner.city}, {owner.state} {owner.zipcode}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </>
-              )}
-            </CardContent>
-          </Card>
+          <PropertyOwnerInfoCard
+            isViewingRental
+            isPropertyLoading={isPropertyLoading}
+            property={property}
+          />
 
           {/* Property Details */}
           <Card sx={{ mb: 3 }}>

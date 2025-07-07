@@ -32,7 +32,7 @@ export default function PdfViewer() {
           title={invoice_form.title}
           caption={invoice_form.caption}
           showDate={true}
-          createdDate={dayjs(invoice_form.updated_on.fromNow).format(
+          createdDate={dayjs(invoice_form?.updatedOn?.fromNow).format(
             "DD-MM-YYYY"
           )}
         />
