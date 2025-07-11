@@ -4,15 +4,18 @@ import dayjs from "dayjs";
 
 import {
   BusinessRounded,
-  InfoRounded,
+  EmailRounded,
   LocationOnRounded,
   PhoneRounded,
+  WarningAmberRounded,
 } from "@mui/icons-material";
 import {
+  Alert,
   Avatar,
   Box,
   Card,
   CardContent,
+  IconButton,
   Skeleton,
   Stack,
   Tooltip,
@@ -125,21 +128,70 @@ export default function PropertyOwnerInfoCard({
                 {owner?.last_name?.charAt(0)}
               </Avatar>
               <Box>
-                <RowHeader
-                  title={
-                    owner?.googleDisplayName ||
-                    `${owner?.first_name || ""} ${owner?.last_name || ""}`
-                  }
-                  caption={owner?.email}
-                  sxProps={{
-                    textAlign: "left",
-                  }}
-                />
+                <Stack direction="row" spacing={1}>
+                  <Stack>
+                    <Typography
+                      flexGrow={1}
+                      variant="caption"
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        alignContent: "center",
+                        textOverflow: "ellipsis",
+                        maxWidth: 150,
+                        textTransform: "initial",
+                      }}
+                    >
+                      {owner?.googleDisplayName ||
+                        `${owner?.first_name || ""} ${owner?.last_name || ""}`}
+                    </Typography>
+                    <Typography
+                      flexGrow={1}
+                      variant="caption"
+                      sx={{
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        alignContent: "center",
+                        textOverflow: "ellipsis",
+                        maxWidth: 200,
+                        textTransform: "initial",
+                      }}
+                    >
+                      {owner?.email}
+                    </Typography>
+                  </Stack>
+                  <Tooltip title="Send Email">
+                    <IconButton
+                      sx={{ scale: 0.875 }}
+                      href={`mailto:${owner?.email}`}
+                      target="_blank"
+                    >
+                      <EmailRounded fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Stack>
               </Box>
             </Box>
 
             {isViewingRental ? (
-              <Stack direction="row" spacing={1} alignItems="center">
+              <Stack spacing={1}>
+                <Box>
+                  <Alert
+                    variant="standard"
+                    color="info"
+                    icon={<WarningAmberRounded fontSize="small" />}
+                  >
+                    <Typography
+                      color="textSecondary"
+                      fontStyle="italic"
+                      sx={{ fontSize: "0.675rem", textTransform: "initial" }}
+                    >
+                      Rent can be paid only if the owner has stripe setup and if
+                      current month is due.
+                    </Typography>
+                  </Alert>
+                </Box>
+
                 <AButton
                   size="small"
                   variant="contained"
@@ -163,9 +215,6 @@ export default function PropertyOwnerInfoCard({
                     })
                   }
                 />
-                <Tooltip title="Rent can be paid only if the owner has stripe setup and if current month is due.">
-                  <InfoRounded color="secondary" fontSize="small" />
-                </Tooltip>
               </Stack>
             ) : null}
 

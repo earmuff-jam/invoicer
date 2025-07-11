@@ -23,7 +23,7 @@ export default function FinancialOverview({
           <Skeleton height="5rem" />
         ) : (
           <Stack spacing={2}>
-            <Stack direction="row">
+            <Stack direction={{ xs: "column", sm: "row" }}>
               <Stack textAlign="center" flexGrow={1}>
                 <Typography
                   variant="subtitle2"
