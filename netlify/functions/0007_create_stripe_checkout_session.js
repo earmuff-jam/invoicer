@@ -5,7 +5,6 @@
  *
  * Must have feature flags enabled for this feature.
  */
-
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.VITE_AUTH_STRIPE_CONNECTION_SECRET_KEY, {
@@ -68,7 +67,7 @@ export const handler = async (event) => {
       },
       {
         stripeAccount: stripeOwnerAccountId, // session is created on behalf of the property owner
-      }
+      },
     );
 
     return {

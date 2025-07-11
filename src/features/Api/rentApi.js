@@ -1,5 +1,4 @@
-import { authenticatorFirestore as db } from "src/config";
-
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
   collection,
   doc,
@@ -9,8 +8,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { authenticatorFirestore as db } from "src/config";
 
 export const rentApi = createApi({
   reducerPath: "rentApi",
@@ -43,7 +41,7 @@ export const rentApi = createApi({
         try {
           const q = query(
             collection(db, "rents"),
-            where("propertyId", "==", propertyId)
+            where("propertyId", "==", propertyId),
           );
 
           const querySnapshot = await getDocs(q);
@@ -71,7 +69,7 @@ export const rentApi = createApi({
           const q = query(
             collection(db, "rents"),
             where("propertyId", "==", propertyId),
-            where("rentMonth", "==", rentMonth)
+            where("rentMonth", "==", rentMonth),
           );
 
           const querySnapshot = await getDocs(q);
@@ -111,7 +109,7 @@ export const rentApi = createApi({
             collection(db, "rents"),
             where("tenantId", "==", tenantId),
             where("propertyId", "==", propertyId),
-            where("rentMonth", "==", rentMonth)
+            where("rentMonth", "==", rentMonth),
           );
 
           const existing = await getDocs(rentQuery);
@@ -128,7 +126,7 @@ export const rentApi = createApi({
           await setDoc(
             docRef,
             { tenantId, propertyId, rentMonth, ...rest },
-            { merge: true }
+            { merge: true },
           );
 
           return { data: { id, tenantId, propertyId, rentMonth, ...rest } };

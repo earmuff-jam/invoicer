@@ -1,15 +1,15 @@
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
+  collection,
+  deleteDoc,
   doc,
   getDoc,
-  setDoc,
-  deleteDoc,
-  collection,
-  query,
-  where,
   getDocs,
+  query,
+  setDoc,
+  where,
 } from "firebase/firestore";
 import { authenticatorFirestore as db } from "src/config";
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const tenantsApi = createApi({
   reducerPath: "tenantsApi",
@@ -69,7 +69,7 @@ export const tenantsApi = createApi({
         try {
           const q = query(
             collection(db, "tenants"),
-            where("createdBy", "==", userId)
+            where("createdBy", "==", userId),
           );
           const querySnapshot = await getDocs(q);
           const tenants = [];
@@ -94,7 +94,7 @@ export const tenantsApi = createApi({
         try {
           const q = query(
             collection(db, "tenants"),
-            where("propertyId", "==", propertyId)
+            where("propertyId", "==", propertyId),
           );
           const querySnapshot = await getDocs(q);
           const tenants = [];

@@ -1,25 +1,22 @@
 import { useEffect, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@emotion/react";
 import { CssBaseline } from "@mui/material";
 import { TourProvider } from "@reactour/tour";
-
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-
-import Layout from "features/Layout/Layout";
+import ScrollTopProvider from "common/ScrollTop/ScrollTopProvider";
 import { darkTheme, lightTheme } from "common/Theme";
 import { GeneratedTourSteps } from "common/Tour/TourSteps";
 import { buildAppRoutes } from "common/ValidateClientPerms";
-import ScrollTopProvider from "common/ScrollTop/ScrollTopProvider";
-
+import Layout from "features/Layout/Layout";
+import { fetchLoggedInUser } from "features/RentWorks/common/utils";
 import { InvoicerRoutes } from "src/Routes";
-import { fetchLoggedInUser } from "features/Properties/utils";
 
 function App() {
   const user = fetchLoggedInUser();
 
   const [currentThemeIdx, setCurrentThemeIdx] = useState(
-    localStorage.getItem("theme") || 0
+    localStorage.getItem("theme") || 0,
   );
 
   const [appRoutes, setAppRoutes] = useState([]);

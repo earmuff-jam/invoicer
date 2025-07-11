@@ -1,9 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-
 import { firebaseUserApi } from "features/Api/firebaseUserApi";
 import { propertiesApi } from "features/Api/propertiesApi";
-import { tenantsApi } from "features/Api/tenantsApi";
 import { rentApi } from "features/Api/rentApi";
+import { tenantsApi } from "features/Api/tenantsApi";
 
 export const store = configureStore({
   reducer: {

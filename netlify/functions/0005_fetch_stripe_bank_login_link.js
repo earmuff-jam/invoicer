@@ -3,7 +3,6 @@
  *
  * Allows connected Stripe Custom accounts to manage bank info, payouts, etc.
  */
-
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.VITE_AUTH_STRIPE_CONNECTION_SECRET_KEY, {

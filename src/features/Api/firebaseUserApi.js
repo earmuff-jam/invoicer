@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { authenticatorFirestore as db } from "src/config";
-import { TenantRole } from "src/features/Landing/constants";
+import { TenantRole } from "src/features/Layout/components/Landing/constants";
 
 export const firebaseUserApi = createApi({
   reducerPath: "firebaseUserApi",

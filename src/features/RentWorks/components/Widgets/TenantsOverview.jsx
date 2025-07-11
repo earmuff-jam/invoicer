@@ -1,0 +1,83 @@
+import { GroupOutlined } from "@mui/icons-material";
+import {
+  Badge,
+  Box,
+  Card,
+  CardContent,
+  Skeleton,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import AButton from "src/common/AButton";
+import EmptyComponent from "src/common/EmptyComponent";
+import RowHeader from "src/common/RowHeader/RowHeader";
+import Tenants from "src/features/RentWorks/components/Widgets/Tenants";
+
+export default function TenantsOverview({
+  property,
+  tenants = [],
+  isTenantsLoading,
+  toggleAddPropertyPopup,
+}) {
+  return (
+    <Card sx={{ mb: 3 }}>
+      <CardContent>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          sx={{ margin: "0rem 0rem 1rem 0rem" }}
+        >
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Box>
+              {tenants.length !== 0 ? (
+                <Tooltip title="total tenants">
+                  <Badge badgeContent={tenants.length} color="textSecondary">
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <GroupOutlined color="info" />
+                    </Typography>
+                  </Badge>
+                </Tooltip>
+              ) : null}
+            </Box>
+            <RowHeader
+              title="Tenants"
+              caption="Tenant details"
+              sxProps={{
+                alignItems: "flex-start",
+                color: "text.secondary",
+              }}
+            />
+          </Stack>
+
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Box>
+              <Tooltip title="Associate tenants">
+                <AButton
+                  size="small"
+                  variant="outlined"
+                  onClick={() => toggleAddPropertyPopup()}
+                  label="Associate tenants"
+                />
+              </Tooltip>
+            </Box>
+          </Stack>
+        </Stack>
+        {isTenantsLoading ? (
+          <Skeleton height="5rem" />
+        ) : tenants.length === 0 ? (
+          <EmptyComponent caption="Associate tenants to begin." />
+        ) : (
+          <Tenants tenants={tenants || []} property={property} />
+        )}
+      </CardContent>
+    </Card>
+  );
+}

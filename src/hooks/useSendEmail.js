@@ -45,7 +45,7 @@ export function generateInvoiceHTML(recieverInfo, data, invoiceStatus = "") {
             <td>$${item.payment}</td>
             <td>${item.payment_method}</td>
           </tr>
-        `
+        `,
           )
           .join("")}
       </tbody>
