@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { Outlet, matchPath, useLocation } from "react-router-dom";
 
 import { InfoRounded } from "@mui/icons-material";
@@ -24,10 +25,10 @@ import {
   DefaultTourStepsMapperObj,
   GeneratedTourSteps,
 } from "common/Tour/TourSteps";
-import AppToolbar from "src/features/Layout/components/AppToolbar/AppToolbar";
-import BreadCrumbs from "src/features/Layout/components/AppToolbar/BreadCrumbs";
-import Footer from "src/features/Layout/components/Footer/Footer";
-import NavBar from "src/features/Layout/components/NavBar/NavBar";
+import AppToolbar from "features/Layout/components/AppToolbar/AppToolbar";
+import BreadCrumbs from "features/Layout/components/AppToolbar/BreadCrumbs";
+import Footer from "features/Layout/components/Footer/Footer";
+import NavBar from "features/Layout/components/NavBar/NavBar";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

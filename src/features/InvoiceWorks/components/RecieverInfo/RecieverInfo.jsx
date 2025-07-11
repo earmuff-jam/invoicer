@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
-import { Stack } from "@mui/material";
 import dayjs from "dayjs";
-import CustomSnackbar from "src/common/CustomSnackbar/CustomSnackbar";
-import RowHeader from "src/common/RowHeader/RowHeader";
-import UserInfoViewer from "src/common/UserInfo/UserInfoViewer";
-import { BLANK_INDIVIDUAL_INFORMATION_DETAILS } from "src/common/UserInfo/constants";
-import { useAppTitle } from "src/hooks/useAppTitle";
+
+import { Stack } from "@mui/material";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
+import RowHeader from "common/RowHeader/RowHeader";
+import UserInfoViewer from "common/UserInfo/UserInfoViewer";
+import { BLANK_INDIVIDUAL_INFORMATION_DETAILS } from "common/UserInfo/constants";
+import { useAppTitle } from "hooks/useAppTitle";
 
 export default function RecieverInfo() {
   useAppTitle("Reciever Information");

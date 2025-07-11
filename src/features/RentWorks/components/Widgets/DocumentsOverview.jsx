@@ -1,6 +1,6 @@
 import { Card, CardContent, Skeleton, Stack } from "@mui/material";
-import RowHeader from "src/common/RowHeader/RowHeader";
-import ViewDocuments from "src/features/RentWorks/components/Widgets/ViewDocuments";
+import RowHeader from "common/RowHeader/RowHeader";
+import ViewDocuments from "features/RentWorks/components/Widgets/ViewDocuments";
 
 export default function DocumentsOverview({ isPropertyLoading }) {
   return (

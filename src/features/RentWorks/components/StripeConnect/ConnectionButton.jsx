@@ -1,7 +1,7 @@
 import { AccountBalanceRounded } from "@mui/icons-material";
 import { Stack, Typography } from "@mui/material";
 import AButton from "common/AButton";
-import { StripeUserStatusEnums } from "src/features/RentWorks/components/Settings/common";
+import { StripeUserStatusEnums } from "features/RentWorks/components/Settings/common";
 
 export default function ConnectionButton({
   userData,

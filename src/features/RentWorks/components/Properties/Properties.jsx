@@ -38,6 +38,7 @@ import {
   useDeletePropertyByIdMutation,
   useGetPropertiesByUserIdQuery,
 } from "features/Api/propertiesApi";
+import { useLazyGetRentsByPropertyIdWithFiltersQuery } from "features/Api/rentApi";
 import { AddPropertyTextString } from "features/RentWorks/common/constants";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
 import AddProperty from "features/RentWorks/components/AddProperty/AddProperty";
@@ -70,6 +71,11 @@ export default function Properties() {
   const { data: userData } = useGetUserDataByIdQuery(user?.uid, {
     skip: !user?.uid,
   });
+
+  const [
+    triggerGetRents,
+    { data: rentDetails = [], isLoading: isRentDetailsLoading },
+  ] = useLazyGetRentsByPropertyIdWithFiltersQuery();
 
   const [createProperty] = useCreatePropertyMutation();
   const [deleteProperty] = useDeletePropertyByIdMutation();
@@ -159,7 +165,16 @@ export default function Properties() {
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreRounded />}
-                onClick={() => handleExpand(property.id)}
+                onClick={() => {
+                  if (property?.id) {
+                    handleExpand(property.id);
+                    triggerGetRents({
+                      propertyId: property?.id,
+                      tenantEmails: property?.rentees,
+                      rentMonth: dayjs().format("MMMM"),
+                    });
+                  }
+                }}
               >
                 <Stack flexGrow={1} spacing={0.5}>
                   <Stack direction="row" spacing={1} alignItems="flex-start">
@@ -225,7 +240,11 @@ export default function Properties() {
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>
-                <ViewPropertyAccordionDetails property={property} />
+                <ViewPropertyAccordionDetails
+                  property={property}
+                  rentDetails={rentDetails}
+                  isRentDetailsLoading={isRentDetailsLoading}
+                />
               </AccordionDetails>
             </Accordion>
           ))

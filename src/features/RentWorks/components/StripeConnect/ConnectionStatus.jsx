@@ -1,6 +1,6 @@
 import { ErrorOutlineRounded, LinkOffRounded } from "@mui/icons-material";
 import { Chip, IconButton, Tooltip } from "@mui/material";
-import { StripeUserStatusEnums } from "src/features/RentWorks/components/Settings/common";
+import { StripeUserStatusEnums } from "features/RentWorks/components/Settings/common";
 
 export default function ConnectionStatus({
   stripeAlert,

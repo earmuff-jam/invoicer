@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
-import FeatureSection from "src/features/Layout/components/Landing/FeatureSection";
-import HeroSection from "src/features/Layout/components/Landing/HeroSection";
-import HowItWorks from "src/features/Layout/components/Landing/HowItWorks";
-import Testimonials from "src/features/Layout/components/Landing/Testimonials";
-import { useAppTitle } from "src/hooks/useAppTitle";
+import FeatureSection from "features/Layout/components/Landing/FeatureSection";
+import HeroSection from "features/Layout/components/Landing/HeroSection";
+import HowItWorks from "features/Layout/components/Landing/HowItWorks";
+import Testimonials from "features/Layout/components/Landing/Testimonials";
+import { useAppTitle } from "hooks/useAppTitle";
 
 export default function Overview() {
   useAppTitle("Home");

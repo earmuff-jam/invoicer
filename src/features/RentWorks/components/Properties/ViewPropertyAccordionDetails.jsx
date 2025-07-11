@@ -25,11 +25,20 @@ import {
 import AButton from "common/AButton";
 import EmptyComponent from "common/EmptyComponent";
 import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
-import { updateDateTime } from "features/RentWorks/common/utils";
+import {
+  getCurrentMonthRent,
+  getRentStatus,
+  isRentDue,
+  updateDateTime,
+} from "features/RentWorks/common/utils";
 import QuickConnectMenu from "features/RentWorks/components/QuickConnect/QuickConnectMenu";
 import { handleQuickConnectAction } from "features/RentWorks/components/Settings/TemplateProcessor";
 
-const ViewPropertyAccordionDetails = ({ property }) => {
+const ViewPropertyAccordionDetails = ({
+  property,
+  rentDetails,
+  isRentDetailsLoading,
+}) => {
   const navigate = useNavigate();
 
   const { data: tenants = [], isLoading } = useGetTenantByPropertyIdQuery(
@@ -84,25 +93,29 @@ const ViewPropertyAccordionDetails = ({ property }) => {
     handleQuickConnectAction(action, property, tenants, templates);
   };
 
-  if (isLoading) return <Skeleton height="10rem" />;
+  if (isLoading || isRentDetailsLoading) return <Skeleton height="10rem" />;
 
   if (!tenants || tenants.length === 0) {
     return <EmptyComponent caption="Add tenants to begin." />;
   }
 
-  const isLate =
-    dayjs().isAfter(dayjs(primaryTenantDetails.dueDate)) &&
-    !primaryTenantDetails.isPaid;
-  const statusColor = primaryTenantDetails.isPaid
-    ? "success"
-    : isLate
-      ? "error"
-      : "warning";
-  const statusLabel = primaryTenantDetails.isPaid
-    ? "Paid"
-    : isLate
-      ? "Overdue"
-      : "Unpaid";
+  const currentMonthRent = getCurrentMonthRent(
+    rentDetails,
+    primaryTenantDetails.email,
+  );
+
+  const isDue = isRentDue(
+    primaryTenantDetails.start_date,
+    Number(primaryTenantDetails?.grace_period),
+    currentMonthRent,
+  );
+
+  const isLate = rentDetails?.length > 0 && isDue;
+
+  const { color: statusColor, label: statusLabel } = getRentStatus({
+    isPaid: currentMonthRent.length > 0, // if currentMonthRent exists, rent must be paid
+    isLate,
+  });
 
   return (
     <Stack spacing={2}>

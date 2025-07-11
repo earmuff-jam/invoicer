@@ -23,7 +23,7 @@ import RowHeader from "common/RowHeader/RowHeader";
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useLazyGetRentByMonthQuery } from "features/Api/rentApi";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
-import { useGenerateStripeCheckoutSession } from "src/features/RentWorks/hooks/useGenerateStripeCheckoutSession";
+import { useGenerateStripeCheckoutSession } from "features/RentWorks/hooks/useGenerateStripeCheckoutSession";
 
 export default function PropertyOwnerInfoCard({
   isViewingRental = false,
@@ -43,8 +43,6 @@ export default function PropertyOwnerInfoCard({
 
   const { generateStripeCheckoutSession } = useGenerateStripeCheckoutSession();
 
-  // need to check if a property owner without stripe can pay or not
-  // console.log(owner, owner?.stripeAccountIsActive);
   const isStripeConnectedAndValid =
     isViewingRental && owner?.stripeAccountIsActive;
 

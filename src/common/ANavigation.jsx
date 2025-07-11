@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect } from "react";
+
 import { useLocation } from "react-router-dom";
 
 import dayjs from "dayjs";
+
 import { addDoc, collection } from "firebase/firestore";
+import { useFetchUserIp } from "hooks/useFetchIp";
 import { analyticsFirestore } from "src/config";
-import { useFetchUserIp } from "src/hooks/useFetchIp";
 
 /**
  * NavigationProvider ...

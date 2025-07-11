@@ -36,6 +36,7 @@ export const propertiesApi = createApi({
       providesTags: ["properties"],
     }),
 
+    // fetches properties by createdBy userId
     getPropertiesByUserId: builder.query({
       async queryFn(userId) {
         try {
@@ -61,6 +62,7 @@ export const propertiesApi = createApi({
       providesTags: ["properties"],
     }),
 
+    // creates a new property in the system
     createProperty: builder.mutation({
       async queryFn(property) {
         try {
@@ -79,6 +81,7 @@ export const propertiesApi = createApi({
       invalidatesTags: ["properties"],
     }),
 
+    // updates a selected property by data
     updatePropertyById: builder.mutation({
       async queryFn(data) {
         try {
@@ -97,6 +100,7 @@ export const propertiesApi = createApi({
       invalidatesTags: ["properties"],
     }),
 
+    // removes a property by id
     deletePropertyById: builder.mutation({
       async queryFn(uid) {
         try {

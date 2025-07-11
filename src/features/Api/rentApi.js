@@ -35,10 +35,43 @@ export const rentApi = createApi({
       },
       providesTags: ["rent"],
     }),
-    // get rental information by property id
+    // fetches rents by property id and currentUserEmail
+    // currentUserEmail must either be a tenant or a property owner to view data
     getRentsByPropertyId: builder.query({
-      async queryFn(propertyId) {
+      async queryFn({ propertyId, currentUserEmail }) {
         try {
+          const propertyDoc = await getDoc(doc(db, "properties", propertyId));
+
+          if (!propertyDoc.exists()) {
+            return {
+              error: {
+                message: "Property not found",
+                code: "not-found",
+              },
+            };
+          }
+
+          const propertyData = propertyDoc.data();
+
+          const isOwner =
+            propertyData.owner_email?.toLowerCase() ===
+            currentUserEmail?.toLowerCase();
+          const isRentee = (propertyData.rentees || []).some(
+            (email) => email.toLowerCase() === currentUserEmail?.toLowerCase(),
+          );
+
+          // Step 2: Enforce access control
+          if (!isOwner && !isRentee) {
+            return {
+              error: {
+                message:
+                  "Access denied: Not a property owner or current tenant.",
+                code: "forbidden",
+              },
+            };
+          }
+
+          // Step 3: Fetch rents
           const q = query(
             collection(db, "rents"),
             where("propertyId", "==", propertyId),
@@ -46,6 +79,7 @@ export const rentApi = createApi({
 
           const querySnapshot = await getDocs(q);
           const rents = [];
+
           querySnapshot.forEach((doc) => {
             rents.push({ id: doc.id, ...doc.data() });
           });
@@ -62,7 +96,50 @@ export const rentApi = createApi({
       },
       providesTags: ["rent"],
     }),
-    // get rental information by property id
+    // Get rent records by property ID, tenant list, and current rent month.
+    // all filters are required by default
+    getRentsByPropertyIdWithFilters: builder.query({
+      async queryFn({ propertyId, tenantEmails = [], rentMonth }) {
+        try {
+          const q = query(
+            collection(db, "rents"),
+            where("propertyId", "==", propertyId),
+          );
+
+          const querySnapshot = await getDocs(q);
+          const rents = [];
+
+          const tenantEmailSet = new Set(
+            tenantEmails.map((email) => email.toLowerCase()),
+          );
+          const targetMonth = rentMonth.toLowerCase();
+
+          querySnapshot.forEach((doc) => {
+            const rent = { id: doc.id, ...doc.data() };
+
+            const emailMatch = tenantEmailSet.has(
+              rent.tenantEmail?.toLowerCase() ?? "",
+            );
+            const monthMatch = rent.rentMonth?.toLowerCase?.() === targetMonth;
+
+            if (emailMatch && monthMatch) {
+              rents.push(rent);
+            }
+          });
+
+          return { data: rents };
+        } catch (error) {
+          return {
+            error: {
+              message: error.message,
+              code: error.code,
+            },
+          };
+        }
+      },
+      providesTags: ["rent"],
+    }),
+    // get rental information by property id for a specific month
     getRentByMonth: builder.query({
       async queryFn({ propertyId, rentMonth }) {
         try {
@@ -146,6 +223,7 @@ export const rentApi = createApi({
 export const {
   useGetRentByIdQuery,
   useGetRentsByPropertyIdQuery,
+  useLazyGetRentsByPropertyIdWithFiltersQuery,
   useLazyGetRentByMonthQuery,
   useCreateRentRecordMutation,
 } = rentApi;

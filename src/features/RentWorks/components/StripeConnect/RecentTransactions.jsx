@@ -7,7 +7,7 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
-import EmptyComponent from "src/common/EmptyComponent";
+import EmptyComponent from "common/EmptyComponent";
 
 export default function RecentTransactions({ transactions = [], loading }) {
   return (

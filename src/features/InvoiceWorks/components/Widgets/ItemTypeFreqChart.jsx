@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { Bar } from "react-chartjs-2";
 
 import { Stack } from "@mui/material";
@@ -12,10 +13,10 @@ import {
   Tooltip,
 } from "chart.js";
 import EmptyComponent from "common/EmptyComponent";
-import RowHeader from "src/common/RowHeader/RowHeader";
+import RowHeader from "common/RowHeader/RowHeader";
 import { normalizeInvoiceItemTypeChartDataset } from "features/InvoiceWorks/components/Widgets/utils";
 
-normalizeInvoiceItemTypeChartDataset
+normalizeInvoiceItemTypeChartDataset;
 
 ChartJS.register(
   CategoryScale,

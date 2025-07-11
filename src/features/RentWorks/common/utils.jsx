@@ -2,6 +2,7 @@
  * Utility file for properties
  */
 import dayjs from "dayjs";
+
 import { getAuth, signOut } from "firebase/auth";
 import { authenticatorConfig } from "src/config";
 
@@ -151,3 +152,75 @@ export const getOccupancyRate = (property, tenants, isAnyTenantSoR) => {
     return tenants?.length;
   }
 };
+
+/**
+ * isRentLate ...
+ *
+ * fn used to determine if the rent is due
+ * @param {string} start_date - the string representation of the start date in ISO format
+ * @returns boolean value of true / false
+ */
+/**
+ * Checks if rent is currently due.
+ *
+ * @param {string} startDate - The lease start date in MM-DD-YYYY format.
+ * @param {number} gracePeriodDays - Number of grace days before rent is due each month.
+ * @param {Array} currentMonthRent - Rent details if exists, for the current month.
+ *
+ * @returns {boolean} - True if rent is currently due.
+ */
+export const isRentDue = (
+  startDate,
+  gracePeriod = 3,
+  currentMonthRent = [],
+) => {
+  const today = dayjs();
+  const leaseStart = dayjs(startDate, "MM-DD-YYYY");
+
+  if (today.isBefore(leaseStart, "day")) return false;
+
+  const graceDate = today.startOf("month").add(gracePeriod, "day");
+  const pastGracePeriod = today.isAfter(graceDate, "day");
+
+  const currentMonth = today.format("MMMM");
+  const rentPaid = currentMonthRent.some(
+    (r) => r.rentMonth === currentMonth && r.status?.toLowerCase() === "paid",
+  );
+
+  return pastGracePeriod && !rentPaid;
+};
+
+/**
+ * getRentStatus ...
+ *
+ * function used to get the rent status
+ * @param {Object} { isPaid, isLate } - object containing these values
+ * @returns Object containing the color and label. Eg, { color: "warning", label: "Unpaid" }
+ */
+export function getRentStatus({ isPaid, isLate }) {
+  console.log(isPaid, isLate);
+  if (isPaid) return { color: "success", label: "Paid" };
+  if (isLate) return { color: "error", label: "Overdue" };
+  return { color: "warning", label: "Unpaid" };
+}
+
+
+/**
+ * getCurrentMonthRent ...
+ * 
+ * fn used to get the current month rent.
+ * 
+ * @param {Array} allRents - list of all the rents for the given property 
+ * @param {string} tenantEmail - the email address of the tenant  
+ * @returns current month rent
+ */
+export function getCurrentMonthRent(allRents, tenantEmail) {
+  const currentMonth = dayjs().format("MMMM"); // e.g. "July"
+
+  return allRents.filter(
+    (rent) =>
+      rent.rentMonth === currentMonth &&
+      rent.status?.toLowerCase() === "paid" &&
+      rent.tenantEmail?.toLowerCase() === tenantEmail.toLowerCase()
+  );
+}

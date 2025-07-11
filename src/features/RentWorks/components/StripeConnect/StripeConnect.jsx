@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import dayjs from "dayjs";
+
 import {
   CheckRounded,
   HelpOutlineRounded,
@@ -20,7 +22,6 @@ import {
   Typography,
 } from "@mui/material";
 import RowHeader from "common/RowHeader/RowHeader";
-import dayjs from "dayjs";
 import {
   useGetUserDataByIdQuery,
   useUpdateUserByUidMutation,
@@ -30,17 +31,17 @@ import {
   PropertyOwnerStripeAccountType,
   StripeUserStatusEnums,
   getStripeFailureReasons,
-} from "src/features/RentWorks/components/Settings/common";
-import ConnectionAlert from "src/features/RentWorks/components/StripeConnect/ConnectionAlert";
-import ConnectionButton from "src/features/RentWorks/components/StripeConnect/ConnectionButton";
-import ConnectionStatus from "src/features/RentWorks/components/StripeConnect/ConnectionStatus";
-import RecentTransactions from "src/features/RentWorks/components/StripeConnect/RecentTransactions";
-import { useCheckStripeAccountStatus } from "src/features/RentWorks/hooks/useCheckStripeAccountStatus";
+} from "features/RentWorks/components/Settings/common";
+import ConnectionAlert from "features/RentWorks/components/StripeConnect/ConnectionAlert";
+import ConnectionButton from "features/RentWorks/components/StripeConnect/ConnectionButton";
+import ConnectionStatus from "features/RentWorks/components/StripeConnect/ConnectionStatus";
+import RecentTransactions from "features/RentWorks/components/StripeConnect/RecentTransactions";
+import { useCheckStripeAccountStatus } from "features/RentWorks/hooks/useCheckStripeAccountStatus";
 import {
   useCreateLoginLinkStripeAccount,
   useCreateStripeAccount,
   useCreateStripeAccountLink,
-} from "src/features/RentWorks/hooks/useStripe";
+} from "features/RentWorks/hooks/useStripe";
 
 export default function StripeConnect() {
   const user = fetchLoggedInUser();

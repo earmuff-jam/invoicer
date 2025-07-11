@@ -1,6 +1,6 @@
 import TextFieldWithLabel from "./TextFieldWithLabel";
 import { Container, Stack, Typography } from "@mui/material";
-import AButton from "src/common/AButton";
+import AButton from "common/AButton";
 
 export default function UserInfoViewer({
   title,

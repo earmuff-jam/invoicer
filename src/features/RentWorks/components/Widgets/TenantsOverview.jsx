@@ -9,10 +9,10 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import AButton from "src/common/AButton";
-import EmptyComponent from "src/common/EmptyComponent";
-import RowHeader from "src/common/RowHeader/RowHeader";
-import Tenants from "src/features/RentWorks/components/Widgets/Tenants";
+import AButton from "common/AButton";
+import EmptyComponent from "common/EmptyComponent";
+import RowHeader from "common/RowHeader/RowHeader";
+import Tenants from "features/RentWorks/components/Widgets/Tenants";
 
 export default function TenantsOverview({
   property,
