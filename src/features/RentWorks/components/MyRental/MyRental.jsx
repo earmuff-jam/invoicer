@@ -26,12 +26,8 @@ import {
   useGetTenantByPropertyIdQuery,
 } from "features/Api/tenantsApi";
 import PropertyOwnerInfoCard from "features/RentWorks/common/PropertyOwnerInfoCard";
-import {
-  derieveTotalRent,
-  fetchLoggedInUser,
-  formatCurrency,
-  getOccupancyRate,
-} from "features/RentWorks/common/utils";
+import PropertyStatistics from "features/RentWorks/common/PropertyStatistics";
+import { fetchLoggedInUser } from "features/RentWorks/common/utils";
 import DocumentsOverview from "features/RentWorks/components/Widgets/DocumentsOverview";
 import FinancialOverview from "features/RentWorks/components/Widgets/FinancialOverview";
 import RentalPaymentOverview from "features/RentWorks/components/Widgets/RentalPaymentOverview";
@@ -128,74 +124,12 @@ const MyRental = () => {
           </Stack>
         )}
         {/* Property Stats */}
-        <Grid container spacing={3} sx={{ mt: 2 }}>
-          <Grid item xs={12} sm={6} md={3}>
-            {isPropertyLoading ? (
-              <Skeleton height="5rem" />
-            ) : (
-              <Card variant="outlined">
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography variant="h4" color="primary">
-                    {property?.units}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {isAnyTenantSoR ? "Total Units" : "Total Bedrooms"}
-                  </Typography>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {isPropertyLoading ? (
-              <Skeleton height="5rem" />
-            ) : (
-              <Card variant="outlined">
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography variant="h4" color="primary">
-                    {tenants?.length}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {isAnyTenantSoR ? "Occupied Units" : "Occupied Home"}
-                  </Typography>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {isPropertyLoading ? (
-              <Skeleton height="5rem" />
-            ) : (
-              <Card variant="outlined">
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography variant="h4" color="success.main">
-                    {getOccupancyRate(property, tenants, isAnyTenantSoR)}%
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Occupancy Rate
-                  </Typography>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            {isPropertyLoading ? (
-              <Skeleton height="5rem" />
-            ) : (
-              <Card variant="outlined">
-                <CardContent sx={{ textAlign: "center" }}>
-                  <Typography variant="h4" color="success.main">
-                    {formatCurrency(
-                      derieveTotalRent(property, tenants, isAnyTenantSoR),
-                    )}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Monthly Revenue
-                  </Typography>
-                </CardContent>
-              </Card>
-            )}
-          </Grid>
-        </Grid>
+        <PropertyStatistics
+          property={property}
+          isPropertyLoading={isPropertyLoading}
+          isAnyTenantSoR={isAnyTenantSoR}
+          tenants={tenants}
+        />
       </Paper>
 
       <Grid container spacing={3}>

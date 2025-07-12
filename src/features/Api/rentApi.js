@@ -58,9 +58,6 @@ export const rentApi = createApi({
             (email) => email === currentUserEmail,
           );
 
-          console.log(currentUserEmail, isOwner, isRentee);
-
-          // Step 2: Enforce access control
           if (!isOwner && !isRentee) {
             return {
               error: {
@@ -71,7 +68,6 @@ export const rentApi = createApi({
             };
           }
 
-          // Step 3: Fetch rents
           const q = query(
             collection(db, "rents"),
             where("propertyId", "==", propertyId),

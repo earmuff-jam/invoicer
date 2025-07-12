@@ -436,7 +436,7 @@ export default function AssociateTenantPopup({
       </Stack>
 
       <Button
-        variant="text"
+        variant="outlined"
         onClick={handleSubmitAssociation}
         disabled={isSubmitAssociationDisabled()}
       >

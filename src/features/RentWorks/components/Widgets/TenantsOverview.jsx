@@ -31,7 +31,7 @@ export default function TenantsOverview({
           <Stack direction="row" spacing={2} alignItems="center">
             <Box>
               {tenants.length !== 0 ? (
-                <Tooltip title="total tenants">
+                <Tooltip title="Total number of currently active tenants">
                   <Badge badgeContent={tenants.length} color="textSecondary">
                     <Typography
                       variant="h6"
@@ -49,7 +49,7 @@ export default function TenantsOverview({
             </Box>
             <RowHeader
               title="Tenants"
-              caption="Tenant details"
+              caption={`Active tenants for ${property?.name}`}
               sxProps={{
                 alignItems: "flex-start",
                 color: "text.secondary",

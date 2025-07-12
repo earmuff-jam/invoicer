@@ -160,15 +160,17 @@ export default function PropertyOwnerInfoCard({
                       {owner?.email}
                     </Typography>
                   </Stack>
-                  <Tooltip title="Send Email">
-                    <IconButton
-                      sx={{ scale: 0.875 }}
-                      href={`mailto:${owner?.email}`}
-                      target="_blank"
-                    >
-                      <EmailRounded fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
+                  {isViewingRental && (
+                    <Tooltip title="Send Email">
+                      <IconButton
+                        sx={{ scale: 0.875 }}
+                        href={`mailto:${owner?.email}`}
+                        target="_blank"
+                      >
+                        <EmailRounded fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
                 </Stack>
               </Box>
             </Box>

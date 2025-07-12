@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 import { Card, CardContent, Skeleton, Stack } from "@mui/material";
 import RowHeader from "common/RowHeader/RowHeader";
 import { useGetRentsByPropertyIdQuery } from "features/Api/rentApi";
