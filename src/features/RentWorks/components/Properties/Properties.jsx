@@ -35,8 +35,8 @@ import RowHeader from "common/RowHeader/RowHeader";
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import {
   useCreatePropertyMutation,
-  useDeletePropertyByIdMutation,
   useGetPropertiesByUserIdQuery,
+  useUpdatePropertyByIdMutation,
 } from "features/Api/propertiesApi";
 import { useLazyGetRentsByPropertyIdWithFiltersQuery } from "features/Api/rentApi";
 import { AddPropertyTextString } from "features/RentWorks/common/constants";
@@ -78,7 +78,7 @@ export default function Properties() {
   ] = useLazyGetRentsByPropertyIdWithFiltersQuery();
 
   const [createProperty] = useCreatePropertyMutation();
-  const [deleteProperty] = useDeletePropertyByIdMutation();
+  const [updateProperty] = useUpdatePropertyByIdMutation();
 
   const {
     register,
@@ -100,7 +100,12 @@ export default function Properties() {
 
   const handleDelete = async (propertyId) => {
     if (!propertyId) return;
-    await deleteProperty(propertyId);
+    await updateProperty({
+      id: propertyId,
+      isDeleted: true,
+      updatedBy: user?.uid,
+      updatedOn: dayjs().toISOString(),
+    }).unwrap();
     setShowSnackbar(true);
   };
 
@@ -116,6 +121,7 @@ export default function Properties() {
     const result = {
       ...data,
       id: uuidv4(),
+      isDeleted: false,
       createdBy: user?.uid,
       createdOn: dayjs().toISOString(),
       updatedBy: user?.uid,

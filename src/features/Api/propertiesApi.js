@@ -36,13 +36,15 @@ export const propertiesApi = createApi({
       providesTags: ["properties"],
     }),
 
-    // fetches properties by createdBy userId
+    // retrieves a list of properties created by the
+    // passed in userId; filters deleted properties
     getPropertiesByUserId: builder.query({
       async queryFn(userId) {
         try {
           const q = query(
             collection(db, "properties"),
             where("createdBy", "==", userId),
+            where("isDeleted", "==", false),
           );
           const querySnapshot = await getDocs(q);
           const properties = [];
@@ -99,25 +101,6 @@ export const propertiesApi = createApi({
       },
       invalidatesTags: ["properties"],
     }),
-
-    // removes a property by id
-    deletePropertyById: builder.mutation({
-      async queryFn(uid) {
-        try {
-          const propertyRef = doc(db, "properties", uid);
-          await deleteDoc(propertyRef);
-          return { data: { uid } };
-        } catch (error) {
-          return {
-            error: {
-              message: error.message,
-              code: error.code,
-            },
-          };
-        }
-      },
-      invalidatesTags: ["properties"],
-    }),
   }),
 });
 
@@ -126,5 +109,4 @@ export const {
   useGetPropertiesByUserIdQuery,
   useCreatePropertyMutation,
   useUpdatePropertyByIdMutation,
-  useDeletePropertyByIdMutation,
 } = propertiesApi;
