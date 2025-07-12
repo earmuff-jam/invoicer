@@ -3,7 +3,6 @@
  *
  * Used to create common minor functions that can be re-used across the application
  */
-
 import { Typography } from "@mui/material";
 
 /**

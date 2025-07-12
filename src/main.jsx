@@ -1,11 +1,12 @@
 import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
-import { CssBaseline, Dialog, ThemeProvider } from "@mui/material";
-import "./main.css";
-import App from "./App";
-import { lightTheme } from "common/Theme";
 import { Provider } from "react-redux";
+
+import App from "./App";
+import "./main.css";
 import { store } from "./store";
+import { CssBaseline, Dialog, ThemeProvider } from "@mui/material";
+import { lightTheme } from "common/Theme";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
@@ -15,5 +16,5 @@ createRoot(document.getElementById("root")).render(
         <App />
       </Suspense>
     </ThemeProvider>
-  </Provider>
+  </Provider>,
 );

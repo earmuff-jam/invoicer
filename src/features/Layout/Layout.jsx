@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 
+import { Outlet, matchPath, useLocation } from "react-router-dom";
+
+import { InfoRounded } from "@mui/icons-material";
 import {
   Box,
   Checkbox,
@@ -15,25 +18,17 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-
-import { InfoRounded } from "@mui/icons-material";
-
-import { matchPath, Outlet, useLocation } from "react-router-dom";
-
-import { NavigationProvider } from "common/ANavigation";
-
-import AButton from "common/AButton";
 import { useTour } from "@reactour/tour";
-import NavBar from "features/Layout/NavBar";
-import Footer from "features/Footer/Footer";
-
+import AButton from "common/AButton";
+import { NavigationProvider } from "common/ANavigation";
 import {
   DefaultTourStepsMapperObj,
   GeneratedTourSteps,
 } from "common/Tour/TourSteps";
-
-import AppToolbar from "features/Layout/AppToolbar";
-import BreadCrumbs from "features/Layout/BreadCrumbs";
+import AppToolbar from "features/Layout/components/AppToolbar/AppToolbar";
+import BreadCrumbs from "features/Layout/components/AppToolbar/BreadCrumbs";
+import Footer from "features/Layout/components/Footer/Footer";
+import NavBar from "features/Layout/components/NavBar/NavBar";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -56,7 +51,7 @@ export default function Layout({
   const location = useLocation();
   const currentUri = location?.pathname || "";
   const currentRoute = routes.find((route) =>
-    matchPath(route.path, currentUri)
+    matchPath(route.path, currentUri),
   );
 
   const { setIsOpen, setCurrentStep, setSteps } = useTour();
@@ -67,7 +62,7 @@ export default function Layout({
   const [dialog, setDialog] = useState(defaultDialog);
 
   const [openDrawer, setOpenDrawer] = useState(
-    smScreenSizeAndHigher ? true : false
+    smScreenSizeAndHigher ? true : false,
   );
 
   const closeDialog = () => setDialog(defaultDialog);
@@ -81,7 +76,7 @@ export default function Layout({
 
     const formattedDraftTourSteps = GeneratedTourSteps.slice(
       currentTourEl.start,
-      currentTourEl.end
+      currentTourEl.end,
     );
 
     setIsOpen(true);

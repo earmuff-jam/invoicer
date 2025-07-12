@@ -14,23 +14,48 @@ import {
   SettingsRounded,
   WhatshotRounded,
 } from "@mui/icons-material";
+import {
+  OwnerRole,
+  TenantRole,
+} from "features/Layout/components/Landing/constants";
 
-import { OwnerRole, TenantRole } from "features/Landing/constants";
+const Overview = lazy(
+  () => import("features/Layout/components/Landing/Overview"),
+);
+const Dashboard = lazy(
+  () => import("features/InvoiceWorks/components/Dashboard/Dashboard"),
+);
+const PdfViewer = lazy(
+  () => import("features/InvoiceWorks/components/PdfViewer/PdfViewer"),
+);
+const EditPdf = lazy(
+  () => import("features/InvoiceWorks/components/PdfViewer/EditPdf"),
+);
+const SenderInfo = lazy(
+  () => import("features/InvoiceWorks/components/SenderInfo/SenderInfo"),
+);
+const RecieverInfo = lazy(
+  () => import("features/InvoiceWorks/components/RecieverInfo/RecieverInfo"),
+);
+const FaqSection = lazy(
+  () => import("features/Layout/components/HelpAndSupport/FaqSection"),
+);
+const ReleaseNotes = lazy(
+  () => import("features/Layout/components/HelpAndSupport/ReleaseNotes"),
+);
 
-const Overview = lazy(() => import("features/Landing/Overview"));
-const Dashboard = lazy(() => import("features/Dashboard/Dashboard"));
-const PdfViewer = lazy(() => import("features/PdfViewer/PdfViewer"));
-
-const EditPdf = lazy(() => import("features/PdfViewer/EditPdf"));
-const SenderInfo = lazy(() => import("features/SenderInfo/SenderInfo"));
-const RecieverInfo = lazy(() => import("features/RecieverInfo/RecieverInfo"));
-const FaqSection = lazy(() => import("features/HelpAndSupport/FaqSection"));
-const ReleaseNotes = lazy(() => import("features/HelpAndSupport/ReleaseNotes"));
-
-const Properties = lazy(() => import("features/Properties/Properties"));
-const Property = lazy(() => import("features/Properties/Property"));
-const MyRental = lazy(() => import("features/Properties/MyRental"));
-const Settings = lazy(() => import("features/Settings/Settings"));
+const Properties = lazy(
+  () => import("features/RentWorks/components/Properties/Properties"),
+);
+const Property = lazy(
+  () => import("features/RentWorks/components/Property/Property"),
+);
+const MyRental = lazy(
+  () => import("features/RentWorks/components/MyRental/MyRental"),
+);
+const Settings = lazy(
+  () => import("features/RentWorks/components/Settings/Settings"),
+);
 
 /**
  * InvoicerRoutes

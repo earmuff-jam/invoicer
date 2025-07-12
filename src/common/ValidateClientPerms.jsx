@@ -1,4 +1,5 @@
 import { Route } from "react-router-dom";
+
 import AuthenticationProvider from "features/Auth/AuthenticationProvider";
 
 /**

@@ -45,7 +45,6 @@ git push origin tags
 
 ```
 
-
 ### Steps to invoke the deployment approach
 
 1. Navigate to the CI pipeline.
@@ -73,7 +72,6 @@ git push origin v1.3.0-rc1
 
 ```
 
-
 ### Steps to invoke a patch release / update existing release
 
 1. First thing first, make PR and merge that PR into main.
@@ -98,8 +96,8 @@ this patch into v1.3.0. We have a v1.3.0-rc1. Since we are targeting the release
 git tag | grep v1.3
 
 ```
-This lists all major | minor version of the application.
 
+This lists all major | minor version of the application.
 
 5. Checkout the latest release. Create a +1 branch from there.
 
@@ -111,8 +109,7 @@ git checkout -b t1.3.0-rc2 <!-- creating new +1 tag -->
 git push -u origin/t1.3.0-rc2
 ```
 
-Generally, we do not push to the RC, we just create a new RC. So the above is a demonstration only. 
-
+Generally, we do not push to the RC, we just create a new RC. So the above is a demonstration only.
 
 6. Create a hotfix branch from here.
 

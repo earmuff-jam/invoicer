@@ -1,7 +1,7 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
 import { authenticatorFirestore as db } from "src/config";
-import { TenantRole } from "src/features/Landing/constants";
+import { TenantRole } from "src/features/Layout/components/Landing/constants";
 
 export const firebaseUserApi = createApi({
   reducerPath: "firebaseUserApi",
@@ -52,7 +52,7 @@ export const firebaseUserApi = createApi({
           };
         }
       },
-      providesTags: (result, error, uid) => [{ type: "User", id: uid }],
+      providesTags: ["User"],
     }),
     // create user in users db
     createUser: builder.mutation({
@@ -72,6 +72,7 @@ export const firebaseUserApi = createApi({
           };
         }
       },
+      invalidatesTags: ["User"],
     }),
 
     // update user in users db
@@ -90,7 +91,7 @@ export const firebaseUserApi = createApi({
           };
         }
       },
-      invalidatesTags: (result, error, { uid }) => [{ type: "User", id: uid }],
+      invalidatesTags: ["User"],
     }),
   }),
 });
@@ -100,4 +101,5 @@ export const {
   useGetUserDataByIdQuery,
   useCreateUserMutation,
   useUpdateUserByUidMutation,
+  useLazyGetUserDataByIdQuery,
 } = firebaseUserApi;
