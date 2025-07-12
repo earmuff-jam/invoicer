@@ -52,7 +52,7 @@ const ViewRentalPaymentSummary = ({ rentData = [] }) => {
         header: "Paid On",
         size: 150,
         Cell: ({ cell }) =>
-          cell.getValue() ? dayjs(cell.getValue()).fromNow() : "-",
+          cell.getValue() ? dayjs(cell.getValue()).format() : "-",
       },
     ],
     [],
