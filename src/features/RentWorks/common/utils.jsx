@@ -6,6 +6,9 @@ import dayjs from "dayjs";
 import { getAuth, signOut } from "firebase/auth";
 import { authenticatorConfig } from "src/config";
 
+// enum values
+export const PaidRentStatusEnumValue = "paid";
+
 /**
  * Email Validators
  */
@@ -169,11 +172,8 @@ export const getOccupancyRate = (property, tenants, isAnyTenantSoR) => {
  *
  * @returns {boolean} - True if rent is currently due.
  */
-export const isRentDue = (
-  startDate,
-  gracePeriod = 3,
-  currentMonthRent = [],
-) => {
+
+export const isRentDue = (startDate, gracePeriod = 3, currentMonthRent) => {
   const today = dayjs();
   const leaseStart = dayjs(startDate, "MM-DD-YYYY");
 
@@ -183,10 +183,9 @@ export const isRentDue = (
   const pastGracePeriod = today.isAfter(graceDate, "day");
 
   const currentMonth = today.format("MMMM");
-  const rentPaid = currentMonthRent.some(
-    (r) => r.rentMonth === currentMonth && r.status?.toLowerCase() === "paid",
-  );
-
+  const rentPaid =
+    currentMonthRent?.rentMonth === currentMonth &&
+    currentMonthRent.status?.toLowerCase() === "paid";
   return pastGracePeriod && !rentPaid;
 };
 
@@ -198,29 +197,24 @@ export const isRentDue = (
  * @returns Object containing the color and label. Eg, { color: "warning", label: "Unpaid" }
  */
 export function getRentStatus({ isPaid, isLate }) {
-  console.log(isPaid, isLate);
   if (isPaid) return { color: "success", label: "Paid" };
   if (isLate) return { color: "error", label: "Overdue" };
   return { color: "warning", label: "Unpaid" };
 }
 
-
 /**
- * getCurrentMonthRent ...
- * 
+ * getCurrentMonthPaidRent ...
+ *
  * fn used to get the current month rent.
- * 
- * @param {Array} allRents - list of all the rents for the given property 
- * @param {string} tenantEmail - the email address of the tenant  
- * @returns current month rent
+ *
+ * @param {Array} allRents - list of all the rents for the given property
+ * @returns {Object} - current month rent
  */
-export function getCurrentMonthRent(allRents, tenantEmail) {
+export function getCurrentMonthPaidRent(allRents = []) {
   const currentMonth = dayjs().format("MMMM"); // e.g. "July"
 
-  return allRents.filter(
+  return allRents.find(
     (rent) =>
-      rent.rentMonth === currentMonth &&
-      rent.status?.toLowerCase() === "paid" &&
-      rent.tenantEmail?.toLowerCase() === tenantEmail.toLowerCase()
+      rent.rentMonth === currentMonth && rent.status?.toLowerCase() === "paid",
   );
 }

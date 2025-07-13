@@ -73,7 +73,10 @@ export default function TenantsOverview({
         {isTenantsLoading ? (
           <Skeleton height="5rem" />
         ) : tenants.length === 0 ? (
-          <EmptyComponent caption="Associate tenants to begin." />
+          <EmptyComponent
+            caption="Associate tenants to begin."
+            sxProps={{ textTransform: "initial" }}
+          />
         ) : (
           <Tenants tenants={tenants || []} property={property} />
         )}

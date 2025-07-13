@@ -5,8 +5,6 @@ export default function TextFieldWithLabel({
   id,
   name,
   placeholder,
-  value,
-  handleChange,
   errorMsg,
   multiline = false,
   maxRows = 0,
@@ -29,8 +27,6 @@ export default function TextFieldWithLabel({
         id={id}
         name={name}
         placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
         variant="outlined"
         size="small"
         multiline={multiline}
@@ -38,7 +34,7 @@ export default function TextFieldWithLabel({
         error={Boolean(errorMsg?.length)}
         helperText={errorMsg}
         disabled={isDisabled}
-        {...inputProps} // spread register props here to support react hook forms
+        {...inputProps}
       />
     </Stack>
   );

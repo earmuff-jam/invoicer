@@ -118,6 +118,7 @@ export default function Properties() {
   };
 
   const onSubmit = async (data) => {
+
     const result = {
       ...data,
       id: uuidv4(),

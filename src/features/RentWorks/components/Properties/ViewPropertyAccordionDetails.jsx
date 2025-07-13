@@ -26,7 +26,8 @@ import AButton from "common/AButton";
 import EmptyComponent from "common/EmptyComponent";
 import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
 import {
-  getCurrentMonthRent,
+  PaidRentStatusEnumValue,
+  getCurrentMonthPaidRent,
   getRentStatus,
   isRentDue,
   updateDateTime,
@@ -99,10 +100,7 @@ const ViewPropertyAccordionDetails = ({
     return <EmptyComponent caption="Add tenants to begin." />;
   }
 
-  const currentMonthRent = getCurrentMonthRent(
-    rentDetails,
-    primaryTenantDetails.email,
-  );
+  const currentMonthRent = getCurrentMonthPaidRent(rentDetails);
 
   const isDue = isRentDue(
     primaryTenantDetails.start_date,
@@ -113,7 +111,7 @@ const ViewPropertyAccordionDetails = ({
   const isLate = rentDetails?.length > 0 && isDue;
 
   const { color: statusColor, label: statusLabel } = getRentStatus({
-    isPaid: currentMonthRent.length > 0, // if currentMonthRent exists, rent must be paid
+    isPaid: currentMonthRent?.status === PaidRentStatusEnumValue,
     isLate,
   });
 
