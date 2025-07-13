@@ -118,8 +118,7 @@ export const formatCurrency = (amt = 0) => {
  * @returns {Number} - amount of rent in US Dollars
  */
 export const derieveTotalRent = (property, tenants, isAnyTenantSoR) => {
-  const totalRent =
-    parseFloat(property?.rent) + parseFloat(property?.additional_rent); // can have additional charges
+  const totalRent = Number(property?.rent) + Number(property?.additional_rent); // can have additional charges
 
   if (isAnyTenantSoR) {
     return tenants.reduce(
@@ -152,7 +151,8 @@ export const getOccupancyRate = (property, tenants, isAnyTenantSoR) => {
     const occupiedUnits = tenants.length;
     return totalUnits > 0 ? Math.round((occupiedUnits / totalUnits) * 100) : 0;
   } else {
-    return tenants?.length;
+    // if !SoR, all tenants count as 1 household member. hence 100% occupancy rate
+    return tenants?.length > 0 ? 100 : 0;
   }
 };
 

@@ -36,7 +36,8 @@ export default function PropertyStatistics({
           <Card variant="outlined">
             <CardContent sx={{ textAlign: "center" }}>
               <Typography variant="h4" color="primary">
-                {tenants?.length}
+                {/* if !SoR, all tenants count as 1 household member */}
+                {isAnyTenantSoR ? tenants?.length : tenants?.length > 0 ? 1 : 0}
               </Typography>
               <Typography variant="body2" color="text.secondary">
                 {isAnyTenantSoR ? "Occupied Units" : "Occupied Home"}

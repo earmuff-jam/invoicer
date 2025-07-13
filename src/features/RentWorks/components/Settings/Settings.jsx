@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { Controller, useForm } from "react-hook-form";
+
 import dayjs from "dayjs";
 
 import {
@@ -36,10 +38,7 @@ import {
 import { OwnerRole } from "features/Layout/components/Landing/constants";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
 import { TabPanel } from "features/RentWorks/components/Settings/common";
-import {
-  BLANK_PROFILE_FORM_DATA,
-  defaultTemplateData,
-} from "features/RentWorks/components/Settings/constants";
+import { defaultTemplateData } from "features/RentWorks/components/Settings/constants";
 import StripeConnect from "features/RentWorks/components/StripeConnect/StripeConnect";
 import { useAppTitle } from "hooks/useAppTitle";
 
@@ -57,9 +56,23 @@ export default function OwnerSettingsPage() {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [templates, setTemplates] = useState(defaultTemplateData);
 
-  const [profileFormData, setProfileFormData] = useState(
-    BLANK_PROFILE_FORM_DATA,
-  );
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      first_name: "",
+      last_name: "",
+      phone: "",
+      street_address: "",
+      city: "",
+      state: "",
+      zipcode: "",
+    },
+  });
 
   const { data: userData, isLoading } = useGetUserDataByIdQuery(user?.uid, {
     skip: !user?.uid,
@@ -69,26 +82,6 @@ export default function OwnerSettingsPage() {
     setActiveTab(newValue);
   };
 
-  const handleChange = (ev) => {
-    const { id, value } = ev.target;
-    const updatedFormData = { ...profileFormData };
-    let errorMsg = "";
-
-    for (const validator of updatedFormData[id].validators) {
-      if (validator.validate(value)) {
-        errorMsg = validator.message;
-        break;
-      }
-    }
-
-    updatedFormData[id] = {
-      ...updatedFormData[id],
-      value,
-      errorMsg,
-    };
-    setProfileFormData(updatedFormData);
-  };
-
   const handleTemplateChange = (template, field) => (event) => {
     setTemplates((prev) => ({
       ...prev,
@@ -96,41 +89,17 @@ export default function OwnerSettingsPage() {
     }));
   };
 
-  const isDisabled = () => {
-    const containsErrors = Object.values(profileFormData).some(
-      (field) => field.errorMsg,
-    );
-    const requiredMissing = Object.values(profileFormData).some(
-      (field) => field.isRequired && field.value.trim() === "",
-    );
-    return containsErrors || requiredMissing;
-  };
-
-  const onSubmit = async (ev) => {
-    ev.preventDefault();
-
-    const draftData = Object.entries(profileFormData).reduce(
-      (acc, [key, valueObj]) => {
-        if (
-          [
-            "googleAccountLinkedAt",
-            "googleDisplayName",
-            "googleEmailAddress",
-            "googleLastLoginAt",
-            "googlePhotoURL",
-          ].includes(key)
-        ) {
-          acc[key] = valueObj;
-          return acc;
-        }
-        acc[key] = valueObj.value;
-        return acc;
-      },
-      {},
-    );
-
-    draftData["uid"] = user?.uid;
-    draftData["updatedOn"] = dayjs().toISOString();
+  const onSubmit = async (formData) => {
+    const draftData = {
+      ...formData,
+      googleAccountLinkedAt: userData?.googleAccountLinkedAt,
+      googleDisplayName: userData?.googleDisplayName,
+      googleEmailAddress: userData?.googleEmailAddress,
+      googleLastLoginAt: userData?.googleLastLoginAt,
+      googlePhotoURL: userData?.googlePhotoURL,
+      uid: user?.uid,
+      updatedOn: dayjs().toISOString(),
+    };
 
     try {
       await createUser(draftData).unwrap();
@@ -143,26 +112,17 @@ export default function OwnerSettingsPage() {
 
   useEffect(() => {
     if (userData) {
-      const draftProfileDetails = { ...BLANK_PROFILE_FORM_DATA };
-      draftProfileDetails.googleDisplayName = userData.googleDisplayName;
-      draftProfileDetails.googleEmailAddress = userData.googleEmailAddress;
-      draftProfileDetails.googlePhotoURL = userData.googlePhotoURL;
-      draftProfileDetails.googleAccountLinkedAt =
-        userData.googleAccountLinkedAt;
-      draftProfileDetails.googleLastLoginAt = userData.googleLastLoginAt;
-
-      draftProfileDetails.email.value = userData.googleEmailAddress;
-      draftProfileDetails.first_name.value = userData?.first_name || "";
-      draftProfileDetails.last_name.value = userData?.last_name || "";
-      draftProfileDetails.phone.value = userData?.phone || "";
-      draftProfileDetails.street_address.value = userData?.street_address || "";
-      draftProfileDetails.city.value = userData?.city || "";
-      draftProfileDetails.state.value = userData?.state || "";
-      draftProfileDetails.zipcode.value = userData?.zipcode || "";
-
-      setProfileFormData(draftProfileDetails);
+      reset({
+        first_name: userData?.first_name || "",
+        last_name: userData?.last_name || "",
+        phone: userData?.phone || "",
+        street_address: userData?.street_address || "",
+        city: userData?.city || "",
+        state: userData?.state || "",
+        zipcode: userData?.zipcode || "",
+      });
     }
-  }, [isLoading]);
+  }, [isLoading, reset]);
 
   if (isLoading) return <Skeleton height="10rem" />;
 
@@ -183,7 +143,7 @@ export default function OwnerSettingsPage() {
                     fontSize: "2.5rem",
                     bgcolor: "primary.main",
                   }}
-                  src={profileFormData?.googlePhotoURL || ""}
+                  src={userData?.googlePhotoURL || ""}
                 />
 
                 <Typography
@@ -192,7 +152,7 @@ export default function OwnerSettingsPage() {
                   color="textSecondary"
                   sx={{ textTransform: "initial" }}
                 >
-                  {profileFormData.googleDisplayName}
+                  {userData.googleDisplayName}
                 </Typography>
                 <Typography
                   variant="h6"
@@ -200,7 +160,7 @@ export default function OwnerSettingsPage() {
                   color="textSecondary"
                   sx={{ textTransform: "initial" }}
                 >
-                  {profileFormData.googleEmailAddress}
+                  {userData.googleEmailAddress}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {user?.role}
@@ -215,132 +175,240 @@ export default function OwnerSettingsPage() {
             </Grid>
 
             <Grid item xs={12} md={8}>
-              <Card
-                elevation={0}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  padding: 2,
-                }}
-              >
-                <RowHeader
-                  title="Personal Information"
-                  sxProps={{
-                    textAlign: "left",
-                    fontWeight: "bold",
-                    color: "text.secondary",
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Card
+                  elevation={0}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                    padding: 2,
                   }}
-                />
-
-                {/* First and Last Name */}
-                <Stack direction="row" spacing={2}>
-                  <TextFieldWithLabel
-                    label="First name *"
-                    id="first_name"
-                    name="first_name"
-                    placeholder="First Name"
-                    value={profileFormData?.first_name.value || ""}
-                    handleChange={handleChange}
-                    errorMsg={profileFormData.first_name["errorMsg"]}
-                  />
-                  <TextFieldWithLabel
-                    label="Last name *"
-                    id="last_name"
-                    name="last_name"
-                    placeholder="Last Name"
-                    value={profileFormData?.last_name.value || ""}
-                    handleChange={handleChange}
-                    errorMsg={profileFormData.last_name["errorMsg"]}
-                  />
-                </Stack>
-
-                {/* Email and Phone Number */}
-                <Stack direction="row" spacing={2}>
-                  <TextFieldWithLabel
-                    label="Email address *"
-                    id="email"
-                    name="email"
-                    placeholder="Email Address"
-                    value={profileFormData?.email.value || ""}
-                    handleChange={handleChange}
-                    isDisabled
-                    errorMsg={profileFormData.email["errorMsg"]}
-                    labelIcon={
-                      <InfoRounded fontSize="small" color="secondary" />
-                    }
-                    labelIconHelper="Editing an email address is disabled by default."
-                  />
-                  <TextFieldWithLabel
-                    label="Phone Number *"
-                    id="phone"
-                    name="phone"
-                    placeholder="Phone Number"
-                    value={profileFormData?.phone.value || ""}
-                    handleChange={handleChange}
-                    errorMsg={profileFormData.phone["errorMsg"]}
-                  />
-                </Stack>
-
-                {/* Street Address */}
-                <TextFieldWithLabel
-                  label="Street Address *"
-                  id="street_address"
-                  name="street_address"
-                  placeholder="Street Address"
-                  value={profileFormData?.street_address.value || ""}
-                  handleChange={handleChange}
-                  errorMsg={profileFormData.street_address["errorMsg"]}
-                />
-
-                {/* City, State, Zip Code */}
-                <Stack direction="row" spacing={2}>
-                  <TextFieldWithLabel
-                    label="City *"
-                    id="city"
-                    name="city"
-                    placeholder="City"
-                    value={profileFormData?.city.value || ""}
-                    handleChange={handleChange}
-                    errorMsg={profileFormData.city["errorMsg"]}
-                  />
-                  <TextFieldWithLabel
-                    label="State *"
-                    id="state"
-                    name="state"
-                    placeholder="State"
-                    value={profileFormData?.state.value || ""}
-                    handleChange={handleChange}
-                    errorMsg={profileFormData.state["errorMsg"]}
-                  />
-                  <TextFieldWithLabel
-                    label="Zip Code *"
-                    id="zipcode"
-                    name="zipcode"
-                    placeholder="Zip Code"
-                    value={profileFormData?.zipcode.value || ""}
-                    handleChange={handleChange}
-                    errorMsg={profileFormData.zipcode["errorMsg"]}
-                  />
-                </Stack>
-
-                <Box>
-                  <AButton
-                    label="Save"
-                    variant="contained"
-                    onClick={onSubmit}
-                    disabled={isDisabled()}
-                  />
-                </Box>
-                <Typography
-                  variant="caption"
-                  sx={{ fontStyle: "italic", textTransform: "initial" }}
                 >
-                  Last login{" "}
-                  {dayjs(profileFormData?.googleLastLoginAt).fromNow() ||
-                    dayjs().fromNow()}
-                </Typography>
-              </Card>
+                  <RowHeader
+                    title="Personal Information"
+                    sxProps={{
+                      textAlign: "left",
+                      fontWeight: "bold",
+                      color: "text.secondary",
+                    }}
+                  />
+
+                  {/* First and Last Name */}
+                  <Stack direction="row" spacing={2}>
+                    <Controller
+                      name="first_name"
+                      control={control}
+                      rules={{
+                        required: "First name is required",
+                        validate: (value) =>
+                          value.trim().length > 3 ||
+                          "First name must be more than 3 characters",
+                        maxLength: {
+                          value: 150,
+                          message:
+                            "First name should be less than 150 characters",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextFieldWithLabel
+                          {...field}
+                          label="First Name *"
+                          error={!!errors.first_name}
+                          errorMsg={errors.first_name?.message}
+                          fullWidth
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      name="last_name"
+                      control={control}
+                      rules={{
+                        required: "Last name is required",
+                        validate: (value) =>
+                          value.trim().length > 0 || "Last name is required",
+                        maxLength: {
+                          value: 150,
+                          message:
+                            "Last name should be less than 150 characters",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextFieldWithLabel
+                          {...field}
+                          label="Last Name *"
+                          id="last_name"
+                          name="last_name"
+                          placeholder="Last Name"
+                          error={!!errors.last_name}
+                          errorMsg={errors.last_name?.message}
+                          fullWidth
+                        />
+                      )}
+                    />
+                  </Stack>
+
+                  {/* Email and Phone Number */}
+                  <Stack direction="row" spacing={2}>
+                    <TextFieldWithLabel
+                      label="Email address *"
+                      id="email"
+                      name="email"
+                      placeholder="Email Address"
+                      value={userData?.googleEmailAddress || ""}
+                      isDisabled
+                      errorMsg=""
+                      labelIcon={
+                        <InfoRounded fontSize="small" color="secondary" />
+                      }
+                      labelIconHelper="Editing an email address is disabled by default."
+                    />
+
+                    <Controller
+                      name="phone"
+                      control={control}
+                      rules={{
+                        required: "Phone number is required",
+                        pattern: {
+                          value: /^\d{10}$/,
+                          message:
+                            "Phone number must be a valid 10-digit number",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextFieldWithLabel
+                          {...field}
+                          label="Phone Number *"
+                          id="phone"
+                          name="phone"
+                          placeholder="Phone Number"
+                          error={!!errors.phone}
+                          errorMsg={errors.phone?.message}
+                        />
+                      )}
+                    />
+                  </Stack>
+
+                  {/* Street Address */}
+                  <Controller
+                    name="street_address"
+                    control={control}
+                    rules={{
+                      required: "Street address is required",
+                      maxLength: {
+                        value: 150,
+                        message:
+                          "Street address should be less than 150 characters",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <TextFieldWithLabel
+                        {...field}
+                        label="Street Address *"
+                        id="street_address"
+                        name="street_address"
+                        placeholder="Street Address"
+                        error={!!errors.street_address}
+                        errorMsg={errors.street_address?.message}
+                      />
+                    )}
+                  />
+
+                  {/* City, State, Zip Code */}
+                  <Stack direction="row" spacing={2}>
+                    <Controller
+                      name="city"
+                      control={control}
+                      rules={{
+                        required: "City is required",
+                        maxLength: {
+                          value: 150,
+                          message: "City should be less than 150 characters",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextFieldWithLabel
+                          {...field}
+                          label="City *"
+                          id="city"
+                          name="city"
+                          placeholder="City"
+                          error={!!errors.city}
+                          errorMsg={errors.city?.message}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="state"
+                      control={control}
+                      rules={{
+                        required: "State is required",
+                        minLength: {
+                          value: 2,
+                          message:
+                            "State is required in the form of XX. Eg, AZ",
+                        },
+                        maxLength: {
+                          value: 2,
+                          message:
+                            "State is required in the form of XX. Eg, AZ",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextFieldWithLabel
+                          {...field}
+                          label="State *"
+                          id="state"
+                          name="state"
+                          placeholder="State"
+                          error={!!errors.state}
+                          errorMsg={errors.state?.message}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="zipcode"
+                      control={control}
+                      rules={{
+                        required: "Zip Code is required",
+                        pattern: {
+                          value: /^\d{5}$/,
+                          message: "Zip Code should be exactly 5 digits",
+                        },
+                      }}
+                      render={({ field }) => (
+                        <TextFieldWithLabel
+                          {...field}
+                          label="Zip Code *"
+                          id="zipcode"
+                          name="zipcode"
+                          placeholder="Zip Code"
+                          error={!!errors.zipcode}
+                          errorMsg={errors.zipcode?.message}
+                        />
+                      )}
+                    />
+                  </Stack>
+
+                  <Box>
+                    <AButton
+                      label="Save"
+                      variant="contained"
+                      type="submit"
+                      disabled={!isValid}
+                    />
+                  </Box>
+                  <Typography
+                    variant="caption"
+                    sx={{ fontStyle: "italic", textTransform: "initial" }}
+                  >
+                    Last login{" "}
+                    {dayjs(userData?.googleLastLoginAt).fromNow() ||
+                      dayjs().fromNow()}
+                  </Typography>
+                </Card>
+              </form>
             </Grid>
           </Grid>
         </TabPanel>

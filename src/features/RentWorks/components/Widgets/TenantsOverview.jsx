@@ -18,7 +18,7 @@ export default function TenantsOverview({
   property,
   tenants = [],
   isTenantsLoading,
-  toggleAddPropertyPopup,
+  toggleAssociateTenantsPopup,
 }) {
   return (
     <Card sx={{ mb: 3 }}>
@@ -63,7 +63,7 @@ export default function TenantsOverview({
                 <AButton
                   size="small"
                   variant="outlined"
-                  onClick={() => toggleAddPropertyPopup()}
+                  onClick={() => toggleAssociateTenantsPopup()}
                   label="Associate tenants"
                 />
               </Tooltip>

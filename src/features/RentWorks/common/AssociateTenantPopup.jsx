@@ -162,7 +162,9 @@ export default function AssociateTenantPopup({
     if (!isSoR) delete draftData["assignedRoomName"];
 
     draftData["id"] = uuidv4();
+    draftData["isActive"] = true;
     draftData["propertyId"] = property.id;
+
     draftData["createdBy"] = currentUserId;
     draftData["createdOn"] = dayjs().toISOString();
 

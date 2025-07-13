@@ -77,6 +77,8 @@ export default function QuickActions({ property }) {
         bathrooms: property.bathrooms || "",
         rent: property.rent || "",
         additional_rent: property?.additional_rent || "",
+        note: property?.note || "",
+        sqFt: property?.sqFt || "",
       });
     }
   }, [property, reset]);

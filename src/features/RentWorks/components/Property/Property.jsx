@@ -55,7 +55,7 @@ const Property = () => {
 
   const [dialog, setDialog] = useState(false);
 
-  const toggleAddPropertyPopup = () => setDialog(!dialog);
+  const toggleAssociateTenantsPopup = () => setDialog(!dialog);
 
   // if home is SoR, then only each bedroom is counted as a unit
   const isAnyTenantSoR = tenants?.some((tenant) => tenant.isSoR);
@@ -110,9 +110,9 @@ const Property = () => {
           {/* Tenants Overview */}
           <TenantsOverview
             property={property}
-            tenants={tenants}
+            tenants={tenants.filter((tenant) => tenant.isActive)}
             isTenantsLoading={isTenantsLoading}
-            toggleAddPropertyPopup={toggleAddPropertyPopup}
+            toggleAssociateTenantsPopup={toggleAssociateTenantsPopup}
           />
 
           {/* Rental Payment Overview */}
@@ -128,7 +128,7 @@ const Property = () => {
             <DialogTitle>Associate Tenants </DialogTitle>
             <DialogContent>
               <AssociateTenantPopup
-                closeDialog={toggleAddPropertyPopup}
+                closeDialog={toggleAssociateTenantsPopup}
                 property={property}
                 tenants={tenants}
               />
@@ -137,7 +137,7 @@ const Property = () => {
               <AButton
                 size="small"
                 variant="outlined"
-                onClick={toggleAddPropertyPopup}
+                onClick={toggleAssociateTenantsPopup}
                 label="Close"
               />
             </DialogActions>

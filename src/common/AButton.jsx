@@ -21,7 +21,9 @@ export default function AButton({ label, onClick, loading = false, ...rest }) {
   const handleClick = (ev) => {
     // log data only if analytics is enabled
     analyticsEnabled?.toLowerCase() === "true" && buttonAnalytics?.(label);
-    onClick(ev);
+    if (typeof onClick === "function") {
+      onClick(ev);
+    }
   };
 
   return (

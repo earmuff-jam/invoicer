@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import { useUpdatePropertyByIdMutation } from "features/Api/propertiesApi";
-import { useDeleteTenantByIdMutation } from "features/Api/tenantsApi";
+import { useUpdateTenantByIdMutation } from "features/Api/tenantsApi";
 import {
   fetchLoggedInUser,
   formatCurrency,
@@ -29,7 +29,7 @@ import {
 
 export default function Tenants({ tenants = [], property }) {
   const user = fetchLoggedInUser();
-  const [deleteTenant] = useDeleteTenantByIdMutation();
+  const [updateTenant] = useUpdateTenantByIdMutation();
   const [updateProperty] = useUpdatePropertyByIdMutation();
 
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -47,7 +47,12 @@ export default function Tenants({ tenants = [], property }) {
       (rentee) => rentee !== tenant.email,
     );
 
-    await deleteTenant(tenant?.id);
+    await updateTenant(tenant?.id, {
+      isActive: false,
+      updatedBy: user?.uid,
+      updatedOn: dayjs().toISOString(),
+    });
+
     await updateProperty({
       id: property?.id,
       rentees: filteredRentees,
