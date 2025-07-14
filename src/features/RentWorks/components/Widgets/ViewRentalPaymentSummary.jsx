@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import dayjs from "dayjs";
 
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import EmptyComponent from "common/EmptyComponent";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
@@ -21,7 +21,12 @@ const ViewRentalPaymentSummary = ({ rentData = [] }) => {
         accessorKey: "tenantEmail",
         header: "Tenant Email",
         size: 200,
-        Cell: ({ cell }) => cell.getValue() || "-",
+        Cell: ({ cell }) =>
+          (
+            <Typography sx={{ textTransform: "initial" }}>
+              {cell.getValue()}
+            </Typography>
+          ) || "-",
       },
       {
         accessorKey: "amountPaid",
