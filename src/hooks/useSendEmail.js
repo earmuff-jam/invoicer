@@ -45,13 +45,13 @@ export function generateInvoiceHTML(recieverInfo, data, invoiceStatus = "") {
             <td>$${item.payment}</td>
             <td>${item.payment_method}</td>
           </tr>
-        `
+        `,
           )
           .join("")}
       </tbody>
     </table>
 
-    <p><em>Invoice last updated on: ${data.updated_on}</em></p>
+    <p><em>Invoice last updated on: ${data.updatedOn}</em></p>
   `;
 }
 

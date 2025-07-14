@@ -1,6 +1,6 @@
+import { getApps, initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { initializeApp, getApps } from "firebase/app";
-import { onAuthStateChanged, getAuth } from "firebase/auth";
 
 // -------------------------------------------
 // Util functions
@@ -96,7 +96,7 @@ if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
             uid: user.uid,
             role: draftUser?.role,
             googleEmailAddress: draftUser?.googleEmailAddress,
-          })
+          }),
         );
       } else {
         // if the role is not found yet, do nothing
@@ -109,7 +109,7 @@ if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
 } else {
   /* eslint-disable no-console */
   console.error(
-    "Invalid Firebase config. Auth state listener not initialized."
+    "Invalid Firebase config. Auth state listener not initialized.",
   );
 }
 
@@ -119,7 +119,7 @@ if (isFirebaseConfigOptionsValid(authenticatorConfig)) {
  * the authenticator for the db
  */
 export const authenticatorApp = isFirebaseConfigOptionsValid(
-  authenticatorConfig
+  authenticatorConfig,
 )
   ? getAuth(authenticatorConfig)
   : null;

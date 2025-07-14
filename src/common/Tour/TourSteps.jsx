@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import { createHelperSentences } from "src/common/utils";
+import { createHelperSentences } from "common/utils";
 
 /**
  * ViewPdfHelpSteps

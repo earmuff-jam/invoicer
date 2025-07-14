@@ -1,15 +1,14 @@
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import {
+  collection,
   doc,
   getDoc,
-  setDoc,
-  deleteDoc,
-  collection,
-  query,
-  where,
   getDocs,
+  query,
+  setDoc,
+  where,
 } from "firebase/firestore";
 import { authenticatorFirestore as db } from "src/config";
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const propertiesApi = createApi({
   reducerPath: "propertiesApi",
@@ -36,12 +35,15 @@ export const propertiesApi = createApi({
       providesTags: ["properties"],
     }),
 
+    // retrieves a list of properties created by the
+    // passed in userId; filters deleted properties
     getPropertiesByUserId: builder.query({
       async queryFn(userId) {
         try {
           const q = query(
             collection(db, "properties"),
-            where("createdBy", "==", userId)
+            where("createdBy", "==", userId),
+            where("isDeleted", "==", false),
           );
           const querySnapshot = await getDocs(q);
           const properties = [];
@@ -61,6 +63,7 @@ export const propertiesApi = createApi({
       providesTags: ["properties"],
     }),
 
+    // creates a new property in the system
     createProperty: builder.mutation({
       async queryFn(property) {
         try {
@@ -79,30 +82,13 @@ export const propertiesApi = createApi({
       invalidatesTags: ["properties"],
     }),
 
+    // updates a selected property by data
     updatePropertyById: builder.mutation({
       async queryFn(data) {
         try {
           const propertyRef = doc(db, "properties", data?.id);
           await setDoc(propertyRef, data, { merge: true });
           return { data };
-        } catch (error) {
-          return {
-            error: {
-              message: error.message,
-              code: error.code,
-            },
-          };
-        }
-      },
-      invalidatesTags: ["properties"],
-    }),
-
-    deletePropertyById: builder.mutation({
-      async queryFn(uid) {
-        try {
-          const propertyRef = doc(db, "properties", uid);
-          await deleteDoc(propertyRef);
-          return { data: { uid } };
         } catch (error) {
           return {
             error: {
@@ -122,5 +108,4 @@ export const {
   useGetPropertiesByUserIdQuery,
   useCreatePropertyMutation,
   useUpdatePropertyByIdMutation,
-  useDeletePropertyByIdMutation,
 } = propertiesApi;

@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 // Read the event payload
 const event = JSON.parse(
-  fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8")
+  fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"),
 );
 const inputs = event.inputs || {};
 

@@ -1,4 +1,9 @@
-import { EditRounded, HomeRounded, Person2Rounded, PictureAsPdfRounded } from "@mui/icons-material";
+import {
+  EditRounded,
+  HomeRounded,
+  Person2Rounded,
+  PictureAsPdfRounded,
+} from "@mui/icons-material";
 
 export const NAVIGATION_LIST = [
   {
