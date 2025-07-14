@@ -6,16 +6,3 @@
 
 [dev]
 functions = "netlify/functions"
-
-
-[functions]
-  node_bundler = "esbuild"
-
-
-[functions."stripeWebhook"]
-  included_files = []
-  external_node_modules = ["stripe"]
-  method = "POST"
-  # required for raw body signature from stripe
-  # prevents netlify from parsing
-  schedule = ""

@@ -1,8 +1,8 @@
-import { forwardRef } from "react";
+import React from "react";
 
 import { Stack, TextField, Tooltip, Typography } from "@mui/material";
 
-const TextFieldWithLabel = forwardRef(
+const TextFieldWithLabel = React.forwardRef(
   (
     {
       label,
@@ -53,5 +53,8 @@ const TextFieldWithLabel = forwardRef(
     );
   },
 );
+
+// for eslint and react devtools // ref needs display name
+TextFieldWithLabel.displayName = "TextFieldWithLabel";
 
 export default TextFieldWithLabel;
