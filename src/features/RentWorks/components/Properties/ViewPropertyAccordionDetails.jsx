@@ -23,6 +23,7 @@ import {
   Typography,
 } from "@mui/material";
 import AButton from "common/AButton";
+import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import EmptyComponent from "common/EmptyComponent";
 import { useLazyGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
@@ -37,6 +38,7 @@ import {
 } from "features/RentWorks/common/utils";
 import QuickConnectMenu from "features/RentWorks/components/QuickConnect/QuickConnectMenu";
 import { handleQuickConnectAction } from "features/RentWorks/components/Settings/TemplateProcessor";
+import { DefaultTemplateData } from "features/RentWorks/components/Settings/common";
 import useSendEmail from "hooks/useSendEmail";
 
 const ViewPropertyAccordionDetails = ({
@@ -59,7 +61,7 @@ const ViewPropertyAccordionDetails = ({
     { data: propertyOwnerData, isLoading: isUserDataLoading },
   ] = useLazyGetUserDataByIdQuery();
 
-  const { sendEmail /*,  reset, loading, error, success */ } = useSendEmail();
+  const { sendEmail, reset, error, success } = useSendEmail();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
@@ -83,32 +85,15 @@ const ViewPropertyAccordionDetails = ({
     const totalRent = derieveTotalRent(
       property,
       tenants,
-      primaryTenantDetails,
       isAnyPropertySoR,
     );
-    const savedTemplates = JSON.parse(
-      localStorage.getItem("email_templates") || "{}",
-    );
 
-    const templates = {
-      invoice: {
-        subject:
-          savedTemplates.invoice?.subject ||
-          "Monthly Rent Invoice - {{propertyAddress}}",
-        body:
-          savedTemplates.invoice?.body ||
-          "Dear {{tenantName}},\n\nPlease find attached your rent invoice for {{month}} {{year}}.\n\nAmount Due: ${{amount}}\nDue Date: {{dueDate}}\n\nThank you,\n{{ownerName}}",
-      },
-      reminder: {
-        subject:
-          savedTemplates.reminder?.subject ||
-          "Payment Reminder - {{propertyAddress}}",
-        body:
-          savedTemplates.reminder?.body ||
-          "Dear {{tenantName}},\n\nYour rent payment of ${{amount}} was due on {{dueDate}}.\n\nPlease submit payment promptly.\n\nBest regards,\n{{ownerName}}",
-      },
-      // ... other templates
-    };
+    let savedTemplates = {};
+    savedTemplates = JSON.parse(localStorage.getItem("templates") || "{}");
+
+    if (!savedTemplates || Object.keys(savedTemplates).length === 0) {
+      savedTemplates = DefaultTemplateData;
+    }
 
     handleQuickConnectAction(
       action,
@@ -117,7 +102,7 @@ const ViewPropertyAccordionDetails = ({
       getNextMonthlyDueDate(primaryTenantDetails?.start_date),
       primaryTenantDetails,
       propertyOwnerData,
-      templates,
+      savedTemplates,
       redirectTo,
       sendEmail,
     );
@@ -298,10 +283,10 @@ const ViewPropertyAccordionDetails = ({
               endIcon={<ExpandMoreRounded />}
             />
             <QuickConnectMenu
-              anchorEl={anchorEl}
               open={isOpen}
-              onClose={handleCloseQuickConnect}
+              anchorEl={anchorEl}
               property={property}
+              onClose={handleCloseQuickConnect}
               onMenuItemClick={(action) =>
                 handleQuickConnectMenuItem(
                   action,
@@ -318,6 +303,16 @@ const ViewPropertyAccordionDetails = ({
           </Stack>
         </Box>
       </Paper>
+      <CustomSnackbar
+        showSnackbar={success || error !== null}
+        setShowSnackbar={reset}
+        severity={success ? "success" : "error"}
+        title={
+          success
+            ? "Email sent successfully. Check spam if necessary."
+            : "Error sending email."
+        }
+      />
     </Stack>
   );
 };

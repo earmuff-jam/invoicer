@@ -90,9 +90,6 @@ export default function EditPdf({
   const {
     control,
     handleSubmit,
-    setValue,
-    getValues,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -116,23 +113,6 @@ export default function EditPdf({
     );
   };
 
-  const handleChange = (ev) => {
-    const { id, value } = ev.target;
-    const updatedFormData = { ...formData };
-    let errorMsg = "";
-    for (const validator of updatedFormData[id].validators) {
-      if (validator.validate(value)) {
-        errorMsg = validator.message;
-        break;
-      }
-    }
-    updatedFormData[id] = {
-      ...updatedFormData[id],
-      value,
-      errorMsg,
-    };
-    setFormData(updatedFormData);
-  };
 
   const handleDateTime = (ev, id) => {
     const value = dayjs(ev).format("MM-DD-YYYY");

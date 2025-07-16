@@ -6,8 +6,17 @@ import dayjs from "dayjs";
 import { getAuth, signOut } from "firebase/auth";
 import { authenticatorConfig } from "src/config";
 
+// ---------------------------
 // enum values
+
+// stripe rent status
 export const PaidRentStatusEnumValue = "paid";
+
+// template processor actions
+export const CreateInvoiceEnumValue = "Create_Invoice";
+export const SendDefaultInvoiceEnumValue = "Send_Default_Invoice";
+export const PaymentReminderEnumValue = "Payment_Reminder";
+export const RenewLeaseNoticeEnumValue = "Renew_Lease_Notice_Enum_Value";
 
 /**
  * Email Validators

@@ -5,7 +5,6 @@ import { Controller, useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
 import {
-  EditRounded,
   EmailRounded,
   InfoRounded,
   PaymentRounded,
@@ -18,7 +17,6 @@ import {
   Card,
   Chip,
   Grid,
-  IconButton,
   Skeleton,
   Stack,
   Tab,
@@ -37,14 +35,16 @@ import {
 } from "features/Api/firebaseUserApi";
 import { OwnerRole } from "features/Layout/components/Landing/constants";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
-import { TabPanel } from "features/RentWorks/components/Settings/common";
-import { defaultTemplateData } from "features/RentWorks/components/Settings/constants";
+import {
+  DefaultTemplateData,
+  TabPanel,
+} from "features/RentWorks/components/Settings/common";
 import StripeConnect from "features/RentWorks/components/StripeConnect/StripeConnect";
 import { useAppTitle } from "hooks/useAppTitle";
 
 dayjs.extend(relativeTime);
 
-export default function OwnerSettingsPage() {
+export default function Settings() {
   useAppTitle("View Settings");
 
   const user = fetchLoggedInUser();
@@ -54,7 +54,7 @@ export default function OwnerSettingsPage() {
 
   const [activeTab, setActiveTab] = useState(0);
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const [templates, setTemplates] = useState(defaultTemplateData);
+  const [templates, setTemplates] = useState(DefaultTemplateData);
 
   const {
     control,
@@ -87,6 +87,11 @@ export default function OwnerSettingsPage() {
       ...prev,
       [template]: { ...prev[template], [field]: event.target.value },
     }));
+  };
+
+  const handleSave = () => {
+    const formattedTemplates = JSON.stringify(templates);
+    localStorage.setItem("templates", formattedTemplates);
   };
 
   const onSubmit = async (formData) => {
@@ -433,16 +438,13 @@ export default function OwnerSettingsPage() {
                               mb: 2,
                             }}
                           >
-                            <Typography
-                              variant="h6"
-                              fontWeight={600}
-                              sx={{ textTransform: "capitalize" }}
-                            >
-                              {key} Template
-                            </Typography>
-                            <IconButton size="small" sx={{ ml: "auto" }}>
-                              <EditRounded fontSize="small" />
-                            </IconButton>
+                            <RowHeader
+                              title={template?.label || "Template"}
+                              sxProps={{
+                                fontSize: "1.125rem",
+                                fontWeight: "600",
+                              }}
+                            />
                           </Box>
                           <Stack spacing={2}>
                             <TextField
@@ -453,11 +455,7 @@ export default function OwnerSettingsPage() {
                               size="small"
                             />
                             <TextField
-                              label={
-                                key === "maintenance"
-                                  ? "Description"
-                                  : "Message Body"
-                              }
+                              label="Message Body"
                               value={template.body || template.description}
                               onChange={handleTemplateChange(
                                 key,
@@ -465,7 +463,7 @@ export default function OwnerSettingsPage() {
                               )}
                               fullWidth
                               multiline
-                              rows={4}
+                              rows={10}
                               size="small"
                             />
                             <Typography
@@ -478,7 +476,7 @@ export default function OwnerSettingsPage() {
                             <Button
                               variant="outlined"
                               size="small"
-                              // onClick={() => handleSave(`template_${key}`)}
+                              onClick={() => handleSave(`template_${key}`)}
                             >
                               Save Template
                             </Button>
