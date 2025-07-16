@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import validateClientPermissions from "common/ValidateClientPerms";
+import { generateInvoiceHTML } from "hooks/useSendEmail";
 
 // Template processor utility
 export const processTemplate = (template, variables) => {
@@ -99,7 +100,10 @@ export const handleQuickConnectAction = (
  * function used to send email via sendEmail functionality
  * @param {*} param0
  */
-const formatEmail = ({ to, subject, body, /* attachments = [] */ }, sendEmail) => {
+const formatEmail = (
+  { to, subject, body /* attachments = [] */ },
+  sendEmail,
+) => {
   const userEnabledFlagMap = validateClientPermissions();
   const isSendEmailFeatureEnabled = userEnabledFlagMap.get("sendEmail");
 
@@ -108,8 +112,7 @@ const formatEmail = ({ to, subject, body, /* attachments = [] */ }, sendEmail) =
     sendEmail({
       to: to,
       subject: subject,
-      text: "", // empty text field
-      // html: generateInvoiceHTML(recieverInfo, data, draftInvoiceStatusLabel),
+      text: body,
     });
   } else {
     const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(

@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
+
+import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
+import dayjs from "dayjs";
 
 import {
   AddRounded,
@@ -29,7 +33,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import AButton from "common/AButton";
 import CustomSnackbar from "common/CustomSnackbar/CustomSnackbar";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
-import dayjs from "dayjs";
 import EditPdfLineItemAccordion from "features/InvoiceWorks/components/PdfViewer/EditPdfLineItemAccordion";
 import {
   BLANK_INVOICE_DETAILS_FORM,
@@ -83,6 +86,19 @@ export default function EditPdf({
 }) {
   useAppTitle("Edit Invoice");
   const navigate = useNavigate();
+
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: "",
+    },
+  });
 
   const [lineItems, setLineItems] = useState([]);
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -320,7 +336,7 @@ export default function EditPdf({
       <Stack spacing={2}>
         <Stack>
           <IconButton
-            onClick={submit}
+            onClick={handleSubmit(submit)}
             color="primary"
             size="small"
             sx={{ alignSelf: "flex-end" }}
@@ -335,38 +351,77 @@ export default function EditPdf({
         </Stack>
         {/* First and Last Name */}
         <Stack direction="row" spacing={2}>
-          <TextFieldWithLabel
+          <Controller
             dataTour="edit-pdf-1"
-            label="Invoice Title"
-            id="title"
             name="title"
-            placeholder="The title of the invoice. Eg, Rent for the month of"
-            value={formData?.title.value || ""}
-            handleChange={handleChange}
-            errorMsg={formData.title["errorMsg"]}
+            control={control}
+            rules={{
+              required: "Title is required",
+              validate: (value) =>
+                value.trim().length > 3 ||
+                "Title must be more than 3 characters",
+              maxLength: {
+                value: 150,
+                message: "Title should be less than 150 characters",
+              },
+            }}
+            render={({ field }) => (
+              <TextFieldWithLabel
+                {...field}
+                fullWidth
+                label="Invoice Title *"
+                error={!!errors.title}
+                errorMsg={errors.title?.message}
+                placeholder="The title of the invoice. Eg, Rent for the month of"
+              />
+            )}
           />
-          <TextFieldWithLabel
+
+          <Controller
             dataTour="edit-pdf-2"
-            label="Invoice Caption"
-            id="caption"
             name="caption"
-            placeholder="The description below the title of invoice"
-            value={formData?.caption.value || ""}
-            handleChange={handleChange}
-            errorMsg={formData.caption["errorMsg"]}
+            control={control}
+            rules={{
+              maxLength: {
+                value: 150,
+                message: "Title caption should be less than 150 characters",
+              },
+            }}
+            render={({ field }) => (
+              <TextFieldWithLabel
+                {...field}
+                fullWidth
+                label="Invoice Caption"
+                error={!!errors.caption}
+                errorMsg={errors.caption?.message}
+                placeholder="The description below the title of invoice"
+              />
+            )}
           />
         </Stack>
-        <TextFieldWithLabel
+
+        <Controller
           dataTour="edit-pdf-3"
-          label="Additional Notes "
-          id="note"
           name="note"
-          placeholder="Additional notes for the sender to add"
-          value={formData?.note.value || ""}
-          handleChange={handleChange}
-          errorMsg={formData.note["errorMsg"]}
-          multiline={true}
-          maxRows={3}
+          control={control}
+          rules={{
+            maxLength: {
+              value: 250,
+              message: "Notes should be less than 250 characters",
+            },
+          }}
+          render={({ field }) => (
+            <TextFieldWithLabel
+              {...field}
+              fullWidth
+              multiline
+              maxRows={3}
+              label="Additional Notes"
+              error={!!errors.note}
+              errorMsg={errors.note?.message}
+              placeholder="Additional notes that the user can add"
+            />
+          )}
         />
 
         {/* Start and end dates */}
@@ -408,27 +463,49 @@ export default function EditPdf({
             />
           </LocalizationProvider>
         </Stack>
+
         {/* Invoice Header */}
-        <TextFieldWithLabel
+        <Controller
           dataTour="edit-pdf-5"
-          label="Invoice Header "
-          id="invoice_header"
           name="invoice_header"
-          placeholder="The title of the bill. Eg., Rent Details"
-          value={formData?.invoice_header.value || ""}
-          handleChange={handleChange}
-          errorMsg={formData.invoice_header["errorMsg"]}
+          control={control}
+          rules={{
+            required: "Invoice Caption is required",
+            validate: (value) =>
+              value.trim().length > 3 ||
+              "Invoice Caption must be more than 3 characters",
+            maxLength: {
+              value: 150,
+              message: "Invoice Caption should be less than 150 characters",
+            },
+          }}
+          render={({ field }) => (
+            <TextFieldWithLabel
+              {...field}
+              fullWidth
+              label="Invoice Caption *"
+              error={!!errors.title}
+              errorMsg={errors.title?.message}
+              placeholder="The title of the bill. Eg., Rent Details"
+            />
+          )}
         />
+
         {/* Tax Rate */}
-        <TextFieldWithLabel
-          label="Tax Rate "
+        <Controller
           dataTour="edit-pdf-6"
-          id="tax_rate"
           name="tax_rate"
-          placeholder="Standard tax rate."
-          value={formData?.tax_rate.value || ""}
-          handleChange={handleChange}
-          errorMsg={formData.tax_rate["errorMsg"]}
+          control={control}
+          render={({ field }) => (
+            <TextFieldWithLabel
+              {...field}
+              fullWidth
+              label="Tax Rate"
+              error={!!errors.tax_rate}
+              errorMsg={errors.tax_rate?.message}
+              placeholder="The rate of tax in upto 2 decimal places. Eg., 8.25 "
+            />
+          )}
         />
 
         <Paper sx={{ padding: "1rem" }} data-tour="edit-pdf-7">
@@ -478,7 +555,7 @@ export default function EditPdf({
         <AButton
           data-tour="edit-pdf-9"
           variant="contained"
-          onClick={submit}
+          onClick={handleSubmit(submit)}
           disabled={isDisabled()}
           label="Save"
         />

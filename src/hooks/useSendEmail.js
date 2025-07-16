@@ -91,6 +91,8 @@ const useSendEmail = () => {
       setSuccess(true);
       return data;
     } catch (err) {
+      /* eslint-disable no-console */
+      console.log(err);
       setError(err.message);
     } finally {
       setLoading(false);
