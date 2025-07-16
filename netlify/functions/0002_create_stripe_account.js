@@ -35,8 +35,9 @@ export const handler = async (event) => {
       country: "US",
       email,
       capabilities: {
-        card_payments: { requested: true },
+        card_payments: { requested: true }, // credit / debit cards
         transfers: { requested: true },
+        us_bank_account_ach_payments: { requested: true }, // ach
       },
     });
 
