@@ -24,16 +24,20 @@ import {
 } from "@mui/material";
 import AButton from "common/AButton";
 import EmptyComponent from "common/EmptyComponent";
+import { useLazyGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useGetTenantByPropertyIdQuery } from "features/Api/tenantsApi";
 import {
   PaidRentStatusEnumValue,
+  derieveTotalRent,
   getCurrentMonthPaidRent,
+  getNextMonthlyDueDate,
   getRentStatus,
   isRentDue,
   updateDateTime,
 } from "features/RentWorks/common/utils";
 import QuickConnectMenu from "features/RentWorks/components/QuickConnect/QuickConnectMenu";
 import { handleQuickConnectAction } from "features/RentWorks/components/Settings/TemplateProcessor";
+import useSendEmail from "hooks/useSendEmail";
 
 const ViewPropertyAccordionDetails = ({
   property,
@@ -41,6 +45,7 @@ const ViewPropertyAccordionDetails = ({
   isRentDetailsLoading,
 }) => {
   const navigate = useNavigate();
+  const redirectTo = (path) => navigate(path);
 
   const { data: tenants = [], isLoading } = useGetTenantByPropertyIdQuery(
     property?.id,
@@ -49,28 +54,42 @@ const ViewPropertyAccordionDetails = ({
     },
   );
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [
+    triggerGetUserData,
+    { data: propertyOwnerData, isLoading: isUserDataLoading },
+  ] = useLazyGetUserDataByIdQuery();
 
+  const { sendEmail /*,  reset, loading, error, success */ } = useSendEmail();
+
+  const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
+
   const primaryTenantDetails =
     tenants?.find((tenant) => tenant.isPrimary) || tenants[0];
 
+  const isAnyPropertySoR = tenants?.some((tenant) => tenant.isSoR);
+
   const handleCloseQuickConnect = () => setAnchorEl(null);
   const handleOpenQuickConnect = (ev) => setAnchorEl(ev.currentTarget);
-  const handleQuickConnectMenuItem = (action, property) => {
-    switch (action) {
-      case "CREATE_INVOICE": {
-        navigate("/invoice/edit");
-        break;
-      }
-    }
 
-    // fetch templates from the db
+  const handleQuickConnectMenuItem = (
+    action,
+    property,
+    primaryTenantDetails,
+    propertyOwnerData,
+    redirectTo,
+    sendEmail,
+  ) => {
+    const totalRent = derieveTotalRent(
+      property,
+      tenants,
+      primaryTenantDetails,
+      isAnyPropertySoR,
+    );
     const savedTemplates = JSON.parse(
       localStorage.getItem("email_templates") || "{}",
     );
 
-    // Merge with default templates
     const templates = {
       invoice: {
         subject:
@@ -91,10 +110,21 @@ const ViewPropertyAccordionDetails = ({
       // ... other templates
     };
 
-    handleQuickConnectAction(action, property, tenants, templates);
+    handleQuickConnectAction(
+      action,
+      property,
+      totalRent,
+      getNextMonthlyDueDate(primaryTenantDetails?.start_date),
+      primaryTenantDetails,
+      propertyOwnerData,
+      templates,
+      redirectTo,
+      sendEmail,
+    );
   };
 
-  if (isLoading || isRentDetailsLoading) return <Skeleton height="10rem" />;
+  if (isLoading || isRentDetailsLoading || isUserDataLoading)
+    return <Skeleton height="10rem" />;
 
   if (!tenants || tenants.length === 0) {
     return <EmptyComponent caption="Add tenants to begin." />;
@@ -260,6 +290,7 @@ const ViewPropertyAccordionDetails = ({
               disabled={tenants?.length <= 0}
               onClick={(e) => {
                 e.stopPropagation();
+                triggerGetUserData(property?.createdBy);
                 handleOpenQuickConnect(e);
               }}
               size="small"
@@ -271,7 +302,16 @@ const ViewPropertyAccordionDetails = ({
               open={isOpen}
               onClose={handleCloseQuickConnect}
               property={property}
-              onMenuItemClick={handleQuickConnectMenuItem}
+              onMenuItemClick={(action) =>
+                handleQuickConnectMenuItem(
+                  action,
+                  property,
+                  primaryTenantDetails,
+                  propertyOwnerData,
+                  redirectTo,
+                  sendEmail,
+                )
+              }
               openMaintenanceForm={(o) => o}
               openNoticeComposer={(o) => o}
             />

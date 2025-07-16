@@ -1,3 +1,7 @@
+import dayjs from "dayjs";
+
+import validateClientPermissions from "common/ValidateClientPerms";
+
 // Template processor utility
 export const processTemplate = (template, variables) => {
   let processedTemplate = template;
@@ -14,43 +18,33 @@ export const processTemplate = (template, variables) => {
 export const handleQuickConnectAction = (
   action,
   property,
+  totalRentAmount,
+  monthlyRentalDueDate,
   primaryTenant,
+  propertyOwner,
   templates,
+  redirectTo,
+  sendEmail,
   openMaintenanceForm = () => {},
   openNoticeComposer = () => {},
 ) => {
   const templateVariables = {
-    tenantName: primaryTenant.name,
+    tenantName: primaryTenant?.name || "Rentee",
     propertyAddress: `${property.address}, ${property.city}, ${property.state} ${property.zipcode}`,
-    amount: primaryTenant.monthlyRent?.toFixed(2),
-    dueDate: primaryTenant.dueDate,
-    month: new Date().toLocaleString("default", { month: "long" }),
-    year: new Date().getFullYear(),
-    ownerName: "Sarah Mitchell", // From your settings
-    companyName: "Mitchell Properties LLC", // From your settings
-    contactInfo: "sarah.mitchell@propmanagement.com", // From your settings
-    paymentLink: "https://yourportal.com/payment", // Your payment portal
-    noticeContent: "", // This would be filled when sending a notice
+    amount: totalRentAmount,
+    dueDate: monthlyRentalDueDate,
+    month: dayjs().format("MMMM"),
+    year: dayjs().get("year"),
+    ownerName: propertyOwner?.googleDisplayName,
+    companyName: propertyOwner?.company_name || "",
+    contactInfo: propertyOwner?.email || "",
+    paymentLink: "/rental",
+    noticeContent: "", // used for sending a notice
   };
 
   switch (action) {
     case "CREATE_INVOICE": {
-      // const invoiceSubject = processTemplate(
-      //   templates.invoice.subject,
-      //   templateVariables
-      // );
-      // const invoiceBody = processTemplate(
-      //   templates.invoice.body,
-      //   templateVariables
-      // );
-
-      // // Open email client or send via your API
-      // sendEmail({
-      //   to: primaryTenant.email,
-      //   subject: invoiceSubject,
-      //   body: invoiceBody,
-      //   attachments: ["invoice.pdf"], // Generate invoice PDF
-      // });
+      redirectTo("/invoice/edit");
       break;
     }
 
@@ -64,11 +58,14 @@ export const handleQuickConnectAction = (
         templateVariables,
       );
 
-      sendEmail({
-        to: primaryTenant.email,
-        subject: reminderSubject,
-        body: reminderBody,
-      });
+      formatEmail(
+        {
+          to: primaryTenant.email,
+          subject: reminderSubject,
+          body: reminderBody,
+        },
+        sendEmail,
+      );
       break;
     }
 
@@ -96,15 +93,28 @@ export const handleQuickConnectAction = (
   }
 };
 
-const sendEmail = ({ to, subject, body, attachments = [] }) => {
-  /* eslint-disable no-console */
-  console.log("Sending email:", { to, subject, body, attachments });
+/**
+ * formatEmail ...
+ *
+ * function used to send email via sendEmail functionality
+ * @param {*} param0
+ */
+const formatEmail = ({ to, subject, body, /* attachments = [] */ }, sendEmail) => {
+  const userEnabledFlagMap = validateClientPermissions();
+  const isSendEmailFeatureEnabled = userEnabledFlagMap.get("sendEmail");
 
-  // In real app, this would:
-  // 1. Call your email API (SendGrid, Mailgun, etc.)
-  // 2. Or open user's email client with mailto:
-  const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
-    subject,
-  )}&body=${encodeURIComponent(body)}`;
-  window.open(mailtoLink);
+  // if client has ability to send email, use that
+  if (isSendEmailFeatureEnabled) {
+    sendEmail({
+      to: to,
+      subject: subject,
+      text: "", // empty text field
+      // html: generateInvoiceHTML(recieverInfo, data, draftInvoiceStatusLabel),
+    });
+  } else {
+    const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(body)}`;
+    window.open(mailtoLink);
+  }
 };

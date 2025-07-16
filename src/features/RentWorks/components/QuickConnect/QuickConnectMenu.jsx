@@ -18,11 +18,10 @@ export default function QuickConnectMenu({
   anchorEl,
   open,
   onClose,
-  property,
   onMenuItemClick,
 }) {
   const handleMenuItemClick = (action) => {
-    onMenuItemClick?.(action, property);
+    onMenuItemClick?.(action);
     onClose();
   };
 
