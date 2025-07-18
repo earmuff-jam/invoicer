@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 
 import {
   CalendarTodayRounded,
+  LockClockRounded,
   PersonRounded,
   RemoveCircleOutlineRounded,
 } from "@mui/icons-material";
@@ -47,10 +48,13 @@ export default function Tenants({ tenants = [], property }) {
       (rentee) => rentee !== tenant.email,
     );
 
-    await updateTenant(tenant?.id, {
-      isActive: false,
-      updatedBy: user?.uid,
-      updatedOn: dayjs().toISOString(),
+    await updateTenant({
+      id: tenant?.id,
+      newData: {
+        isActive: false,
+        updatedBy: user?.uid,
+        updatedOn: dayjs().toISOString(),
+      },
     });
 
     await updateProperty({
@@ -80,26 +84,45 @@ export default function Tenants({ tenants = [], property }) {
                 >
                   {tenant.email.charAt(0).toUpperCase()}
                 </Avatar>
-                <Box sx={{ ml: 2, flex: 1 }}>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ textTransform: "initial" }}
+                <Stack sx={{ ml: 2, flex: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "0.2rem",
+                    }}
                   >
-                    {tenant.email}
-                  </Typography>
-                  {tenant.isPrimary && (
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ textTransform: "initial" }}
+                    >
+                      {tenant.email}
+                    </Typography>
+
+                    {tenant?.isSoR && (
+                      <Tooltip title="Single occupancy room rentee">
+                        <LockClockRounded fontSize="small" />
+                      </Tooltip>
+                    )}
+                  </Box>
+
+                  <Box>
                     <Chip
-                      label="Primary"
+                      label={
+                        tenant?.isPrimary
+                          ? "Primary Renter"
+                          : "Secondary Renter"
+                      }
                       size="small"
-                      color="primary"
+                      color={tenant?.isPrimary ? "primary" : "background"}
                       sx={{
                         height: 24,
                         fontSize: "0.75rem",
                         fontWeight: 500,
                       }}
                     />
-                  )}
-                </Box>
+                  </Box>
+                </Stack>
                 <Tooltip title="Remove tenant from property">
                   <IconButton
                     size="small"

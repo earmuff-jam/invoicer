@@ -1,7 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import { collection, doc, getDoc, getDocs, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { authenticatorFirestore as db } from "src/config";
-import { TenantRole } from "src/features/Layout/components/Landing/constants";
 
 export const firebaseUserApi = createApi({
   reducerPath: "firebaseUserApi",
@@ -9,31 +8,6 @@ export const firebaseUserApi = createApi({
   tagTypes: ["User"],
 
   endpoints: (builder) => ({
-    // fetch users from users db
-    getUserList: builder.query({
-      async queryFn() {
-        try {
-          const usersRef = collection(db, "users");
-          const snapshot = await getDocs(usersRef);
-          const users = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-
-          return { data: users };
-        } catch (error) {
-          return {
-            error: {
-              message: error.message,
-              code: error.code,
-            },
-          };
-        }
-      },
-      transformResponse: (users) => {
-        return users.filter((user) => user.role === TenantRole);
-      },
-    }),
     // fetch user data where user id matches the passed in user id from users db
     getUserDataById: builder.query({
       async queryFn(uid) {
@@ -97,7 +71,6 @@ export const firebaseUserApi = createApi({
 });
 
 export const {
-  useGetUserListQuery,
   useGetUserDataByIdQuery,
   useCreateUserMutation,
   useUpdateUserByUidMutation,

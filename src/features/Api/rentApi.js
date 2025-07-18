@@ -37,6 +37,8 @@ export const rentApi = createApi({
     }),
     // fetches rents by property id and currentUserEmail
     // currentUserEmail must either be a tenant or a property owner to view data
+    // if currentUserEmail is tenant, only returns that data.
+    // if currentUserEmail is propertyOwner, returns all data for all rental period for that property.
     getRentsByPropertyId: builder.query({
       async queryFn({ propertyId, currentUserEmail }) {
         try {
@@ -68,14 +70,25 @@ export const rentApi = createApi({
             };
           }
 
-          const q = query(
+          // retrieve all rental info if viewing by propertyOwner
+          // retrieve specific rental info if viewing by tenant
+          let draftQuery;
+          draftQuery = query(
             collection(db, "rents"),
             where("propertyId", "==", propertyId),
           );
 
-          const querySnapshot = await getDocs(q);
-          const rents = [];
+          if (isRentee) {
+            draftQuery = query(
+              collection(db, "rents"),
+              where("propertyId", "==", propertyId),
+              where("renteeEmail", "==", currentUserEmail),
+            );
+          }
 
+          const querySnapshot = await getDocs(draftQuery);
+
+          const rents = [];
           querySnapshot.forEach((doc) => {
             rents.push({ id: doc.id, ...doc.data() });
           });

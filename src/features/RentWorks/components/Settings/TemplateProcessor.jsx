@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import validateClientPermissions from "common/ValidateClientPerms";
+import { EditInvoiceRouteUri } from "common/utils";
 import {
   CreateInvoiceEnumValue,
   PaymentReminderEnumValue,
@@ -25,7 +26,7 @@ export const handleQuickConnectAction = (
     leaseEndDate: dayjs(), // the day the lease ends
     newSemiAnnualRent: property?.newSemiAnnualRent || "",
     oneYearRentChange: property?.onYearRentChange || "",
-    responseDeadline: property?.newLeaseResponseDeadline || '',
+    responseDeadline: property?.newLeaseResponseDeadline || "",
     ownerPhone: propertyOwner?.phone,
     ownerEmail: propertyOwner?.email,
     currentDate: dayjs().format("MMMM DD, YYYY"),
@@ -42,7 +43,7 @@ export const handleQuickConnectAction = (
 
   switch (action) {
     case CreateInvoiceEnumValue: {
-      redirectTo("/invoice/edit");
+      redirectTo(EditInvoiceRouteUri);
       break;
     }
 

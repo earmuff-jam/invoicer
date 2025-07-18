@@ -15,6 +15,20 @@ import {
   WhatshotRounded,
 } from "@mui/icons-material";
 import {
+  EditInvoiceRouteUri,
+  FaqRouteUri,
+  HomeRouteUri,
+  InvoiceDashboardRouteUri,
+  NotesRouteUri,
+  PropertiesRouteUri,
+  PropertyRouteUri,
+  RecieverInforamtionRouteUri,
+  RentalRouteUri,
+  SenderInforamtionRouteUri,
+  SettingsRouteUri,
+  ViewInvoiceRouteUri,
+} from "common/utils";
+import {
   OwnerRole,
   TenantRole,
 } from "features/Layout/components/Landing/constants";
@@ -58,16 +72,16 @@ const Settings = lazy(
 );
 
 /**
- * InvoicerRoutes
+ * RentWorksAppRoutes
  *
- * used to build out the invoicer routes. required flags are array of string that are
+ * used to build out the route of the application. required flags are array of string that are
  * required to be met as a client permission for the route to be in operation.
  */
-export const InvoicerRoutes = [
+export const RentWorksAppRoutes = [
   {
     id: 1,
     label: "Home",
-    path: "/",
+    path: HomeRouteUri,
     element: <Overview />,
     icon: <HomeRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -84,7 +98,7 @@ export const InvoicerRoutes = [
   {
     id: 2,
     label: "Dashboard",
-    path: "/dashboard",
+    path: InvoiceDashboardRouteUri,
     element: <Dashboard />,
     icon: <DashboardCustomizeRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
@@ -101,7 +115,7 @@ export const InvoicerRoutes = [
   {
     id: 3,
     label: "My Properties",
-    path: "/properties",
+    path: PropertiesRouteUri,
     element: <Properties />,
     icon: <CottageRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
@@ -120,7 +134,7 @@ export const InvoicerRoutes = [
   {
     id: 4,
     label: "My Rental Unit",
-    path: "/rental",
+    path: RentalRouteUri,
     element: <MyRental />,
     icon: <CottageRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
@@ -139,7 +153,7 @@ export const InvoicerRoutes = [
   {
     id: 5,
     label: "View Invoice",
-    path: "/invoice/view",
+    path: ViewInvoiceRouteUri,
     element: <PdfViewer />,
     icon: <PictureAsPdfRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -156,7 +170,7 @@ export const InvoicerRoutes = [
   {
     id: 6,
     label: "Edit Invoice",
-    path: "/invoice/edit",
+    path: EditInvoiceRouteUri,
     element: <EditPdf />,
     icon: <EditRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -173,7 +187,7 @@ export const InvoicerRoutes = [
   {
     id: 7,
     label: "Sender",
-    path: "/invoice/sender",
+    path: SenderInforamtionRouteUri,
     element: <SenderInfo />,
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
@@ -190,7 +204,7 @@ export const InvoicerRoutes = [
   {
     id: 8,
     label: "Reciever",
-    path: "/invoice/reciever",
+    path: RecieverInforamtionRouteUri,
     element: <RecieverInfo />,
     icon: <Person2Rounded fontSize="small" />,
     requiredFlags: ["userInformation"],
@@ -207,7 +221,7 @@ export const InvoicerRoutes = [
   {
     id: 9,
     label: "Settings",
-    path: "/settings",
+    path: SettingsRouteUri,
     element: <Settings />,
     icon: <SettingsRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],
@@ -225,7 +239,7 @@ export const InvoicerRoutes = [
   {
     id: 10,
     label: "Release Notes",
-    path: "/notes",
+    path: NotesRouteUri,
     element: <ReleaseNotes />,
     icon: <WhatshotRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -242,7 +256,7 @@ export const InvoicerRoutes = [
   {
     id: 11,
     label: "FAQ",
-    path: "/faq",
+    path: FaqRouteUri,
     element: <FaqSection />,
     icon: <LiveHelpRounded fontSize="small" />,
     requiredFlags: ["invoicer"],
@@ -259,7 +273,7 @@ export const InvoicerRoutes = [
   {
     id: 12,
     label: "My Properties",
-    path: "/property/:id",
+    path: PropertyRouteUri,
     element: <Property />,
     icon: <CottageRounded fontSize="small" />,
     requiredFlags: ["invoicer", "invoicerPro"],

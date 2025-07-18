@@ -25,6 +25,7 @@ import {
   DefaultTourStepsMapperObj,
   GeneratedTourSteps,
 } from "common/Tour/TourSteps";
+import { HomeRouteUri } from "common/utils";
 import AppToolbar from "features/Layout/components/AppToolbar/AppToolbar";
 import BreadCrumbs from "features/Layout/components/AppToolbar/BreadCrumbs";
 import Footer from "features/Layout/components/Footer/Footer";
@@ -123,7 +124,9 @@ export default function Layout({
         >
           <Box sx={{ minHeight: "90vh" }}>
             {/* no breadcrumbs on landing page */}
-            {currentUri !== "/" && <BreadCrumbs currentRoute={currentRoute} />}
+            {currentUri !== HomeRouteUri && (
+              <BreadCrumbs currentRoute={currentRoute} />
+            )}
             <Outlet context={[dialog.showWatermark]} />
           </Box>
           <Footer />

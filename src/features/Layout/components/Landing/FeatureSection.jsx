@@ -27,7 +27,7 @@ export default function FeatureSection() {
           color="text.secondary"
           sx={{ mb: 8, maxWidth: "800px", mx: "auto" }}
         >
-          Our invoicing application focuses on what matters: getting you paid
+          Our application focuses on what matters: getting you paid
           faster with minimal effort.
         </Typography>
 

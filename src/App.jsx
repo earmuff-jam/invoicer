@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { ThemeProvider } from "@emotion/react";
@@ -9,22 +10,12 @@ import { darkTheme, lightTheme } from "common/Theme";
 import { GeneratedTourSteps } from "common/Tour/TourSteps";
 import { buildAppRoutes } from "common/ValidateClientPerms";
 import Layout from "features/Layout/Layout";
-import { fetchLoggedInUser } from "features/RentWorks/common/utils";
-import { InvoicerRoutes } from "src/Routes";
+import { RentWorksAppRoutes } from "src/Routes";
 
 function App() {
-  const user = fetchLoggedInUser();
-
   const [currentThemeIdx, setCurrentThemeIdx] = useState(
     localStorage.getItem("theme") || 0,
   );
-
-  const [appRoutes, setAppRoutes] = useState([]);
-
-  useEffect(() => {
-    const draftAppRoutes = buildAppRoutes(InvoicerRoutes, user?.role);
-    setAppRoutes(draftAppRoutes);
-  }, [user?.role]);
 
   return (
     <ThemeProvider
@@ -39,16 +30,16 @@ function App() {
                 path="/"
                 element={
                   <Layout
-                    routes={InvoicerRoutes}
+                    routes={RentWorksAppRoutes}
                     currentThemeIdx={currentThemeIdx}
                     setCurrentThemeIdx={setCurrentThemeIdx}
                   />
                 }
               >
-                {appRoutes}
+                {buildAppRoutes(RentWorksAppRoutes)}
               </Route>
               {/* force navigate to main page when routes are not found but wait until we have routes built first; prevents redirect in refresh */}
-              {appRoutes.length > 0 && (
+              {buildAppRoutes(RentWorksAppRoutes).length > 0 && (
                 <Route path="/*" element={<Navigate to="/" replace />} />
               )}
             </Routes>
