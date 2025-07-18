@@ -88,7 +88,7 @@ export default function AddProperty({
             inputProps={{ ...register("owner_email"), disabled: true }}
             errorMsg={errors.owner_email?.message}
             labelIcon={<InfoRounded fontSize="small" color="secondary" />}
-            labelIconHelper="Editing an email address is disabled by default."
+            labelIconHelper="Editing an email address is prevented by default."
           />
         </Stack>
 
