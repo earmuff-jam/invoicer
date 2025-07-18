@@ -13,7 +13,6 @@ import {
 import {
   Avatar,
   Box,
-  Button,
   Card,
   Chip,
   Grid,
@@ -21,7 +20,6 @@ import {
   Stack,
   Tab,
   Tabs,
-  TextField,
   Typography,
 } from "@mui/material";
 import AButton from "common/AButton";
@@ -35,11 +33,9 @@ import {
 } from "features/Api/firebaseUserApi";
 import { OwnerRole } from "features/Layout/components/Landing/constants";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
-import {
-  DefaultTemplateData,
-  TabPanel,
-} from "features/RentWorks/components/Settings/common";
+import { TabPanel } from "features/RentWorks/components/Settings/common";
 import StripeConnect from "features/RentWorks/components/StripeConnect/StripeConnect";
+import Templates from "features/RentWorks/components/Templates/Templates";
 import { useAppTitle } from "hooks/useAppTitle";
 
 dayjs.extend(relativeTime);
@@ -54,7 +50,6 @@ export default function Settings() {
 
   const [activeTab, setActiveTab] = useState(0);
   const [showSnackbar, setShowSnackbar] = useState(false);
-  const [templates, setTemplates] = useState(DefaultTemplateData);
 
   const {
     control,
@@ -80,18 +75,6 @@ export default function Settings() {
 
   const handleTabChange = (_, newValue) => {
     setActiveTab(newValue);
-  };
-
-  const handleTemplateChange = (template, field) => (event) => {
-    setTemplates((prev) => ({
-      ...prev,
-      [template]: { ...prev[template], [field]: event.target.value },
-    }));
-  };
-
-  const handleSave = () => {
-    const formattedTemplates = JSON.stringify(templates);
-    localStorage.setItem("templates", formattedTemplates);
   };
 
   const onSubmit = async (formData) => {
@@ -426,66 +409,7 @@ export default function Settings() {
             icon: <EmailRounded fontSize="small" />,
             content: (
               <TabPanel value={activeTab} index={1}>
-                <TabPanel value={activeTab} index={1}>
-                  <Grid container spacing={3}>
-                    {Object.entries(templates).map(([key, template]) => (
-                      <Grid item xs={12} md={6} key={key}>
-                        <Card elevation={0} sx={{ p: 3, height: "100%" }}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              mb: 2,
-                            }}
-                          >
-                            <RowHeader
-                              title={template?.label || "Template"}
-                              sxProps={{
-                                fontSize: "1.125rem",
-                                fontWeight: "600",
-                              }}
-                            />
-                          </Box>
-                          <Stack spacing={2}>
-                            <TextField
-                              label="Subject"
-                              value={template.subject}
-                              onChange={handleTemplateChange(key, "subject")}
-                              fullWidth
-                              size="small"
-                            />
-                            <TextField
-                              label="Message Body"
-                              value={template.body || template.description}
-                              onChange={handleTemplateChange(
-                                key,
-                                template.body ? "body" : "description",
-                              )}
-                              fullWidth
-                              multiline
-                              rows={10}
-                              size="small"
-                            />
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              Available variables are - tenantName,
-                              propertyAddress, amount, dueDate
-                            </Typography>
-                            <Button
-                              variant="outlined"
-                              size="small"
-                              onClick={() => handleSave(`template_${key}`)}
-                            >
-                              Save Template
-                            </Button>
-                          </Stack>
-                        </Card>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </TabPanel>
+                <Templates />
               </TabPanel>
             ),
           },

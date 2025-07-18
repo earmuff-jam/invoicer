@@ -18,6 +18,26 @@ export const SendDefaultInvoiceEnumValue = "Send_Default_Invoice";
 export const PaymentReminderEnumValue = "Payment_Reminder";
 export const RenewLeaseNoticeEnumValue = "Renew_Lease_Notice_Enum_Value";
 
+
+
+/**
+ * stripHTMLForEmailMessages ...
+ *
+ * fn used to strip html messages for plain text formatting.
+ * this is done so to act as a fallback for clients who do not
+ * have email setup
+ *
+ * @param {Document} htmlDocument
+ * @returns Document - cleaned up version of the document without any tags or formatting
+ */
+export const stripHTMLForEmailMessages = (htmlDocument) => {
+  const div = document.createElement("div");
+  div.innerHTML = htmlDocument;
+  return div.textContent || div.innerText || "";
+};
+
+
+
 /**
  * Email Validators
  */

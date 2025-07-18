@@ -6,6 +6,7 @@ import {
   PaymentReminderEnumValue,
   RenewLeaseNoticeEnumValue,
   SendDefaultInvoiceEnumValue,
+  stripHTMLForEmailMessages,
 } from "features/RentWorks/common/utils";
 import { processTemplate } from "features/RentWorks/components/Settings/common";
 
@@ -22,11 +23,11 @@ export const handleQuickConnectAction = (
 ) => {
   const templateVariables = {
     leaseEndDate: dayjs(), // the day the lease ends
-    newSemiAnnualRent: "",
-    oneYearRentChange: "",
-    responseDeadline: "",
-    ownerPhone: "",
-    ownerEmail: "",
+    newSemiAnnualRent: property?.newSemiAnnualRent || "",
+    oneYearRentChange: property?.onYearRentChange || "",
+    responseDeadline: property?.newLeaseResponseDeadline || '',
+    ownerPhone: propertyOwner?.phone,
+    ownerEmail: propertyOwner?.email,
     currentDate: dayjs().format("MMMM DD, YYYY"),
     tenantName: primaryTenant?.name || "Rentee",
     propertyAddress: `${property.address}, ${property.city}, ${property.state} ${property.zipcode}`,
@@ -46,20 +47,24 @@ export const handleQuickConnectAction = (
     }
 
     case SendDefaultInvoiceEnumValue: {
-      const reminderSubject = processTemplate(
+      const invoiceSubject = processTemplate(
         templates.invoice.subject,
         templateVariables,
       );
-      const reminderBody = processTemplate(
+      const invoiceBody = processTemplate(
         templates.invoice.body,
         templateVariables,
       );
-
+      const invoiceHtml = processTemplate(
+        templates.invoice.html,
+        templateVariables,
+      );
       formatEmail(
         {
           to: primaryTenant.email,
-          subject: reminderSubject,
-          body: reminderBody,
+          subject: invoiceSubject,
+          body: invoiceBody,
+          html: invoiceHtml,
         },
         sendEmail,
       );
@@ -75,12 +80,17 @@ export const handleQuickConnectAction = (
         templates.reminder.body,
         templateVariables,
       );
+      const invoiceHtml = processTemplate(
+        templates.reminder.html,
+        templateVariables,
+      );
 
       formatEmail(
         {
           to: primaryTenant.email,
           subject: reminderSubject,
           body: reminderBody,
+          html: invoiceHtml,
         },
         sendEmail,
       );
@@ -96,12 +106,17 @@ export const handleQuickConnectAction = (
         templates.noticeOfLeaseRenewal.body,
         templateVariables,
       );
+      const reminderHtml = processTemplate(
+        templates.noticeOfLeaseRenewal.html,
+        templateVariables,
+      );
 
       formatEmail(
         {
           to: primaryTenant.email,
           subject: reminderSubject,
           body: reminderBody,
+          html: reminderHtml,
         },
         sendEmail,
       );
@@ -116,7 +131,7 @@ export const handleQuickConnectAction = (
  * function used to send email via sendEmail functionality
  * @param {Object} userInformation - object containing reciever information
  */
-const formatEmail = ({ to, subject, body }, sendEmail) => {
+const formatEmail = ({ to, subject, body, html }, sendEmail) => {
   const userEnabledFlagMap = validateClientPermissions();
   const isSendEmailFeatureEnabled = userEnabledFlagMap.get("sendEmail");
 
@@ -125,12 +140,15 @@ const formatEmail = ({ to, subject, body }, sendEmail) => {
     sendEmail({
       to: to,
       subject: subject,
-      text: body,
+      text: stripHTMLForEmailMessages(body),
+      html: html,
     });
   } else {
+    const plainTextBody = stripHTMLForEmailMessages(body);
     const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
       subject,
-    )}&body=${encodeURIComponent(body)}`;
+    )}&body=${encodeURIComponent(plainTextBody)}`;
+
     window.open(mailtoLink);
   }
 };

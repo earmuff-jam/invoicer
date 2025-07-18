@@ -17,100 +17,170 @@ export const DefaultTemplateData = {
   invoice: {
     label: "Invoice Template",
     subject: "Monthly Rent Invoice - {{propertyAddress}}",
-    body: `{{currentDate}}
+    body: "Please view your invoice details below",
+    html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <p>{{currentDate}}</p>
 
-To  
-{{tenantName}}  
-{{propertyAddress}}  
+  <p>
+    To<br />
+    <strong>{{tenantName}}</strong><br />
+    {{propertyAddress}}
+  </p>
 
-Dear {{tenantName}},  
+  <p>Dear {{tenantName}},</p>
 
-Please find attached your rent invoice for {{month}} {{year}}.  
+  <p>Please find attached your rent invoice for <strong>{{month}} {{year}}</strong>.</p>
 
-Property: {{propertyAddress}}  
-Amount Due: $ {{amount}}  
-Due Date: {{dueDate}}  
+  <p>
+    <strong>Property:</strong> {{propertyAddress}}<br />
+    <strong>Amount Due:</strong> $ {{amount}}<br />
+    <strong>Due Date:</strong> {{dueDate}}
+  </p>
 
-Thank you,  
-{{ownerName}}  
-{{companyName}}`,
+  <p>
+    Thank you,<br />
+    <strong>{{ownerName}}</strong><br />
+  </p>
+</div>
+    `,
   },
   // late payment reminder template
   reminder: {
     label: "Rent Late Payment Reminder Template",
     subject: "Rent Late Payment Reminder - {{propertyAddress}}",
-    body: `{{currentDate}}
+    body: "Please view your late payment reminder",
+    html: `
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <p>{{currentDate}}</p>
 
-To  
-{{tenantName}}  
-{{propertyAddress}}  
+  <p>
+    To<br />
+    <strong>{{tenantName}}</strong><br />
+    <strong>{{propertyAddress}}</strong>
+  </p>
 
-Dear {{tenantName}},  
+  <p>Dear <strong>{{tenantName}}</strong>,</p>
 
-This is a friendly reminder that your rent payment of $ {{amount}} was due on {{dueDate}}.  
+  <p>
+    This is a friendly reminder that your rent payment of 
+    <strong>$ {{amount}}</strong> was due on <strong>{{dueDate}}</strong>.
+  </p>
 
-Property: {{propertyAddress}}  
+  <p><strong>Property:</strong> {{propertyAddress}}</p>
 
-Please submit your payment as soon as possible to avoid late fees.  
+  <p>
+    Please submit your payment on time to avoid any late fees.
+  </p>
 
-If you have already made this payment, please disregard this notice.  
-
-Best regards,  
-{{ownerName}}  
-{{propertyAddress}}`,
+  <p>
+    Best regards,<br />
+    <strong>{{ownerName}}</strong><br />
+    {{propertyAddress}}
+  </p>
+</div>
+`,
   },
   // rent regular payment reminder template
   rent: {
     label: "Rent Regular Payment Reminder Template",
     subject: "Rent Payment Reminder - {{propertyAddress}}",
-    body: `{{currentDate}}
+    body: "Please view your regular rent payment reminder",
+    html: `
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <p>{{currentDate}}</p>
 
-To  
-{{tenantName}}  
-{{propertyAddress}}  
+  <p>
+    To<br />
+    <strong>{{tenantName}}</strong><br />
+    <strong>{{propertyAddress}}</strong>
+  </p>
 
-Dear {{tenantName}},  
+  <p>Dear <strong>{{tenantName}}</strong>,</p>
 
-This is a friendly reminder that your rent payment of $ {{amount}} is due on {{dueDate}}.  
+  <p>
+    This is a friendly reminder that your rent payment of 
+    <strong>$ {{amount}}</strong> is due on <strong>{{dueDate}}</strong>.
+  </p>
 
-Property: {{propertyAddress}}  
+  <p><strong>Property:</strong> {{propertyAddress}}</p>
 
-Please submit your payment on time to avoid any late fees.  
+  <p>
+    Please submit your payment on time to avoid any late fees.
+  </p>
 
-Best regards,  
-{{ownerName}}`,
+  <p>
+    Best regards,<br />
+    <strong>{{ownerName}}</strong><br />
+    {{propertyAddress}}
+  </p>
+</div>
+`,
   },
   // notice of lease renewal template
   noticeOfLeaseRenewal: {
     label: "Notice of Lease Renewal Template",
     subject: "Notice of Lease Expiration and Renewal - {{propertyAddress}}",
-    body: `{{currentDate}}
+    body: "Please view your notice of renewal",
+    html: `
+<div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <p>{{currentDate}}</p>
 
-To  
-{{tenantName}}  
-{{propertyAddress}}  
+  <p style="font-weight: bold;">
+    To<br />
+    {{tenantName}}<br />
+    {{propertyAddress}}
+  </p>
 
-Dear {{tenantName}},  
+  <strong><p> Subject - Notice of lease expiration and renewal </p></strong>
 
-This letter is being sent to inform you that your current lease at {{propertyAddress}} is, as you may be aware, set to expire on {{leaseEndDate}}.
+  <p>Dear {{tenantName}},</p>
 
-Please review the following renewal options, as stipulated in your existing lease agreement:  
+  <p>
+    This letter is being sent to inform you that your current lease at 
+    <strong>{{propertyAddress}}</strong> is, as you may be aware, set to expire on 
+    <strong>{{leaseEndDate}}</strong>.
+  </p>
 
-• SEMI ANNUAL LEASE RENEWAL:  
-If you choose to switch to a semi-annual lease, please be advised that the monthly rent will increase by {{newSemiAnnualRent}}. This option provides flexibility but comes with a higher monthly cost.  
+  <p>Please review the following renewal options, as stipulated in your existing lease agreement:</p>
 
-• ONE YEAR LEASE RENEWAL:
-Opting for a one-year lease renewal will result in the following change: {{oneYearRentChange}}. This fixed-term option offers stability and predictability for the upcoming year.  
+  <p>
+  We have greatly appreciated having you as a tenant, and we would like to extend the opportunity
+for you to continue your tenancy at our property. In accordance with the terms of your current
+lease agreement, we are providing you with this notice 60 days in advance to discuss the renewal
+options.
+</p>
 
-Please carefully consider the above-mentioned terms and inform us of your decision by {{responseDeadline}}. You can contact us at {{ownerPhone}} or via email at {{ownerEmail}} for any further queries.  
+  <p>
+    <strong>• SEMI ANNUAL LEASE RENEWAL:</strong><br />
+    If you choose to switch to a semi-annual lease, please be advised that the monthly rent will increase by 
+    {{newSemiAnnualRent}}. This option provides flexibility but comes with a higher monthly cost.
+  </p>
 
-Please be advised that all other terms of your original rental agreement remain in effect.  
+  <p style="font-weight: bold;">
+    • ONE YEAR LEASE RENEWAL:<br />
+    Opting for a one-year lease renewal will result in the following change:
+    {{oneYearRentChange}}. This fixed-term option offers stability and predictability for the upcoming year.
+  </p>
 
-We value your tenancy and look forward to continuing our positive landlord-tenant relationship.  
+  <p>
+    Please carefully consider the above-mentioned terms and inform us of your decision by 
+    <strong>{{responseDeadline}}</strong>. You can contact us at <strong>{{ownerPhone}}</strong> or via email at 
+    <strong>{{ownerEmail}}</strong> for any further queries.
+  </p>
 
-Regards,  
-{{ownerName}}  
-{{propertyAddress}}`,
+  <p style="font-weight: bold;">
+    Please be advised that all other terms of your original rental agreement remain in effect.<br />
+    We value your tenancy and look forward to continuing our positive landlord-tenant relationship.
+  </p>
+
+  <p>
+    Regards,<br />
+    <strong>{{ownerName}}</strong><br />
+    <strong>{{propertyAddress}}</strong><br />
+  </p>
+</div>
+`,
   },
 };
 
@@ -218,6 +288,12 @@ export const getStripeFailureReasons = (account) => {
  * @returns formattedTemplate object
  */
 export const processTemplate = (template, variables) => {
+  if (typeof template !== "string") {
+    /* eslint-disable no-console */
+    console.error("Template must be a string. Received:", template);
+    return "";
+  }
+
   let processedTemplate = template;
 
   Object.entries(variables).forEach(([key, value]) => {
