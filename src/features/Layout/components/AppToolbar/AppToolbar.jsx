@@ -146,7 +146,7 @@ export default function AppToolbar({
         severity={success ? "success" : "error"}
         title={
           success
-            ? "Email sent successfully. Check spam."
+            ? "Email sent successfully. Check spam if necessary."
             : "Error sending email."
         }
       />

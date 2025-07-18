@@ -118,7 +118,6 @@ export default function Properties() {
   };
 
   const onSubmit = async (data) => {
-
     const result = {
       ...data,
       id: uuidv4(),
@@ -249,6 +248,7 @@ export default function Properties() {
               <AccordionDetails>
                 <ViewPropertyAccordionDetails
                   property={property}
+                  userData={userData}
                   rentDetails={rentDetails}
                   isRentDetailsLoading={isRentDetailsLoading}
                 />

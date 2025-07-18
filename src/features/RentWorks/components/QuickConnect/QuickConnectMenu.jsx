@@ -1,7 +1,6 @@
 import React from "react";
 
 import {
-  BuildRounded,
   CampaignRounded,
   NotificationsRounded,
   ReceiptLongRounded,
@@ -13,43 +12,48 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
+import {
+  CreateInvoiceEnumValue,
+  PaymentReminderEnumValue,
+  RenewLeaseNoticeEnumValue,
+  SendDefaultInvoiceEnumValue,
+} from "features/RentWorks/common/utils";
 
 export default function QuickConnectMenu({
   anchorEl,
   open,
   onClose,
-  property,
   onMenuItemClick,
 }) {
   const handleMenuItemClick = (action) => {
-    onMenuItemClick?.(action, property);
+    onMenuItemClick?.(action);
     onClose();
   };
 
   const menuItems = [
     {
       id: "invoice",
-      label: "Create/Send Invoice",
+      label: "Create your own Invoice",
       icon: <ReceiptLongRounded fontSize="small" />,
-      action: "CREATE_INVOICE",
+      action: CreateInvoiceEnumValue,
+    },
+    {
+      id: "default-invoice",
+      label: "Send Default Invoice",
+      icon: <ReceiptLongRounded fontSize="small" />,
+      action: SendDefaultInvoiceEnumValue,
     },
     {
       id: "payment-reminder",
       label: "Send Payment Reminder",
       icon: <NotificationsRounded fontSize="small" />,
-      action: "PAYMENT_REMINDER",
+      action: PaymentReminderEnumValue,
     },
     {
-      id: "maintenance-request",
-      label: "Send Maintenance Form",
-      icon: <BuildRounded fontSize="small" />,
-      action: "MAINTENANCE_REQUEST",
-    },
-    {
-      id: "general-notice",
-      label: "Send General Notice",
+      id: "renew-lease-notice",
+      label: "Send renew Lease Reminder",
       icon: <CampaignRounded fontSize="small" />,
-      action: "GENERAL_NOTICE",
+      action: RenewLeaseNoticeEnumValue,
     },
   ];
 

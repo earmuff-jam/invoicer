@@ -6,8 +6,37 @@ import dayjs from "dayjs";
 import { getAuth, signOut } from "firebase/auth";
 import { authenticatorConfig } from "src/config";
 
+// ---------------------------
 // enum values
+
+// stripe rent status
 export const PaidRentStatusEnumValue = "paid";
+
+// template processor actions
+export const CreateInvoiceEnumValue = "Create_Invoice";
+export const SendDefaultInvoiceEnumValue = "Send_Default_Invoice";
+export const PaymentReminderEnumValue = "Payment_Reminder";
+export const RenewLeaseNoticeEnumValue = "Renew_Lease_Notice_Enum_Value";
+
+
+
+/**
+ * stripHTMLForEmailMessages ...
+ *
+ * fn used to strip html messages for plain text formatting.
+ * this is done so to act as a fallback for clients who do not
+ * have email setup
+ *
+ * @param {Document} htmlDocument
+ * @returns Document - cleaned up version of the document without any tags or formatting
+ */
+export const stripHTMLForEmailMessages = (htmlDocument) => {
+  const div = document.createElement("div");
+  div.innerHTML = htmlDocument;
+  return div.textContent || div.innerText || "";
+};
+
+
 
 /**
  * Email Validators
@@ -157,12 +186,29 @@ export const getOccupancyRate = (property, tenants, isAnyTenantSoR) => {
 };
 
 /**
- * isRentLate ...
+ * getNextMonthlyDueDate ...
  *
- * fn used to determine if the rent is due
- * @param {string} start_date - the string representation of the start date in ISO format
- * @returns boolean value of true / false
+ *
+ * function used to return next due date (monthly) based on the original lease start date.
+ *
+ * @param {string | Date} startDate - The tenant's lease start date.
+ * @returns {string} - The next due date in YYYY-MM-DD format.
  */
+export function getNextMonthlyDueDate(startDate) {
+  if (!startDate) return "";
+
+  const original = dayjs(startDate);
+  const today = dayjs();
+  const targetDay = original.date();
+
+  const nextDue =
+    today.date() <= targetDay
+      ? today.set("date", targetDay)
+      : today.add(1, "month").set("date", targetDay);
+
+  return nextDue.format("YYYY-MM-DD");
+}
+
 /**
  * Checks if rent is currently due.
  *

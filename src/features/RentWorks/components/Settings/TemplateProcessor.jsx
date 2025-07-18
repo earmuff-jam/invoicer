@@ -1,60 +1,77 @@
-// Template processor utility
-export const processTemplate = (template, variables) => {
-  let processedTemplate = template;
+import dayjs from "dayjs";
 
-  // Replace all variables in the format {{variableName}}
-  Object.entries(variables).forEach(([key, value]) => {
-    const regex = new RegExp(`{{${key}}}`, "g");
-    processedTemplate = processedTemplate.replace(regex, value || "");
-  });
-
-  return processedTemplate;
-};
+import validateClientPermissions from "common/ValidateClientPerms";
+import {
+  CreateInvoiceEnumValue,
+  PaymentReminderEnumValue,
+  RenewLeaseNoticeEnumValue,
+  SendDefaultInvoiceEnumValue,
+  stripHTMLForEmailMessages,
+} from "features/RentWorks/common/utils";
+import { processTemplate } from "features/RentWorks/components/Settings/common";
 
 export const handleQuickConnectAction = (
   action,
   property,
+  totalRentAmount,
+  monthlyRentalDueDate,
   primaryTenant,
+  propertyOwner,
   templates,
-  openMaintenanceForm = () => {},
-  openNoticeComposer = () => {},
+  redirectTo,
+  sendEmail,
 ) => {
   const templateVariables = {
-    tenantName: primaryTenant.name,
+    leaseEndDate: dayjs(), // the day the lease ends
+    newSemiAnnualRent: property?.newSemiAnnualRent || "",
+    oneYearRentChange: property?.onYearRentChange || "",
+    responseDeadline: property?.newLeaseResponseDeadline || '',
+    ownerPhone: propertyOwner?.phone,
+    ownerEmail: propertyOwner?.email,
+    currentDate: dayjs().format("MMMM DD, YYYY"),
+    tenantName: primaryTenant?.name || "Rentee",
     propertyAddress: `${property.address}, ${property.city}, ${property.state} ${property.zipcode}`,
-    amount: primaryTenant.monthlyRent?.toFixed(2),
-    dueDate: primaryTenant.dueDate,
-    month: new Date().toLocaleString("default", { month: "long" }),
-    year: new Date().getFullYear(),
-    ownerName: "Sarah Mitchell", // From your settings
-    companyName: "Mitchell Properties LLC", // From your settings
-    contactInfo: "sarah.mitchell@propmanagement.com", // From your settings
-    paymentLink: "https://yourportal.com/payment", // Your payment portal
-    noticeContent: "", // This would be filled when sending a notice
+    amount: totalRentAmount,
+    dueDate: monthlyRentalDueDate,
+    month: dayjs().format("MMMM"),
+    year: dayjs().get("year"),
+    ownerName: propertyOwner?.googleDisplayName,
+    companyName: propertyOwner?.company_name || "",
+    contactInfo: propertyOwner?.email || "",
   };
 
   switch (action) {
-    case "CREATE_INVOICE": {
-      // const invoiceSubject = processTemplate(
-      //   templates.invoice.subject,
-      //   templateVariables
-      // );
-      // const invoiceBody = processTemplate(
-      //   templates.invoice.body,
-      //   templateVariables
-      // );
-
-      // // Open email client or send via your API
-      // sendEmail({
-      //   to: primaryTenant.email,
-      //   subject: invoiceSubject,
-      //   body: invoiceBody,
-      //   attachments: ["invoice.pdf"], // Generate invoice PDF
-      // });
+    case CreateInvoiceEnumValue: {
+      redirectTo("/invoice/edit");
       break;
     }
 
-    case "PAYMENT_REMINDER": {
+    case SendDefaultInvoiceEnumValue: {
+      const invoiceSubject = processTemplate(
+        templates.invoice.subject,
+        templateVariables,
+      );
+      const invoiceBody = processTemplate(
+        templates.invoice.body,
+        templateVariables,
+      );
+      const invoiceHtml = processTemplate(
+        templates.invoice.html,
+        templateVariables,
+      );
+      formatEmail(
+        {
+          to: primaryTenant.email,
+          subject: invoiceSubject,
+          body: invoiceBody,
+          html: invoiceHtml,
+        },
+        sendEmail,
+      );
+      break;
+    }
+
+    case PaymentReminderEnumValue: {
       const reminderSubject = processTemplate(
         templates.reminder.subject,
         templateVariables,
@@ -63,48 +80,75 @@ export const handleQuickConnectAction = (
         templates.reminder.body,
         templateVariables,
       );
+      const invoiceHtml = processTemplate(
+        templates.reminder.html,
+        templateVariables,
+      );
 
-      sendEmail({
-        to: primaryTenant.email,
-        subject: reminderSubject,
-        body: reminderBody,
-      });
+      formatEmail(
+        {
+          to: primaryTenant.email,
+          subject: reminderSubject,
+          body: reminderBody,
+          html: invoiceHtml,
+        },
+        sendEmail,
+      );
       break;
     }
 
-    case "MAINTENANCE_REQUEST": {
-      // Open maintenance form with tenant info pre-filled
-      openMaintenanceForm({
-        tenantName: primaryTenant.name,
-        tenantEmail: primaryTenant.email,
-        propertyAddress: templateVariables.propertyAddress,
-        formTemplate: templates.maintenance,
-      });
-      break;
-    }
+    case RenewLeaseNoticeEnumValue: {
+      const reminderSubject = processTemplate(
+        templates.noticeOfLeaseRenewal.subject,
+        templateVariables,
+      );
+      const reminderBody = processTemplate(
+        templates.noticeOfLeaseRenewal.body,
+        templateVariables,
+      );
+      const reminderHtml = processTemplate(
+        templates.noticeOfLeaseRenewal.html,
+        templateVariables,
+      );
 
-    case "GENERAL_NOTICE": {
-      // Open notice composer with template
-      openNoticeComposer({
-        tenantName: primaryTenant.name,
-        tenantEmail: primaryTenant.email,
-        propertyAddress: templateVariables.propertyAddress,
-        template: templates.notice,
-      });
+      formatEmail(
+        {
+          to: primaryTenant.email,
+          subject: reminderSubject,
+          body: reminderBody,
+          html: reminderHtml,
+        },
+        sendEmail,
+      );
       break;
     }
   }
 };
 
-const sendEmail = ({ to, subject, body, attachments = [] }) => {
-  /* eslint-disable no-console */
-  console.log("Sending email:", { to, subject, body, attachments });
+/**
+ * formatEmail ...
+ *
+ * function used to send email via sendEmail functionality
+ * @param {Object} userInformation - object containing reciever information
+ */
+const formatEmail = ({ to, subject, body, html }, sendEmail) => {
+  const userEnabledFlagMap = validateClientPermissions();
+  const isSendEmailFeatureEnabled = userEnabledFlagMap.get("sendEmail");
 
-  // In real app, this would:
-  // 1. Call your email API (SendGrid, Mailgun, etc.)
-  // 2. Or open user's email client with mailto:
-  const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
-    subject,
-  )}&body=${encodeURIComponent(body)}`;
-  window.open(mailtoLink);
+  // if client has ability to send email, use that
+  if (isSendEmailFeatureEnabled) {
+    sendEmail({
+      to: to,
+      subject: subject,
+      text: stripHTMLForEmailMessages(body),
+      html: html,
+    });
+  } else {
+    const plainTextBody = stripHTMLForEmailMessages(body);
+    const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(
+      subject,
+    )}&body=${encodeURIComponent(plainTextBody)}`;
+
+    window.open(mailtoLink);
+  }
 };
