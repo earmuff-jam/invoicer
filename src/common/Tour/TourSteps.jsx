@@ -131,6 +131,36 @@ const DashboardHelpSteps = [
 ];
 
 /**
+ * MyPropertiesHelpSteps
+ *
+ * User helpful steps in the reciever info page. This is where you can upload information about the reciever of the invoice. Leaving this
+ * empty should render no salutation in the view page.
+ */
+const MyPropertiesHelpSteps = [
+  {
+    element:
+      "View a list of properties that are managed / owned by you. If you don't have a property 'Add Property' to begin.",
+  },
+  {
+    element: "Create a new property via this 'Add Property' button.",
+  },
+  {
+    element: "Remove a property with a simple click of this delete button.",
+  },
+  {
+    element:
+      "View a quick overview of tenant details if you have them. If you do not have tenant details associate tenants before proceeding.",
+  },
+  {
+    element:
+      "View current rent payment status and the next payment due date. Use Quick Connect to quickly send invoices, reminders or even lease renewal templates. Do not like what you see? Navigate to settings -> templates to change the default template.",
+  },
+  {
+    element: "Click on this property to dive deeper into that property.",
+  },
+];
+
+/**
  * derieveTourSteps
  *
  * used to build the necessary object from the steps to render the tour correctly.
@@ -142,7 +172,15 @@ const derieveTourSteps = (staticSteps, prefix) => {
   return staticSteps.map(({ element }, index) => ({
     id: index,
     selector: `[data-tour="${prefix}-${index}"]`,
-    content: <Box padding="0.2rem">{element}</Box>,
+    content: (
+      <Typography
+        variant="subtitle2"
+        sx={{ padding: "0.2rem", textTransform: "initial" }}
+        padding="0.2rem"
+      >
+        {element}
+      </Typography>
+    ),
   }));
 };
 
@@ -199,7 +237,7 @@ const DisplaySubHelperSection = () => {
  * and are displayed for the user.
  */
 export const DefaultTourStepsMapperObj = {
-  "/view": {
+  "/invoice/view": {
     element: (
       <>
         {createHelperSentences("view / print", "invoices")}
@@ -209,7 +247,7 @@ export const DefaultTourStepsMapperObj = {
     start: 0,
     end: ViewPdfHelpSteps.length,
   },
-  "/edit": {
+  "/invoice/edit": {
     element: (
       <>
         {createHelperSentences("edit / update", "invoices")}
@@ -219,7 +257,7 @@ export const DefaultTourStepsMapperObj = {
     start: ViewPdfHelpSteps.length,
     end: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
   },
-  "/sender": {
+  "/invoice/sender": {
     element: (
       <>
         {createHelperSentences("edit / update", "sender information")}
@@ -232,7 +270,7 @@ export const DefaultTourStepsMapperObj = {
       EditPdfHelpSteps.length +
       SenderInfoHelpSteps.length,
   },
-  "/reciever": {
+  "/invoice/reciever": {
     element: (
       <>
         {createHelperSentences("edit / update", "reciever information")}
