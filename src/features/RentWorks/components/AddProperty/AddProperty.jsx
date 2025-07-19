@@ -1,5 +1,5 @@
 import { InfoRounded } from "@mui/icons-material";
-import { Button, Stack, Tooltip, Typography } from "@mui/material";
+import { Button, Divider, Stack, Tooltip, Typography } from "@mui/material";
 import TextFieldWithLabel from "common/UserInfo/TextFieldWithLabel";
 
 export default function AddProperty({
@@ -11,6 +11,11 @@ export default function AddProperty({
 }) {
   return (
     <form onSubmit={onSubmit}>
+      <Divider>
+        <Typography variant="caption" color="textSecondary">
+          Property Information
+        </Typography>
+      </Divider>
       <Stack direction="column" spacing={1}>
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
@@ -80,6 +85,11 @@ export default function AddProperty({
           />
         </Stack>
 
+        <Divider>
+          <Typography variant="caption" color="textSecondary">
+            Additional Information
+          </Typography>
+        </Divider>
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
             label="Owner Email Address *"
@@ -121,6 +131,55 @@ export default function AddProperty({
           />
         </Stack>
 
+        <Stack direction="row" spacing={2}>
+          <TextFieldWithLabel
+            label="Area of the home in sq ft. *"
+            id="sqFt"
+            placeholder="7854"
+            errorMsg={errors.sqFt?.message}
+            inputProps={{
+              ...register("sqFt", {
+                required: "Area of the home in square ft is required.",
+                pattern: {
+                  value: /^\d+$/,
+                  message: "Square footage must be a whole number",
+                },
+                min: {
+                  value: 100,
+                  message: "Value must be at least 100 sq ft",
+                },
+                max: {
+                  value: 20000,
+                  message: "Value must be less than 20,000 sq ft",
+                },
+              }),
+            }}
+          />
+        </Stack>
+
+        {/* Notes section */}
+        <TextFieldWithLabel
+          label="Additional Notes"
+          id="note"
+          placeholder="Additional notes "
+          errorMsg={errors.note?.message}
+          multiline={true}
+          maxRows={3}
+          inputProps={{
+            ...register("note", {
+              maxLength: {
+                value: 500,
+                message: "Notes must be 500 characters or less",
+              },
+            }),
+          }}
+        />
+
+        <Divider>
+          <Typography variant="caption" color="textSecondary">
+            Rental Information
+          </Typography>
+        </Divider>
         {/* Monthy rent and Additional Rent */}
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
@@ -205,52 +264,6 @@ export default function AddProperty({
             }}
           />
         </Stack>
-        
-
-        <Stack direction="row" spacing={2}>
-          <TextFieldWithLabel
-            label="Area of the home in sq ft. *"
-            id="sqFt"
-            placeholder="7854"
-            errorMsg={errors.sqFt?.message}
-            inputProps={{
-              ...register("sqFt", {
-                required: "Area of the home in square ft is required.",
-                pattern: {
-                  value: /^\d+$/,
-                  message: "Square footage must be a whole number",
-                },
-                min: {
-                  value: 100,
-                  message: "Value must be at least 100 sq ft",
-                },
-                max: {
-                  value: 20000,
-                  message: "Value must be less than 20,000 sq ft",
-                },
-              }),
-            }}
-          />
-        </Stack>
-
-        {/* Notes section */}
-        <TextFieldWithLabel
-          label="Additional Notes"
-          id="note"
-          placeholder="Additional notes "
-          errorMsg={errors.note?.message}
-          multiline={true}
-          maxRows={3}
-          inputProps={{
-            ...register("note", {
-              maxLength: {
-                value: 500,
-                message: "Notes must be 500 characters or less",
-              },
-            }),
-          }}
-        />
-
         <Button variant="contained" disabled={isDisabled} type="submit">
           {isEditing ? "Edit Property" : "Add Property"}
         </Button>
