@@ -118,7 +118,7 @@ export default function NavBar({
             padding: "1rem",
           }}
         >
-          <Typography variant="h5">Invoicer</Typography>
+          <Typography variant="h5">RentWorks</Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightRounded />

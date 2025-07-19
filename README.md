@@ -1,4 +1,4 @@
-# EarmuffJam | Invoicer Application
+# EarmuffJam | RentWorks Application
 
 ![Build Status](https://github.com/earmuff-jam/invoicer/actions/workflows/main.yml/badge.svg)
 
@@ -8,8 +8,8 @@
 
 ## Overview
 
-Invoicer is a web application designed to simplify the creation and management of invoices. With this app, users can easily create, edit, and manage invoices, keeping track of important details like client information, invoice items, totals, and dates.
-Visit [Invoicer](https://earmuffinvoicer.netlify.app/)
+RentWorks is a web application designed to simplify the creation and management of invoices. With this app, users can easily create, edit, and manage invoices, keeping track of important details like client information, invoice items, totals, and dates.
+Visit [RentWorks](https://earmuffinvoicer.netlify.app/)
 
 ## Features
 
@@ -17,7 +17,7 @@ Visit [Invoicer](https://earmuffinvoicer.netlify.app/)
 - **Edit Invoice:** Easily modify invoices to adjust any details.
 - **Automatic Calculations:** Automatically calculates total value and standard tax. Audience members can adjust tax.
 - **Persistent Storage:** Keeps data stored locally for easy access and retrieval.
-- **Responsive Design:** Access the invoicer app on desktops, tablets, and mobile devices.
+- **Responsive Design:** Access the RentWorks app on desktops, tablets, and mobile devices.
 
 ## Copyright and License
 

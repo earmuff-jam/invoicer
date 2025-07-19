@@ -1,6 +1,6 @@
 ## Developer setup and ease of guide.
 
-Invoicer app is written in JS and is used to build invoices on the fly.
+RentWorks app is written in JS and is used to build invoices on the fly.
 
 ### Installation
 

@@ -130,7 +130,8 @@ export const updateDateTime = (startDate) => {
  * @returns {Number} formatted result
  */
 export const formatCurrency = (amt = 0) => {
-  return `$${parseInt(amt).toLocaleString()}`;
+  return amt;
+  // return `$${parseInt(amt).toLocaleString()}`;
 };
 
 /**

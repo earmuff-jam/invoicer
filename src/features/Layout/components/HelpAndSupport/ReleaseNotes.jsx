@@ -46,7 +46,7 @@ export default function ReleaseNotes() {
           color="text.secondary"
           textTransform="initial"
         >
-          View the latest updates and changes to Invoicer.
+          View the latest updates and changes to RentWorks.
         </Typography>
       </Box>
 
