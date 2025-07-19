@@ -114,7 +114,7 @@ export default function AppToolbar({
           <MenuOutlined />
         </IconButton>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Invoicer
+          RentWorks
         </Typography>
         <Stack direction="row" spacing={1} alignItems="center">
           {isUserLoggedIn() ? (

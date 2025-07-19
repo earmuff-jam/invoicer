@@ -96,7 +96,7 @@ export default function HeroSection() {
               Simple. Powerful. Professional.
             </Typography>
             <Typography variant="h5" sx={{ textTransform: "initial" }}>
-              Create and manage assets in seconds. No complexity, just results.
+              Create and manage rents in seconds. No complexity, just results.
             </Typography>
 
             <Stack>

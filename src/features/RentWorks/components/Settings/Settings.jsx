@@ -202,6 +202,9 @@ export default function Settings() {
                         <TextFieldWithLabel
                           {...field}
                           label="First Name *"
+                          id="first_name"
+                          name="first_name"
+                          placeholder="Enter your first name"
                           error={!!errors.first_name}
                           errorMsg={errors.first_name?.message}
                           fullWidth
@@ -228,7 +231,7 @@ export default function Settings() {
                           label="Last Name *"
                           id="last_name"
                           name="last_name"
-                          placeholder="Last Name"
+                          placeholder="Enter your Last Name"
                           error={!!errors.last_name}
                           errorMsg={errors.last_name?.message}
                           fullWidth
@@ -250,7 +253,7 @@ export default function Settings() {
                       labelIcon={
                         <InfoRounded fontSize="small" color="secondary" />
                       }
-                      labelIconHelper="Editing an email address is disabled by default."
+                      labelIconHelper="Editing an email address is prevented by default."
                     />
 
                     <Controller
@@ -270,7 +273,7 @@ export default function Settings() {
                           label="Phone Number *"
                           id="phone"
                           name="phone"
-                          placeholder="Phone Number"
+                          placeholder="Enter your phone number"
                           error={!!errors.phone}
                           errorMsg={errors.phone?.message}
                         />
@@ -296,7 +299,7 @@ export default function Settings() {
                         label="Street Address *"
                         id="street_address"
                         name="street_address"
-                        placeholder="Street Address"
+                        placeholder="Enter your primary street address"
                         error={!!errors.street_address}
                         errorMsg={errors.street_address?.message}
                       />

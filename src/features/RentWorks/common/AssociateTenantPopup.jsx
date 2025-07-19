@@ -415,7 +415,7 @@ export default function AssociateTenantPopup({
               }
               label="Single Occupancy Room (SoR)?"
             />
-            <Tooltip title="Rooms occupied by single individual. If current property already contains existing tenant, SoR is disabled.">
+            <Tooltip title="Rooms occupied by single individual. If current property is already occupied, SoR is disabled.">
               <InfoRounded
                 fontSize="small"
                 color="secondary"
