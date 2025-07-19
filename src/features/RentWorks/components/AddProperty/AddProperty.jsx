@@ -183,9 +183,9 @@ export default function AddProperty({
         {/* Monthy rent and Additional Rent */}
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
-            label="Monthly Rent Amount *"
+            label="Monthly Rent*"
             id="rent"
-            placeholder="2750.00"
+            placeholder="Monthly rent in USD. Eg, 2750.00"
             errorMsg={errors.rent?.message}
             inputProps={{
               ...register("rent", {
@@ -213,7 +213,7 @@ export default function AddProperty({
               </Stack>
             }
             id="additional_rent"
-            placeholder="400.00"
+            placeholder="Additional fee. Eg, 400.00"
             errorMsg={errors.additional_rent?.message}
             inputProps={{ ...register("additional_rent") }}
           />
@@ -224,7 +224,7 @@ export default function AddProperty({
           <TextFieldWithLabel
             label="Initial Late Fee *"
             id="initial_late_fee"
-            placeholder="75.00"
+            placeholder="Initial Late fee. Eg, 75.00"
             errorMsg={errors.initial_late_fee?.message}
             inputProps={{
               ...register("initial_late_fee", {
@@ -251,7 +251,7 @@ export default function AddProperty({
               </Stack>
             }
             id="daily_late_fee"
-            placeholder="5.00"
+            placeholder="Daily late fee. Eg, 5.00"
             errorMsg={errors.daily_late_fee?.message}
             inputProps={{
               ...register("daily_late_fee", {
