@@ -121,6 +121,7 @@ export default function AddProperty({
           />
         </Stack>
 
+        {/* Monthy rent and Additional Rent */}
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
             label="Monthly Rent Amount *"
@@ -158,6 +159,53 @@ export default function AddProperty({
             inputProps={{ ...register("additional_rent") }}
           />
         </Stack>
+
+        {/* Initial Late Fee and Daily Late Fee */}
+        <Stack direction="row" spacing={2}>
+          <TextFieldWithLabel
+            label="Initial Late Fee *"
+            id="initial_late_fee"
+            placeholder="75.00"
+            errorMsg={errors.initial_late_fee?.message}
+            inputProps={{
+              ...register("initial_late_fee", {
+                required:
+                  "Initial Late Fee is required and must be in number format.",
+                pattern: {
+                  value: /^\d+(\.\d{1,2})?$/,
+                  message: "Rent must be a valid amount (e.g. 75.00)",
+                },
+              }),
+            }}
+          />
+          <TextFieldWithLabel
+            label={
+              <Stack direction="row" alignItems="center">
+                <Tooltip title="Daily Late fee is the late fee applied after the grace period is over. Eg, 10$ per day daily rental fee should be 10.00">
+                  <InfoRounded
+                    color="secondary"
+                    fontSize="small"
+                    sx={{ fontSize: "1rem", margin: "0.2rem" }}
+                  />
+                </Tooltip>
+                <Typography variant="subtitle2">Late fee / day </Typography>
+              </Stack>
+            }
+            id="daily_late_fee"
+            placeholder="5.00"
+            errorMsg={errors.daily_late_fee?.message}
+            inputProps={{
+              ...register("daily_late_fee", {
+                pattern: {
+                  value: /^\d+(\.\d{1,2})?$/,
+                  message:
+                    "Daily late fee must be valid amount per day. Eg, 10.00",
+                },
+              }),
+            }}
+          />
+        </Stack>
+        
 
         <Stack direction="row" spacing={2}>
           <TextFieldWithLabel
