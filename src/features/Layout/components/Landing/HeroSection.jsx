@@ -2,10 +2,17 @@ import { useNavigate } from "react-router-dom";
 
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import AButton from "common/AButton";
-import { isUserLoggedIn } from "common/utils";
+import {
+  PropertiesRouteUri,
+  RentalRouteUri,
+  isUserLoggedIn,
+} from "common/utils";
 import { useCreateUserMutation } from "features/Api/firebaseUserApi";
 import { authenticateViaGoogle } from "features/Auth/AuthHelper";
-import { OwnerRole, TenantRole } from "features/Layout/components/Landing/constants";
+import {
+  OwnerRole,
+  TenantRole,
+} from "features/Layout/components/Landing/constants";
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -47,8 +54,8 @@ export default function HeroSection() {
       if (createdUser) {
         // force refresh
         createdUser?.role === OwnerRole
-          ? navigate(`/properties?refresh=${Date.now()}`)
-          : navigate(`/rental?refresh=${Date.now()}`);
+          ? navigate(`${PropertiesRouteUri}?refresh=${Date.now()}`)
+          : navigate(`${RentalRouteUri}?refresh=${Date.now()}`);
       }
     } catch (error) {
       /* eslint-disable no-console */
@@ -64,8 +71,8 @@ export default function HeroSection() {
       if (createdUser) {
         // force refresh
         createdUser?.role === OwnerRole
-          ? navigate(`/properties?refresh=${Date.now()}`)
-          : navigate(`/rental?refresh=${Date.now()}`);
+          ? navigate(`${PropertiesRouteUri}?refresh=${Date.now()}`)
+          : navigate(`${RentalRouteUri}?refresh=${Date.now()}`);
       }
     } catch (error) {
       /* eslint-disable no-console */
@@ -96,7 +103,7 @@ export default function HeroSection() {
               Simple. Powerful. Professional.
             </Typography>
             <Typography variant="h5" sx={{ textTransform: "initial" }}>
-              Create and manage assets in seconds. No complexity, just results.
+              Create and manage rents in seconds. No complexity, just results.
             </Typography>
 
             <Stack>

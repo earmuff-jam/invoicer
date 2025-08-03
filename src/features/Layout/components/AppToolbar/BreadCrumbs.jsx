@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { HomeRounded } from "@mui/icons-material";
 import { Box, Breadcrumbs, Stack, Typography } from "@mui/material";
+import { HomeRouteUri } from "common/utils";
 
 export default function BreadCrumbs({ currentRoute }) {
   const location = useLocation();
@@ -13,7 +14,7 @@ export default function BreadCrumbs({ currentRoute }) {
     <Breadcrumbs aria-label="breadcrumb" className="no-print">
       <Box
         component="span"
-        onClick={() => navigate("/")}
+        onClick={() => navigate(HomeRouteUri)}
         sx={{
           color: "primary.main",
           cursor: "pointer",
@@ -28,7 +29,7 @@ export default function BreadCrumbs({ currentRoute }) {
         </Stack>
       </Box>
 
-      {pathnames.map((value, index) => {
+      {pathnames.map((_, index) => {
         const last = index === pathnames.length - 1;
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;
 

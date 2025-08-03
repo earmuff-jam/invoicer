@@ -6,6 +6,28 @@
 import { Typography } from "@mui/material";
 
 /**
+ * Route params
+ *
+ * used to build routes.
+ */
+
+export const HomeRouteUri = "/";
+export const FaqRouteUri = "/faq";
+export const NotesRouteUri = "/notes";
+export const SettingsRouteUri = "/settings";
+
+export const RentalRouteUri = "/rental";
+export const PropertyRouteUri = "/property/:id";
+export const PropertiesRouteUri = "/properties";
+
+export const InvoiceDefaultRouteUri = "/invoice";
+export const ViewInvoiceRouteUri = "/invoice/view";
+export const EditInvoiceRouteUri = "/invoice/edit";
+export const SenderInforamtionRouteUri = "invoice/sender";
+export const InvoiceDashboardRouteUri = "/invoice/dashboard";
+export const RecieverInforamtionRouteUri = "invoice/reciever";
+
+/**
  * pluralize
  *
  * function used to add a plural form where applicable.

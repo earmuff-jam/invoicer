@@ -18,8 +18,6 @@ export const SendDefaultInvoiceEnumValue = "Send_Default_Invoice";
 export const PaymentReminderEnumValue = "Payment_Reminder";
 export const RenewLeaseNoticeEnumValue = "Renew_Lease_Notice_Enum_Value";
 
-
-
 /**
  * stripHTMLForEmailMessages ...
  *
@@ -35,8 +33,6 @@ export const stripHTMLForEmailMessages = (htmlDocument) => {
   div.innerHTML = htmlDocument;
   return div.textContent || div.innerText || "";
 };
-
-
 
 /**
  * Email Validators
@@ -130,7 +126,7 @@ export const updateDateTime = (startDate) => {
  * @returns {Number} formatted result
  */
 export const formatCurrency = (amt = 0) => {
-  return `$${parseInt(amt).toLocaleString()}`;
+  return amt.toFixed(2);
 };
 
 /**
@@ -147,7 +143,8 @@ export const formatCurrency = (amt = 0) => {
  * @returns {Number} - amount of rent in US Dollars
  */
 export const derieveTotalRent = (property, tenants, isAnyTenantSoR) => {
-  const totalRent = Number(property?.rent) + Number(property?.additional_rent); // can have additional charges
+  const totalRent =
+    Number(property?.rent || 0) + Number(property?.additional_rent || 0); // can have additional charges
 
   if (isAnyTenantSoR) {
     return tenants.reduce(
@@ -264,3 +261,21 @@ export function getCurrentMonthPaidRent(allRents = []) {
       rent.rentMonth === currentMonth && rent.status?.toLowerCase() === "paid",
   );
 }
+
+/**
+ * isAssociatedPropertySoR ...
+ *
+ * function used to determine if an associated property is of the type SoR.
+ * takes property and tenants associated with that property into account.
+ *
+ * @param {Object} Object - Object that defines a single property
+ * @param {Array} tenants - Array of tenants
+ * @returns boolean - true or false value
+ */
+export const isAssociatedPropertySoR = (property, tenants) => {
+  if (tenants?.length <= 0) return true;
+  return (
+    property?.rentees?.length > 0 &&
+    tenants.some((tenant) => tenant.isActive && tenant.isSoR)
+  );
+};

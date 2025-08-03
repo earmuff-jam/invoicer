@@ -1,4 +1,5 @@
 import { Navigate } from "react-router-dom";
+import { HomeRouteUri } from "common/utils";
 
 /**
  * AuthenticationProvider ...
@@ -14,8 +15,8 @@ export default function AuthenticationProvider({ children }) {
   try {
     userDetails = JSON.parse(draftUserDetails);
   } catch {
-    return <Navigate to="/" replace />;
+    return <Navigate to={HomeRouteUri} replace />;
   }
 
-  return userDetails?.uid ? children : <Navigate to="/" replace />;
+  return userDetails?.uid ? children : <Navigate to={HomeRouteUri} replace />;
 }

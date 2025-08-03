@@ -16,6 +16,32 @@ export const tenantsApi = createApi({
   baseQuery: fakeBaseQuery(),
   tagTypes: ["tenants"],
   endpoints: (builder) => ({
+    // fetch a list of all the existing tenants with active == true flag
+    getTenantList: builder.query({
+      async queryFn() {
+        try {
+          const q = query(
+            collection(db, "tenants"),
+            where("isActive", "==", true),
+          );
+          const querySnapshot = await getDocs(q);
+          const tenants = [];
+          querySnapshot.forEach((doc) => {
+            tenants.push({ id: doc.id, ...doc.data() });
+          });
+
+          return { data: tenants };
+        } catch (error) {
+          return {
+            error: {
+              message: error.message,
+              code: error.code,
+            },
+          };
+        }
+      },
+      providesTags: ["tenants"],
+    }),
     // fetch tenants where tenantId matches the passed in tenantId from tenants db
     getTenantById: builder.query({
       async queryFn(tenantId) {
@@ -89,6 +115,7 @@ export const tenantsApi = createApi({
       providesTags: ["tenants"],
     }),
     // fetch tenants where propertyId matches the passed in propertyId from tenants db
+    // only retrieves active tenants
     getTenantByPropertyId: builder.query({
       async queryFn(propertyId) {
         try {
@@ -97,11 +124,16 @@ export const tenantsApi = createApi({
             where("propertyId", "==", propertyId),
           );
           const querySnapshot = await getDocs(q);
-          const tenants = [];
+          const activeTenants = [];
+
           querySnapshot.forEach((doc) => {
-            tenants.push({ id: doc.id, ...doc.data() });
+            const data = { id: doc.id, ...doc.data() };
+            if (data.isActive) {
+              activeTenants.push(data);
+            }
           });
-          return { data: tenants || [] };
+
+          return { data: activeTenants };
         } catch (error) {
           return {
             error: {
@@ -171,6 +203,7 @@ export const tenantsApi = createApi({
 });
 
 export const {
+  useLazyGetTenantListQuery,
   useGetTenantByIdQuery,
   useGetTenantsByUserIdQuery,
   useGetTenantByEmailIdQuery,

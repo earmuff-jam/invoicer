@@ -19,7 +19,7 @@ import validateClientPermissions, {
 } from "common/ValidateClientPerms";
 import { isUserLoggedIn } from "common/utils";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
-import { InvoicerRoutes } from "src/Routes";
+import { RentWorksAppRoutes } from "src/Routes";
 
 export default function NavBar({
   openDrawer,
@@ -42,10 +42,10 @@ export default function NavBar({
     }, 200);
   };
 
-  const formattedInvoicerRoutes = (InvoicerRoutes = [], roleType = "") => {
+  const formattedInvoicerRoutes = (RentWorksAppRoutes = [], roleType = "") => {
     const validRouteFlags = validateClientPermissions();
     const filteredNavigationRoutes =
-      filterValidRoutesForNavigationBar(InvoicerRoutes);
+      filterValidRoutesForNavigationBar(RentWorksAppRoutes);
 
     return filteredNavigationRoutes
       .map(({ id, path, label, icon, requiredFlags, config }) => {
@@ -118,7 +118,7 @@ export default function NavBar({
             padding: "1rem",
           }}
         >
-          <Typography variant="h5">Invoicer</Typography>
+          <Typography variant="h5">RentWorks</Typography>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightRounded />
@@ -133,7 +133,7 @@ export default function NavBar({
           component="nav"
           aria-labelledby="nested-list-subheader"
         >
-          {formattedInvoicerRoutes(InvoicerRoutes, user?.role)}
+          {formattedInvoicerRoutes(RentWorksAppRoutes, user?.role)}
         </List>
       </Drawer>
     </Stack>

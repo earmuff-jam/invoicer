@@ -1,5 +1,14 @@
 import { Box, Typography } from "@mui/material";
-import { createHelperSentences } from "common/utils";
+import {
+  EditInvoiceRouteUri,
+  FaqRouteUri,
+  InvoiceDashboardRouteUri,
+  NotesRouteUri,
+  RecieverInforamtionRouteUri,
+  SenderInforamtionRouteUri,
+  ViewInvoiceRouteUri,
+  createHelperSentences,
+} from "common/utils";
 
 /**
  * ViewPdfHelpSteps
@@ -131,6 +140,100 @@ const DashboardHelpSteps = [
 ];
 
 /**
+ * MyPropertiesListHelpSteps
+ *
+ * User helpful steps for the properties list page.
+ */
+const MyPropertiesListHelpSteps = [
+  {
+    element:
+      "View a list of properties that are managed / owned by you. If you don't have a property 'Add Property' to begin.",
+  },
+  {
+    element: "Create a new property via this 'Add Property' button.",
+  },
+  {
+    element: "Remove a property with a simple click of this delete button.",
+  },
+  {
+    element:
+      "View a quick overview of tenant details if you have them. If you do not have tenant details associate tenants before proceeding.",
+  },
+  {
+    element:
+      "View current rent payment status and the next payment due date. Use Quick Connect to quickly send invoices, reminders or even lease renewal templates. Do not like what you see? Navigate to settings -> templates to change the default template.",
+  },
+  {
+    element: "Click on this property to dive deeper into that property.",
+  },
+];
+
+/**
+ * MyPropertyHelpSteps
+ *
+ * User helpful steps for viewing a single property page.
+ */
+const MyPropertyHelpSteps = [
+  {
+    element: "View more details about your property.",
+  },
+  {
+    element:
+      "View brief overview of your home including address, total available rental bedrooms, occupancy rate and monthly rental amount including additional charges",
+  },
+  {
+    element: "View a financial projection of your home.",
+  },
+  {
+    element:
+      "View details about the property owner. You can email the property owner directly if you are a tenant.",
+  },
+  {
+    element: "View property details and the state it was last updated in.",
+  },
+  {
+    element: "Perform quick actions against your property such as Editing it.",
+  },
+  {
+    element:
+      "View all documents that are available between the tenant and the owner.",
+  },
+  {
+    element: "View all payment summaries made the tenant for this property.",
+  },
+];
+
+/**
+ * SettingsHelpSteps
+ *
+ * User helpful steps for viewing a single property page.
+ */
+const SettingsHelpSteps = [
+  {
+    element: "View your account related information here.",
+  },
+  {
+    element: "View or edit your biographic information here.",
+  },
+  {
+    element:
+      "Navigate to templates, and view all associated templates here. You can customize templates to your liking here. You can even use html if you would like. Please note that using incorrect values will not display the html correctly.",
+  },
+  {
+    element:
+      "Use provided variables to customize the templates. Available variables are listed below each template.",
+  },
+  {
+    element:
+      "Save any template. You can use it via Quick Connect in properties page. This is also the same template that the app uses to draft emails.",
+  },
+  {
+    element:
+      "Connect stripe and setup bank account to recieve rental payments. Property owners who opt in are required to go through stripe verification.",
+  },
+];
+
+/**
  * derieveTourSteps
  *
  * used to build the necessary object from the steps to render the tour correctly.
@@ -142,7 +245,15 @@ const derieveTourSteps = (staticSteps, prefix) => {
   return staticSteps.map(({ element }, index) => ({
     id: index,
     selector: `[data-tour="${prefix}-${index}"]`,
-    content: <Box padding="0.2rem">{element}</Box>,
+    content: (
+      <Typography
+        variant="subtitle2"
+        sx={{ padding: "0.2rem", textTransform: "initial" }}
+        padding="0.2rem"
+      >
+        {element}
+      </Typography>
+    ),
   }));
 };
 
@@ -161,7 +272,7 @@ const DisplaySubHelperSection = () => {
       View{" "}
       <Box
         component="span"
-        onClick={() => handleClick("/notes")}
+        onClick={() => handleClick(NotesRouteUri)}
         sx={{
           color: "primary.main",
           cursor: "pointer",
@@ -175,7 +286,7 @@ const DisplaySubHelperSection = () => {
       to stay up to date with all the latest features. Stuck in a problem? Visit{" "}
       <Box
         component="span"
-        onClick={() => handleClick("/faq")}
+        onClick={() => handleClick(FaqRouteUri)}
         sx={{
           color: "primary.main",
           cursor: "pointer",
@@ -199,7 +310,7 @@ const DisplaySubHelperSection = () => {
  * and are displayed for the user.
  */
 export const DefaultTourStepsMapperObj = {
-  "/view": {
+  [ViewInvoiceRouteUri]: {
     element: (
       <>
         {createHelperSentences("view / print", "invoices")}
@@ -209,7 +320,7 @@ export const DefaultTourStepsMapperObj = {
     start: 0,
     end: ViewPdfHelpSteps.length,
   },
-  "/edit": {
+  [EditInvoiceRouteUri]: {
     element: (
       <>
         {createHelperSentences("edit / update", "invoices")}
@@ -219,7 +330,7 @@ export const DefaultTourStepsMapperObj = {
     start: ViewPdfHelpSteps.length,
     end: ViewPdfHelpSteps.length + EditPdfHelpSteps.length,
   },
-  "/sender": {
+  [SenderInforamtionRouteUri]: {
     element: (
       <>
         {createHelperSentences("edit / update", "sender information")}
@@ -232,7 +343,7 @@ export const DefaultTourStepsMapperObj = {
       EditPdfHelpSteps.length +
       SenderInfoHelpSteps.length,
   },
-  "/reciever": {
+  [RecieverInforamtionRouteUri]: {
     element: (
       <>
         {createHelperSentences("edit / update", "reciever information")}
@@ -249,7 +360,7 @@ export const DefaultTourStepsMapperObj = {
       SenderInfoHelpSteps.length +
       RecieverInfoHelpSteps.length,
   },
-  "/dashboard": {
+  [InvoiceDashboardRouteUri]: {
     element: (
       <>
         {createHelperSentences("interpret", " the dashboard ")}
@@ -282,4 +393,7 @@ export const GeneratedTourSteps = [
   ...derieveTourSteps(SenderInfoHelpSteps, "sender"),
   ...derieveTourSteps(RecieverInfoHelpSteps, "reciever"),
   ...derieveTourSteps(DashboardHelpSteps, "dashboard"),
+  ...derieveTourSteps(MyPropertiesListHelpSteps, "properties"),
+  ...derieveTourSteps(MyPropertyHelpSteps, "property"),
+  ...derieveTourSteps(SettingsHelpSteps, "settings"),
 ];
