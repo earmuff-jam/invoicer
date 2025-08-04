@@ -25,7 +25,11 @@ import AButton from "common/AButton";
 import RowHeader from "common/RowHeader/RowHeader";
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useLazyGetRentByMonthQuery } from "features/Api/rentApi";
-import { fetchLoggedInUser } from "features/RentWorks/common/utils";
+// import { useGetTenantByIdQuery } from "features/Api/tenantsApi";
+import {
+  fetchLoggedInUser,
+  formatCurrency,
+} from "features/RentWorks/common/utils";
 import { useGenerateStripeCheckoutSession } from "features/RentWorks/hooks/useGenerateStripeCheckoutSession";
 
 export default function PropertyOwnerInfoCard({
@@ -41,6 +45,9 @@ export default function PropertyOwnerInfoCard({
     },
   );
 
+  // const { data: tenantDetail = {}, isLoading: isTenantDetailsLoading } =
+  //   useGetTenantByIdQuery(user?.uid, { skip: !user?.uid });
+
   const [triggerGetRentByMonth, { data: rentMonthData = [] }] =
     useLazyGetRentByMonthQuery();
 
@@ -53,9 +60,12 @@ export default function PropertyOwnerInfoCard({
     rentMonthData?.find((item) => item)?.status === "paid";
 
   const handleRentPayment = async ({
+    rentAmount,
+    additionalCharges,
+    initialLateFee,
+    dailyLateFee,
     stripeOwnerAccountId,
     stripeAccountIsActive,
-    totalAmountInDollars,
     propertyId,
     propertyOwnerId,
     tenantId,
@@ -67,8 +77,11 @@ export default function PropertyOwnerInfoCard({
     }
 
     const secureURL = await generateStripeCheckoutSession({
+      rentAmount,
+      additionalCharges,
+      initialLateFee,
+      dailyLateFee,
       stripeOwnerAccountId, // the person who the payment must go towards
-      amount: totalAmountInDollars,
       tenantEmail: tenantEmail,
       propertyId: propertyId,
       propertyOwnerId: propertyOwnerId,
@@ -89,6 +102,9 @@ export default function PropertyOwnerInfoCard({
       });
     }
   }, [property?.id]);
+
+  // TODO : fix this
+  const tenant = {};
 
   if (isLoading) return <Skeleton height="10rem" />;
 
@@ -211,9 +227,16 @@ export default function PropertyOwnerInfoCard({
                       tenantId: user?.uid, // the current payee which is also a tenant
                       rentMonth: dayjs().format("MMMM"),
                       tenantEmail: user?.googleEmailAddress, // the current renter
-                      totalAmountInDollars:
-                        Number(property?.rent) +
+                      rentAmount: formatCurrency(Number(property?.rent)),
+                      additionalCharges: formatCurrency(
                         Number(property?.additional_rent),
+                      ),
+                      initialLateFee: formatCurrency(
+                        Number(tenant?.initialLateFee),
+                      ),
+                      dailyLateFee: formatCurrency(
+                        Number(tenant?.dailyLateFee),
+                      ),
                     })
                   }
                 />

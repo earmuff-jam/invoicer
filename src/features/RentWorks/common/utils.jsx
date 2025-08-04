@@ -279,3 +279,41 @@ export const isAssociatedPropertySoR = (property, tenants) => {
     tenants.some((tenant) => tenant.isActive && tenant.isSoR)
   );
 };
+
+/**
+ * buildPaymentLineItems ...
+ *
+ * function used to build payment line items for stripe payment services
+ *
+ * @param {Object} property - the property object
+ * @param {Object} tenant - the tenant residing at the selected property
+ * @returns Array - list of payment line item objects
+ */
+export const buildPaymentLineItems = (property = {}, tenant = []) => {
+  return [
+    {
+      name: {
+        label: "Rent Amount",
+        value: Number(property?.rent),
+      },
+    },
+    {
+      name: {
+        label: "Additional Charges",
+        value: Number(property?.additional_rent),
+      },
+    },
+    {
+      name: {
+        label: "Initial Late fee",
+        value: Number(tenant?.initialLateFee),
+      },
+    },
+    {
+      name: {
+        label: "Daily Late fee",
+        value: Number(tenant?.dailyLateFee),
+      },
+    },
+  ];
+};

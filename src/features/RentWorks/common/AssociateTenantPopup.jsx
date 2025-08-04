@@ -334,7 +334,8 @@ export default function AssociateTenantPopup({
                   if (doesTenantExist) {
                     setError("email", {
                       type: "manual",
-                      message: "This tenant already exists.",
+                      message:
+                        "Cannot add selected tenant. Found association with another property.",
                     });
                   } else {
                     clearErrors("email");
