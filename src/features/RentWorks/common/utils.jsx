@@ -130,6 +130,21 @@ export const formatCurrency = (amt = 0) => {
 };
 
 /**
+ * sumCentsToDollars ...
+ *
+ * used to sum the total for all the provided args
+ *
+ * @param  {...String} values - String representation of numbers in cents
+ * @returns sum of the total numbers in dollars
+ */
+export const sumCentsToDollars = (...values) => {
+  return values.reduce((total, val) => {
+    const num = Number(val || 0);
+    return total + (isNaN(num) ? 0 : num / 100);
+  }, 0);
+};
+
+/**
  * derieveTotalRent
  *
  * function used to retrieve the total rent of any given property. For homes

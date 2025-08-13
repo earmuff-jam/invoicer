@@ -36,20 +36,66 @@ export const handler = async (event) => {
       };
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      stripeAccount: stripeAccountId,
-    });
+    const session = await stripe.checkout.sessions.retrieve(
+      sessionId,
+      { expand: ["payment_intent"] },
+      { stripeAccount: stripeAccountId },
+    );
 
-    if (session.payment_status !== "paid") {
+    const paymentIntent = session.payment_intent;
+
+    if (!paymentIntent) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ error: "Payment not completed" }),
+        body: JSON.stringify({ error: "No payment intent found" }),
+      };
+    }
+
+    const paymentMethod = await stripe.paymentMethods.retrieve(
+      paymentIntent.payment_method,
+      { stripeAccount: stripeAccountId },
+    );
+
+    let paymentMethodDescription;
+    if (paymentMethod.type === "card") {
+      paymentMethodDescription = `${paymentMethod.card.brand.toUpperCase()} ${paymentMethod.card.funding.toUpperCase()} CARD`;
+    } else if (paymentMethod.type === "us_bank_account") {
+      paymentMethodDescription = `US BANK ACCOUNT (${paymentMethod.us_bank_account.bank_name || "Unknown Bank"})`;
+    } else {
+      paymentMethodDescription = paymentMethod.type.toUpperCase();
+    }
+
+    if (
+      session?.payment_status === "paid" ||
+      paymentIntent.status === "succeeded"
+    ) {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          session: session,
+          paymentMethod: paymentMethodDescription,
+        }),
+      };
+    }
+
+    if (!paymentIntent || paymentIntent.status !== "succeeded") {
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          status: paymentIntent?.status || "unknown",
+          message: "Payment not yet completed",
+          session: session,
+        }),
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ session }),
+      body: JSON.stringify({
+        status: paymentIntent.status,
+        paymentMethod: paymentMethodDescription,
+        message: "Payment not yet completed",
+      }),
     };
   } catch (error) {
     console.error("Error confirming payment:", error);
