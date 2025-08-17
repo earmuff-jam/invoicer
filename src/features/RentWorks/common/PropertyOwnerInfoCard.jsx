@@ -25,7 +25,7 @@ import AButton from "common/AButton";
 import RowHeader from "common/RowHeader/RowHeader";
 import { useGetUserDataByIdQuery } from "features/Api/firebaseUserApi";
 import { useLazyGetRentByMonthQuery } from "features/Api/rentApi";
-// import { useGetTenantByIdQuery } from "features/Api/tenantsApi";
+import { useGetTenantByIdQuery } from "features/Api/tenantsApi";
 import {
   fetchLoggedInUser,
   formatCurrency,
@@ -45,8 +45,8 @@ export default function PropertyOwnerInfoCard({
     },
   );
 
-  // const { data: tenantDetail = {}, isLoading: isTenantDetailsLoading } =
-  //   useGetTenantByIdQuery(user?.uid, { skip: !user?.uid });
+  const { data: tenantDetail = {}, isLoading: isTenantDetailsLoading } =
+    useGetTenantByIdQuery(user?.uid, { skip: !user?.uid });
 
   const [triggerGetRentByMonth, { data: rentMonthData = [] }] =
     useLazyGetRentByMonthQuery();
@@ -102,9 +102,6 @@ export default function PropertyOwnerInfoCard({
       });
     }
   }, [property?.id]);
-
-  // TODO : fix this
-  const tenant = {};
 
   if (isLoading) return <Skeleton height="10rem" />;
 
@@ -259,6 +256,23 @@ export default function PropertyOwnerInfoCard({
                 />
               </Stack>
             ) : null}
+
+            <Stack spacing={1}>
+              {owner?.phone && (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <PhoneRounded fontSize="small" color="action" />
+                  <Typography variant="body2">{owner?.phone}</Typography>
+                </Box>
+              )}
+              {owner?.city && (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <LocationOnRounded fontSize="small" color="action" />
+                  <Typography variant="body2">
+                    {owner?.city}, {owner?.state} {owner?.zipcode}
+                  </Typography>
+                </Box>
+              )}
+            </Stack>
           </>
         )}
       </CardContent>
