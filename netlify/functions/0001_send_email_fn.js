@@ -32,7 +32,7 @@ export const handler = async (event) => {
       };
     }
 
-    const recipients = [new Recipient(to, "Recipient")];
+    const recipients = [new Recipient(to)];
 
     const emailParams = new EmailParams()
       .setFrom(sentFrom)
@@ -42,7 +42,7 @@ export const handler = async (event) => {
     if (text) emailParams.setText(text);
     if (html) emailParams.setHtml(html);
 
-    await mailerSend.email.send(emailParams);
+    // await mailerSend.email.send(emailParams);
 
     return {
       statusCode: 200,
