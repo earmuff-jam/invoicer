@@ -13,6 +13,8 @@ const {
   getOccupancyRate,
   derieveTotalRent,
   formatCurrency,
+  sumCentsToDollars,
+  buildPaymentLineItems,
 } = require("features/RentWorks/common/utils");
 
 const mockSampleProperty = {
@@ -311,6 +313,104 @@ describe("utils tests", () => {
       expect(() => formatCurrency("abc")).toThrow();
       expect(() => formatCurrency(null)).toThrow();
       expect(() => formatCurrency(undefined)).not.toThrow();
+    });
+  });
+
+  describe("validate sumCentsToDollars function to return correct value based on the params.", () => {
+    it("sums whole numbers in cents correctly", () => {
+      expect(sumCentsToDollars("100", "200", "300")).toBe(6); // 600 cents = 6 dollars
+      expect(sumCentsToDollars("0", "0", "0")).toBe(0);
+    });
+
+    it("handles single values correctly", () => {
+      expect(sumCentsToDollars("150")).toBe(1.5);
+      expect(sumCentsToDollars("99")).toBe(0.99);
+    });
+
+    it("handles decimals and mixed inputs", () => {
+      expect(sumCentsToDollars("123", "456.7")).toBeCloseTo(
+        5.796999999999999,
+        5,
+      );
+    });
+
+    it("handles negative values correctly", () => {
+      expect(sumCentsToDollars("-100", "200")).toBe(1);
+      expect(sumCentsToDollars("-50", "-50")).toBe(-1);
+    });
+
+    it("returns 0 if no arguments provided", () => {
+      expect(sumCentsToDollars()).toBe(0);
+    });
+
+    it("ignores non-numeric values", () => {
+      expect(sumCentsToDollars("100", "abc", null, undefined)).toBe(1);
+    });
+  });
+
+  describe("validate buildPaymentLineItems function to return correct line items.", () => {
+    it("returns correct line items with valid property and tenant values", () => {
+      const property = { rent: "120000", additional_rent: "5000" };
+      const tenant = { initialLateFee: "2500", dailyLateFee: "100" };
+
+      const result = buildPaymentLineItems(property, tenant);
+
+      expect(result).toEqual([
+        { name: { label: "Rent Amount", value: 120000 } },
+        { name: { label: "Additional Charges", value: 5000 } },
+        { name: { label: "Initial Late fee", value: 2500 } },
+        { name: { label: "Daily Late fee", value: 100 } },
+      ]);
+    });
+
+    it("returns 0 for missing property or tenant values", () => {
+      const result = buildPaymentLineItems({}, {});
+
+      expect(result).toEqual([
+        { name: { label: "Rent Amount", value: 0 } },
+        { name: { label: "Additional Charges", value: 0 } },
+        { name: { label: "Initial Late fee", value: 0 } },
+        { name: { label: "Daily Late fee", value: 0 } },
+      ]);
+    });
+
+    it("handles undefined inputs gracefully", () => {
+      const result = buildPaymentLineItems();
+
+      expect(result).toEqual([
+        { name: { label: "Rent Amount", value: 0 } },
+        { name: { label: "Additional Charges", value: 0 } },
+        { name: { label: "Initial Late fee", value: 0 } },
+        { name: { label: "Daily Late fee", value: 0 } },
+      ]);
+    });
+
+    it("converts string values to numbers correctly", () => {
+      const property = { rent: "2000", additional_rent: "300" };
+      const tenant = { initialLateFee: "50", dailyLateFee: "10" };
+
+      const result = buildPaymentLineItems(property, tenant);
+
+      expect(result).toEqual([
+        { name: { label: "Rent Amount", value: 2000 } },
+        { name: { label: "Additional Charges", value: 300 } },
+        { name: { label: "Initial Late fee", value: 50 } },
+        { name: { label: "Daily Late fee", value: 10 } },
+      ]);
+    });
+
+    it("returns 0 for non-numeric values", () => {
+      const property = { rent: "abc", additional_rent: null };
+      const tenant = { initialLateFee: undefined, dailyLateFee: "xyz" };
+
+      const result = buildPaymentLineItems(property, tenant);
+
+      expect(result).toEqual([
+        { name: { label: "Rent Amount", value: 0 } },
+        { name: { label: "Additional Charges", value: 0 } },
+        { name: { label: "Initial Late fee", value: 0 } },
+        { name: { label: "Daily Late fee", value: 0 } },
+      ]);
     });
   });
 });

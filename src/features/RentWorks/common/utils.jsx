@@ -309,25 +309,25 @@ export const buildPaymentLineItems = (property = {}, tenant = []) => {
     {
       name: {
         label: "Rent Amount",
-        value: Number(property?.rent),
+        value: Number(property?.rent) || 0,
       },
     },
     {
       name: {
         label: "Additional Charges",
-        value: Number(property?.additional_rent),
+        value: Number(property?.additional_rent) || 0,
       },
     },
     {
       name: {
         label: "Initial Late fee",
-        value: Number(tenant?.initialLateFee),
+        value: Number(tenant?.initialLateFee) || 0,
       },
     },
     {
       name: {
         label: "Daily Late fee",
-        value: Number(tenant?.dailyLateFee),
+        value: Number(tenant?.dailyLateFee) || 0,
       },
     },
   ];

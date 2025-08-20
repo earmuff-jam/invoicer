@@ -38,6 +38,7 @@ export default function PropertyOwnerInfoCard({
   property,
 }) {
   const user = fetchLoggedInUser();
+
   const { data: owner = {}, isLoading } = useGetUserDataByIdQuery(
     property?.createdBy,
     {
@@ -45,8 +46,9 @@ export default function PropertyOwnerInfoCard({
     },
   );
 
-  const { data: tenantDetail = {}, isLoading: isTenantDetailsLoading } =
-    useGetTenantByIdQuery(user?.uid, { skip: !user?.uid });
+  const { data: tenant = {} } = useGetTenantByIdQuery(user?.uid, {
+    skip: !user?.uid,
+  });
 
   const [triggerGetRentByMonth, { data: rentMonthData = [] }] =
     useLazyGetRentByMonthQuery();

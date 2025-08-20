@@ -42,7 +42,7 @@ export const handler = async (event) => {
     if (text) emailParams.setText(text);
     if (html) emailParams.setHtml(html);
 
-    // await mailerSend.email.send(emailParams);
+    await mailerSend.email.send(emailParams);
 
     return {
       statusCode: 200,
