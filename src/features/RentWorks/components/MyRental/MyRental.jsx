@@ -34,9 +34,6 @@ import RentalPaymentOverview from "features/RentWorks/components/Widgets/RentalP
 import { useConfirmStripePayment } from "features/RentWorks/hooks/useStripe";
 import { useAppTitle } from "hooks/useAppTitle";
 
-// TODO : handle un-identified tenants route gracefully
-// TODO : https://github.com/earmuff-jam/invoicer/issues/79
-
 const MyRental = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -133,24 +130,17 @@ const MyRental = () => {
       </Paper>
 
       <Grid container spacing={3}>
-        {/* Main Content */}
         <Grid item xs={12} md={8}>
-          {/* Financial Overview */}
           <FinancialOverview
             isTenantsLoading={isTenantsLoading}
             property={property}
             tenants={tenants}
             isAnyTenantSoR={isAnyTenantSoR}
           />
-
-          {/* Documents Overview */}
           <DocumentsOverview isPropertyLoading={isPropertyLoading} />
-
-          {/* Rental Payment Overview */}
           <RentalPaymentOverview propertyId={property?.id} />
         </Grid>
 
-        {/* Sidebar */}
         <Grid item xs={12} md={4}>
           <PropertyOwnerInfoCard
             isViewingRental
@@ -158,7 +148,6 @@ const MyRental = () => {
             property={property}
           />
 
-          {/* Property Details */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <RowHeader
