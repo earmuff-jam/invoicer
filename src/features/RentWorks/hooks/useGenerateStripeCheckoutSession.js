@@ -12,7 +12,10 @@ export const useGenerateStripeCheckoutSession = () => {
   const [error, setError] = useState(null);
 
   const generateStripeCheckoutSession = async ({
-    amount,
+    rentAmount,
+    additionalCharges,
+    initialLateFee,
+    dailyLateFee,
     stripeOwnerAccountId,
     propertyId,
     propertyOwnerId,
@@ -30,7 +33,10 @@ export const useGenerateStripeCheckoutSession = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            amount,
+            rentAmount: Number(rentAmount),
+            additionalCharges: Number(additionalCharges),
+            initialLateFee: Number(initialLateFee),
+            dailyLateFee: Number(dailyLateFee),
             stripeOwnerAccountId,
             propertyId,
             propertyOwnerId,

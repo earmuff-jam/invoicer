@@ -130,6 +130,21 @@ export const formatCurrency = (amt = 0) => {
 };
 
 /**
+ * sumCentsToDollars ...
+ *
+ * used to sum the total for all the provided args
+ *
+ * @param  {...String} values - String representation of numbers in cents
+ * @returns sum of the total numbers in dollars
+ */
+export const sumCentsToDollars = (...values) => {
+  return values.reduce((total, val) => {
+    const num = Number(val || 0);
+    return total + (isNaN(num) ? 0 : num / 100);
+  }, 0);
+};
+
+/**
  * derieveTotalRent
  *
  * function used to retrieve the total rent of any given property. For homes
@@ -278,4 +293,42 @@ export const isAssociatedPropertySoR = (property, tenants) => {
     property?.rentees?.length > 0 &&
     tenants.some((tenant) => tenant.isActive && tenant.isSoR)
   );
+};
+
+/**
+ * buildPaymentLineItems ...
+ *
+ * function used to build payment line items for stripe payment services
+ *
+ * @param {Object} property - the property object
+ * @param {Object} tenant - the tenant residing at the selected property
+ * @returns Array - list of payment line item objects
+ */
+export const buildPaymentLineItems = (property = {}, tenant = []) => {
+  return [
+    {
+      name: {
+        label: "Rent Amount",
+        value: Number(property?.rent) || 0,
+      },
+    },
+    {
+      name: {
+        label: "Additional Charges",
+        value: Number(property?.additional_rent) || 0,
+      },
+    },
+    {
+      name: {
+        label: "Initial Late fee",
+        value: Number(tenant?.initialLateFee) || 0,
+      },
+    },
+    {
+      name: {
+        label: "Daily Late fee",
+        value: Number(tenant?.dailyLateFee) || 0,
+      },
+    },
+  ];
 };

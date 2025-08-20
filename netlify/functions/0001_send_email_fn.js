@@ -32,7 +32,7 @@ export const handler = async (event) => {
       };
     }
 
-    const recipients = [new Recipient(to, "Recipient")];
+    const recipients = [new Recipient(to)];
 
     const emailParams = new EmailParams()
       .setFrom(sentFrom)

@@ -6,6 +6,10 @@ import { Stack, Typography } from "@mui/material";
 import EmptyComponent from "common/EmptyComponent";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {
+  formatCurrency,
+  sumCentsToDollars,
+} from "features/RentWorks/common/utils";
+import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
@@ -29,10 +33,16 @@ const ViewRentalPaymentSummary = ({ rentData = [] }) => {
           ) || "-",
       },
       {
-        accessorKey: "amountPaid",
         header: "Amount Paid ($)",
-        size: 120,
-        Cell: ({ cell }) => Number(cell.getValue()).toFixed(2),
+        accessorFn: (row) =>
+          sumCentsToDollars(
+            row?.rentAmount,
+            row?.additionalCharges,
+            row?.initialLateFee,
+            row?.dailyLateFee,
+          ),
+        id: "amountPaid",
+        Cell: ({ cell }) => formatCurrency(cell.getValue()),
       },
       {
         accessorKey: "method",

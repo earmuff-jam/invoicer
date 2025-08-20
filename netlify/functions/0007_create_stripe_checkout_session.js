@@ -25,7 +25,10 @@ export const handler = async (event) => {
 
   try {
     const {
-      amount,
+      rentAmount,
+      additionalCharges,
+      initialLateFee,
+      dailyLateFee,
       stripeOwnerAccountId,
       propertyId,
       propertyOwnerId,
@@ -44,7 +47,37 @@ export const handler = async (event) => {
               product_data: {
                 name: "Monthly Rent",
               },
-              unit_amount: amount * 100, // amount in cents
+              unit_amount: Math.round(rentAmount * 100),
+            },
+            quantity: 1,
+          },
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: "Additional Charges",
+              },
+              unit_amount: Math.round(additionalCharges * 100),
+            },
+            quantity: 1,
+          },
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: "Initial late fee",
+              },
+              unit_amount: Math.round(initialLateFee * 100),
+            },
+            quantity: 1,
+          },
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: "Daily late fee",
+              },
+              unit_amount: Math.round(dailyLateFee * 100),
             },
             quantity: 1,
           },
@@ -56,7 +89,10 @@ export const handler = async (event) => {
           propertyId,
           propertyOwnerId,
           rentMonth,
-          amount,
+          rentAmount: Math.round(rentAmount * 100),
+          additionalCharges: Math.round(additionalCharges * 100),
+          initialLateFee: Math.round(initialLateFee * 100),
+          dailyLateFee: Math.round(dailyLateFee * 100),
           customer_email: tenantEmail,
         },
         success_url:

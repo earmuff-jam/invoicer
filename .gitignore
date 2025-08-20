@@ -134,3 +134,6 @@ dist
 
 # Local Netlify folder
 .netlify
+
+# local dev server certificates in json
+account.json

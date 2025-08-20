@@ -61,11 +61,15 @@ export const rentApi = createApi({
           );
 
           if (!isOwner && !isRentee) {
+            /* eslint-disable no-console */
+            console.error(
+              "unable to retrieve rental details. invalid params detected",
+            );
             return {
               error: {
                 message:
                   "Access denied: Not a property owner or current tenant.",
-                code: "forbidden",
+                code: "500",
               },
             };
           }
@@ -82,7 +86,7 @@ export const rentApi = createApi({
             draftQuery = query(
               collection(db, "rents"),
               where("propertyId", "==", propertyId),
-              where("renteeEmail", "==", currentUserEmail),
+              where("tenantEmail", "==", currentUserEmail),
             );
           }
 
