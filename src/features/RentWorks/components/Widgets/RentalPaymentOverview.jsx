@@ -4,7 +4,11 @@ import { useGetRentsByPropertyIdQuery } from "features/Api/rentApi";
 import { fetchLoggedInUser } from "features/RentWorks/common/utils";
 import ViewRentalPaymentSummary from "features/RentWorks/components/Widgets/ViewRentalPaymentSummary";
 
-export default function RentalPaymentOverview({ propertyId, propertyName }) {
+export default function RentalPaymentOverview({
+  propertyId,
+  propertyName,
+  dataTour,
+}) {
   const user = fetchLoggedInUser();
   const { data: rentList = [], isLoading: isRentListForPropertyLoading } =
     useGetRentsByPropertyIdQuery(
@@ -15,7 +19,7 @@ export default function RentalPaymentOverview({ propertyId, propertyName }) {
     );
 
   return (
-    <Card sx={{ mb: 3 }}>
+    <Card sx={{ mb: 3 }} data-tour={dataTour}>
       <CardContent>
         <RowHeader
           title="Payments Overview"

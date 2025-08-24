@@ -36,6 +36,7 @@ export default function PropertyOwnerInfoCard({
   isViewingRental = false,
   isPropertyLoading = false,
   property,
+  dataTour,
 }) {
   const user = fetchLoggedInUser();
 
@@ -108,7 +109,7 @@ export default function PropertyOwnerInfoCard({
   if (isLoading) return <Skeleton height="10rem" />;
 
   return (
-    <Card sx={{ mb: 3 }}>
+    <Card sx={{ mb: 3 }} data-tour={dataTour}>
       <CardContent>
         <RowHeader
           title="Property Owner"

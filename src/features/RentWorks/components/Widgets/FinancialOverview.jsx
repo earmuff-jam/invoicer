@@ -10,9 +10,10 @@ export default function FinancialOverview({
   property,
   tenants,
   isAnyTenantSoR,
+  dataTour,
 }) {
   return (
-    <Card sx={{ mb: 3 }}>
+    <Card sx={{ mb: 3 }} data-tour={dataTour}>
       <CardContent>
         <RowHeader
           title="Financial Overview"

@@ -87,7 +87,7 @@ const MyRental = () => {
     );
 
   return (
-    <Stack>
+    <Stack data-tour="rental-0">
       {/* Property Header */}
       <Paper elevation={0} sx={{ padding: 3, margin: "1rem 0rem" }}>
         {isPropertyLoading ? (
@@ -122,6 +122,7 @@ const MyRental = () => {
         )}
         {/* Property Stats */}
         <PropertyStatistics
+          dataTour="rental-1"
           property={property}
           isPropertyLoading={isPropertyLoading}
           isAnyTenantSoR={isAnyTenantSoR}
@@ -136,12 +137,15 @@ const MyRental = () => {
             property={property}
             tenants={tenants}
             isAnyTenantSoR={isAnyTenantSoR}
+            dataTour="rental-2"
           />
           <DocumentsOverview
+          dataTour="rental-6"
             isPropertyLoading={isPropertyLoading}
             property={property}
           />
           <RentalPaymentOverview
+          dataTour="rental-7"
             propertyId={property?.id}
             propertyName={property?.name || "Unknown"}
           />
@@ -149,13 +153,14 @@ const MyRental = () => {
 
         <Grid item xs={12} md={4}>
           <PropertyOwnerInfoCard
+            dataTour="rental-3"
             isViewingRental
             isPropertyLoading={isPropertyLoading}
             property={property}
           />
 
-          <Card sx={{ mb: 3 }}>
-            <CardContent>
+          <Card sx={{ mb: 3 }} data-tour="rental-4">
+            <CardContent data-tour="rental-5">
               <RowHeader
                 title="Property Details"
                 sxProps={{

@@ -2,9 +2,13 @@ import { Card, CardContent, Skeleton, Stack } from "@mui/material";
 import RowHeader from "common/RowHeader/RowHeader";
 import ViewDocuments from "features/RentWorks/components/Widgets/ViewDocuments";
 
-export default function DocumentsOverview({ isPropertyLoading, property }) {
+export default function DocumentsOverview({
+  isPropertyLoading,
+  property,
+  dataTour,
+}) {
   return (
-    <Card sx={{ mb: 3 }}>
+    <Card sx={{ mb: 3 }} data-tour={dataTour}>
       <CardContent>
         <RowHeader
           title="Documents Overview"
