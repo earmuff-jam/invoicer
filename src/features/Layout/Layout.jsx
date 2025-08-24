@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Outlet, matchPath, useLocation } from "react-router-dom";
 
 import { TenantRole } from "./components/Landing/constants";
+import { retrieveTourKey } from "./utils";
 import { InfoRounded } from "@mui/icons-material";
 import {
   Box,
@@ -75,7 +76,8 @@ export default function Layout({
   };
 
   const setTour = () => {
-    const currentTourEl = DefaultTourStepsMapperObj[currentUri];
+    const key = retrieveTourKey(currentUri, "property");
+    const currentTourEl = DefaultTourStepsMapperObj[key];
 
     let formattedDraftTourSteps;
 
