@@ -6,6 +6,7 @@ import {
   NotesRouteUri,
   RecieverInforamtionRouteUri,
   SenderInforamtionRouteUri,
+  SettingsRouteUri,
   ViewInvoiceRouteUri,
   createHelperSentences,
 } from "common/utils";
@@ -221,14 +222,6 @@ const SettingsHelpSteps = [
   },
   {
     element:
-      "Use provided variables to customize the templates. Available variables are listed below each template.",
-  },
-  {
-    element:
-      "Save any template. You can use it via Quick Connect in properties page. This is also the same template that the app uses to draft emails.",
-  },
-  {
-    element:
       "Connect stripe and setup bank account to recieve rental payments. Property owners who opt in are required to go through stripe verification.",
   },
 ];
@@ -269,6 +262,7 @@ const DisplaySubHelperSection = () => {
 
   return (
     <Typography variant="caption">
+      {" "}
       View{" "}
       <Box
         component="span"
@@ -346,7 +340,7 @@ export const DefaultTourStepsMapperObj = {
   [RecieverInforamtionRouteUri]: {
     element: (
       <>
-        {createHelperSentences("edit / update", "reciever information")}
+        {createHelperSentences("edit / update ", "reciever information")}
         {DisplaySubHelperSection()}
       </>
     ),
@@ -379,6 +373,30 @@ export const DefaultTourStepsMapperObj = {
       RecieverInfoHelpSteps.length +
       DashboardHelpSteps.length,
   },
+  [SettingsRouteUri]: {
+    element: (
+      <>
+        {createHelperSentences(
+          "edit / update",
+          " your information and email templates ",
+        )}
+        {DisplaySubHelperSection()}
+      </>
+    ),
+    start:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length,
+    end:
+      ViewPdfHelpSteps.length +
+      EditPdfHelpSteps.length +
+      SenderInfoHelpSteps.length +
+      RecieverInfoHelpSteps.length +
+      DashboardHelpSteps.length +
+      SettingsHelpSteps.length,
+  },
 };
 
 /**
@@ -393,7 +411,7 @@ export const GeneratedTourSteps = [
   ...derieveTourSteps(SenderInfoHelpSteps, "sender"),
   ...derieveTourSteps(RecieverInfoHelpSteps, "reciever"),
   ...derieveTourSteps(DashboardHelpSteps, "dashboard"),
+  ...derieveTourSteps(SettingsHelpSteps, "settings"),
   ...derieveTourSteps(MyPropertiesListHelpSteps, "properties"),
   ...derieveTourSteps(MyPropertyHelpSteps, "property"),
-  ...derieveTourSteps(SettingsHelpSteps, "settings"),
 ];

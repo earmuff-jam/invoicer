@@ -19,7 +19,7 @@ export default function PdfViewer() {
   const invoice_form = JSON.parse(localStorage.getItem("pdfDetails"));
   const invoiceStatus = JSON.parse(localStorage.getItem("invoiceStatus"));
 
-  const handleNavigate = () => navigate("/edit");
+  const handleNavigate = () => navigate("/invoice/edit");
 
   if (!invoice_form) {
     return <EmptyPdfViewer handleNavigate={handleNavigate} />;
