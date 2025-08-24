@@ -105,7 +105,10 @@ const Property = () => {
           />
 
           {/* Documents Overview */}
-          <DocumentsOverview isPropertyLoading={isPropertyLoading} />
+          <DocumentsOverview
+            isPropertyLoading={isPropertyLoading}
+            property={property}
+          />
 
           {/* Tenants Overview */}
           <TenantsOverview
@@ -116,7 +119,10 @@ const Property = () => {
           />
 
           {/* Rental Payment Overview */}
-          <RentalPaymentOverview propertyId={property?.id} />
+          <RentalPaymentOverview
+            propertyId={property?.id}
+            propertyName={property?.name || "Unknown"}
+          />
 
           <Dialog
             open={dialog}

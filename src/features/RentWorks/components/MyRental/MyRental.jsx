@@ -137,8 +137,14 @@ const MyRental = () => {
             tenants={tenants}
             isAnyTenantSoR={isAnyTenantSoR}
           />
-          <DocumentsOverview isPropertyLoading={isPropertyLoading} />
-          <RentalPaymentOverview propertyId={property?.id} />
+          <DocumentsOverview
+            isPropertyLoading={isPropertyLoading}
+            property={property}
+          />
+          <RentalPaymentOverview
+            propertyId={property?.id}
+            propertyName={property?.name || "Unknown"}
+          />
         </Grid>
 
         <Grid item xs={12} md={4}>

@@ -16,7 +16,7 @@ export default function FinancialOverview({
       <CardContent>
         <RowHeader
           title="Financial Overview"
-          caption="View your financial details about your property"
+          caption={`View financial details for ${property?.name}`}
           sxProps={{ textAlign: "left", color: "text.secondary" }}
         />
         {isTenantsLoading ? (
