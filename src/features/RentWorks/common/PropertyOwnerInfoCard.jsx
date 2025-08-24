@@ -190,6 +190,23 @@ export default function PropertyOwnerInfoCard({
               </Box>
             </Box>
 
+            <Stack spacing={1}>
+              {owner?.phone && (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <PhoneRounded fontSize="small" color="action" />
+                  <Typography variant="body2">{owner?.phone}</Typography>
+                </Box>
+              )}
+              {owner?.city && (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <LocationOnRounded fontSize="small" color="action" />
+                  <Typography variant="body2">
+                    {owner?.city}, {owner?.state} {owner?.zipcode}
+                  </Typography>
+                </Box>
+              )}
+            </Stack>
+
             {isViewingRental ? (
               <Stack spacing={1}>
                 <Box>
@@ -241,23 +258,6 @@ export default function PropertyOwnerInfoCard({
                 />
               </Stack>
             ) : null}
-
-            <Stack spacing={1}>
-              {owner?.phone && (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <PhoneRounded fontSize="small" color="action" />
-                  <Typography variant="body2">{owner?.phone}</Typography>
-                </Box>
-              )}
-              {owner?.city && (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <LocationOnRounded fontSize="small" color="action" />
-                  <Typography variant="body2">
-                    {owner?.city}, {owner?.state} {owner?.zipcode}
-                  </Typography>
-                </Box>
-              )}
-            </Stack>
           </>
         )}
       </CardContent>
