@@ -140,12 +140,12 @@ const MyRental = () => {
             dataTour="rental-2"
           />
           <DocumentsOverview
-          dataTour="rental-6"
+            dataTour="rental-6"
             isPropertyLoading={isPropertyLoading}
             property={property}
           />
           <RentalPaymentOverview
-          dataTour="rental-7"
+            dataTour="rental-7"
             propertyId={property?.id}
             propertyName={property?.name || "Unknown"}
           />

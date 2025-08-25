@@ -204,6 +204,9 @@ const MyPropertyHelpSteps = [
   {
     element: "View all payment summaries made the tenant for this property.",
   },
+  {
+    element: "View a list of all the active tenants for this property.",
+  },
 ];
 
 /**
