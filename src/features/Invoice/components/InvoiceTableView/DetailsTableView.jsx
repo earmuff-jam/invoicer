@@ -6,7 +6,7 @@ import { CommentRounded, Remove } from "@mui/icons-material";
 import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import EmptyComponent from "common/EmptyComponent";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { noramlizeDetailsTableData } from "features/Invoice/utils";
+import { normalizeTableData } from "features/Invoice/utils/normalizeTableData";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -62,7 +62,7 @@ const DetailsTableView = ({ data = [] }) => {
       Cell: ({ cell }) =>
         cell?.getValue() ? (
           <Typography variant="subtitle2" fontWeight="light">
-            {cell.getValue()}
+            {cell.getValue()?.toFixed(2)}
           </Typography>
         ) : (
           "-"
@@ -125,7 +125,7 @@ const DetailsTableView = ({ data = [] }) => {
   ];
 
   // protect from re-render
-  const tableData = useMemo(() => noramlizeDetailsTableData(data), [data]);
+  const tableData = useMemo(() => normalizeTableData(data), [data]);
 
   const table = useMaterialReactTable({
     columns,
