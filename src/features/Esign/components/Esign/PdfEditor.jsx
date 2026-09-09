@@ -231,14 +231,17 @@ const PdfEditor = () => {
               return copy;
             });
           };
+
+          const DEFAULT_TEXT_SIZE = '16';
+          
           Object.assign(input.style, {
             position: "absolute",
             left: `${left}px`,
             top: `${top}px`,
             width: `${width}px`,
             height: `${height}px`,
-            fontSize: a?.multiLine ? `16px` : `${height * 0.6}px`,
-            lineHeight: a?.multiLine ? `16px` : `${height}px`,
+            fontSize: `${DEFAULT_TEXT_SIZE}px`,
+            lineHeight: `${DEFAULT_TEXT_SIZE}px`,
             padding: "2px 4px",
             boxSizing: "border-box",
             border: "1px solid #ccc",
