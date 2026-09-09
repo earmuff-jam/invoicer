@@ -232,8 +232,8 @@ const PdfEditor = () => {
             });
           };
 
-          const DEFAULT_TEXT_SIZE = '16';
-          
+          const DEFAULT_TEXT_SIZE = "16";
+
           Object.assign(input.style, {
             position: "absolute",
             left: `${left}px`,

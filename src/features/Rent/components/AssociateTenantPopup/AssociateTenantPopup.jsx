@@ -40,7 +40,6 @@ import {
   appendDisclaimer,
   emailMessageBuilder,
   formatAndSendNotification,
-  isAssociatedPropertySoR,
 } from "features/Rent/utils";
 
 export default function AssociateTenantPopup({
@@ -569,40 +568,6 @@ export default function AssociateTenantPopup({
               />
             )}
           />
-        </Stack>
-
-        <Stack>
-          <Controller
-            name="isSoR"
-            control={control}
-            render={({ field }) => (
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    {...field}
-                    checked={field.value}
-                    disabled={!isAssociatedPropertySoR(property, tenants)}
-                  />
-                }
-                label="Single Occupancy Room (SoR)?"
-              />
-            )}
-          />
-
-          {isSoR && (
-            <Controller
-              name="assignedRoomName"
-              control={control}
-              render={({ field }) => (
-                <TextFieldWithLabel
-                  label="Room Name"
-                  placeholder="Assign the above user a room"
-                  errorMsg={errors.assignedRoomName?.message}
-                  {...field}
-                />
-              )}
-            />
-          )}
         </Stack>
 
         <Divider>
