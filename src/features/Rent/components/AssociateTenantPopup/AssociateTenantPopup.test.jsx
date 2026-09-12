@@ -73,7 +73,6 @@ vi.mock("features/Rent/utils", async (importOriginal) => {
     appendDisclaimer: (m) => m,
     emailMessageBuilder: () => "email-body",
     formatAndSendNotification: vi.fn(),
-    isAssociatedPropertySoR: () => true,
   };
 });
 
