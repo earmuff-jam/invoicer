@@ -2,7 +2,7 @@ import { createTheme } from "@mui/material";
 
 const commonTypography = {
   fontFamily:
-    "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", sans-serif",
+    'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
 
   htmlFontSize: 16,
 
@@ -292,7 +292,6 @@ const commonComponents = {
   },
 };
 
-
 /* -------------------------------------------------------------------------- */
 /* Light theme                                                                */
 /* -------------------------------------------------------------------------- */
@@ -414,7 +413,6 @@ export const lightTheme = createTheme({
     },
   },
 });
-
 
 /* -------------------------------------------------------------------------- */
 /* Dark theme                                                                 */

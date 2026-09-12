@@ -86,7 +86,7 @@ export default function EditWidgetDrawer({
               <AIconButton
                 size="small"
                 onClick={() => handleEditingWidget("")}
-                label={<CancelOutlined fontSize="small" />}
+                label={<CancelOutlined color="error" fontSize="small" />}
               />
             </Stack>
 
